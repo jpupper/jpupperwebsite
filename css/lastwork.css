@@ -1,0 +1,284 @@
+/* lastwork.css - Estilos para la sección Nuestro trabajo más reciente */
+
+.latest-work {
+  /* background: rgba(20, 16, 40, 0.85); */
+  border-radius: 18px;
+  padding: 2.5rem 2rem 2.5rem 2rem;
+  margin: 3rem auto 2.5rem auto;
+  max-width: 900px;
+  /* box-shadow: 0 4px 32px 0 rgba(60, 30, 90, 0.18); */
+}
+
+.latest-work-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #fff;
+  text-align: left;
+}
+.latest-work-title .bold {
+  font-weight: bold;
+  color: #fff;
+}
+
+.lastwork-single-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 3.2rem;
+  justify-content: flex-start;
+  margin-bottom: 3.2rem;
+}
+.lastwork-video {
+  width: 540px;
+  height: 500px;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111;
+  flex-shrink: 0;
+  box-shadow: 0 4px 32px 0 rgba(60, 30, 90, 0.18);
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  position: relative;
+}
+.lastwork-iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 1px;
+  min-width: 1px;
+  aspect-ratio: 16 / 9;
+  display: block;
+  border: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.lastwork-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1 1 0%;
+  min-width: 320px;
+}
+.lastwork-info h3 {
+  font-size: 2.1rem;
+  color: #fff;
+  font-family: 'NexaHeavy', Arial, Helvetica, sans-serif;
+  margin-bottom: 1.2rem;
+}
+.lastwork-info p {
+  color: #e0e0e0;
+  font-size: 1.32rem;
+  /* margin: 0 0 1.7rem 0; */
+  font-family: 'NexaLight', Arial, Helvetica, sans-serif;
+}
+
+.lastwork-dots {
+  display: flex;
+  gap: 1.1rem;
+  margin-top: 1.7rem;
+  align-items: center;
+}
+.lastwork-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3e2c57;
+  border: 2.5px solid #a95fff;
+  cursor: pointer;
+  transition: background 0.16s, border 0.16s;
+  display: inline-block;
+}
+.lastwork-dot.active {
+  background: #a95fff;
+  border: 2.5px solid #fff;
+}
+
+.lastwork-progress-bar {
+  width: 100%;
+  height: 7px;
+  background: #2a1d3f;
+  border-radius: 5px;
+  margin-top: 1.1rem;
+  overflow: hidden;
+  box-shadow: 0 1px 5px 0 rgba(60,30,90,0.07);
+}
+.lastwork-progress {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #a95fff 0%, #7a34c6 100%);
+  border-radius: 5px;
+  transition: width 0.1s linear;
+}
+
+/* Clientes y socios */
+.lastwork-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 3.2rem;
+  margin-top: 3.2rem;
+  flex-wrap: wrap;
+}
+.lastwork-clients, .lastwork-partners {
+  flex: 1 1 320px;
+  min-width: 220px;
+}
+.lastwork-clients-title, .lastwork-partners-title {
+  font-size: 1.55rem;
+  color: #fff;
+  font-family: 'NexaHeavy', Arial, Helvetica, sans-serif;
+  margin-bottom: 1.7rem;
+}
+.lastwork-clients-logos, .lastwork-partners-logos {
+  display: flex;
+  gap: 2.2rem;
+  align-items: center;
+}
+.lastwork-clients-logos img, .lastwork-partners-logos img {
+  height: 62px;
+  object-fit: contain;
+  background: none;
+  border-radius: 0;
+}
+/* Latest Work Section */
+.latest-work {
+  padding: 5rem 1rem;
+  background-color: rgba(0, 0, 0, 0.8);
+  text-align: left;
+}
+
+.latest-work p {
+  color: var(--text-color);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 1200px) {
+  .lastwork-video { width: 100%; max-width: 100%; }
+  .lastwork-info { min-width: 0; }
+}
+@media (max-width: 900px) {
+  .latest-work {
+    padding: 0.7rem 0.1rem;
+    margin: 1.2rem 0 1.2rem 0;
+    border-radius: 10px;
+  }
+  .latest-work-title {
+    font-size: 1.25rem;
+    margin-bottom: 1.1rem;
+    text-align: center;
+  }
+  .lastwork-single-row {
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: stretch;
+    margin-bottom: 1.2rem;
+  }
+  .lastwork-video {
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 0;
+    height: 220px;
+    aspect-ratio: 16/9;
+    border-radius: 10px;
+    margin: 0 auto 0.7rem auto;
+    box-shadow: none;
+  }
+  .lastwork-iframe {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 1px;
+    min-width: 1px;
+    aspect-ratio: 16/9;
+    border-radius: 10px;
+  }
+  .lastwork-info {
+    min-width: 0;
+    padding: 0 0.5rem;
+    align-items: flex-start;
+  }
+  .lastwork-info h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.7rem;
+    text-align: left;
+  }
+  .lastwork-info p {
+    font-size: 0.92rem;
+    margin-bottom: 1.2rem;
+  }
+  .lastwork-dots {
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .lastwork-dot {
+    width: 12px;
+    height: 12px;
+    border-width: 1.5px;
+  }
+  .lastwork-bottom {
+    flex-direction: column;
+    gap: 2.5rem;
+    margin-top: 1.5rem;
+    align-items: stretch;
+  }
+  .lastwork-clients, .lastwork-partners {
+    flex: 1 1 100%;
+    min-width: 0;
+    margin-bottom: 1.2rem;
+    text-align: left;
+  }
+  .lastwork-clients-logos, .lastwork-partners-logos {
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-bottom: 0.5rem;
+  }
+  .lastwork-clients-logos img, .lastwork-partners-logos img {
+    height: 32px;
+    max-width: 90px;
+    margin-bottom: 0.4rem;
+  }
+  .lastwork-clients-title, .lastwork-partners-title {
+    font-size: 0.92rem;
+    margin-bottom: 0.7rem;
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .lastwork-bottom {
+    flex-direction: row;
+    gap: 1.2rem;
+    margin-top: 1.2rem;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .lastwork-clients, .lastwork-partners {
+    flex: 1 1 48%;
+    min-width: 0;
+    margin-bottom: 0;
+    text-align: center;
+    padding: 0;
+  }
+  .lastwork-clients-title, .lastwork-partners-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+  .lastwork-clients-logos, .lastwork-partners-logos {
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+  .lastwork-clients-logos img, .lastwork-partners-logos img {
+    height: 38px;
+    max-width: 110px;
+    margin-bottom: 0.2rem;
+  }
+}

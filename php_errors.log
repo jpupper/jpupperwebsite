@@ -1,0 +1,10 @@
+[28-Apr-2025 19:43:04 Europe/Berlin] Solicitud recibida en send_mail.php - 2025-04-28 19:43:04
+[28-Apr-2025 19:43:04 Europe/Berlin] Datos leídos desde php://input
+[28-Apr-2025 19:43:04 Europe/Berlin] Datos de entrada: {"fullname":"Saludos","mail":"julian.d.puppo@gmail.com","message":"dqwd"}
+[28-Apr-2025 19:43:04 Europe/Berlin] Datos decodificados: Array
+(
+    [fullname] => Saludos
+    [mail] => julian.d.puppo@gmail.com
+    [message] => dqwd
+)
+

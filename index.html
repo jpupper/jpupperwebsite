@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeyder Multimedia</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/skills-cards.css">
+    <link rel="stylesheet" href="css/lastwork.css">
+    <!-- <link rel="stylesheet" href="css/styles.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/team.css">
+    <link rel="stylesheet" href="css/contacto.css">
+</head>
+<body>
+    <script src="js/shader.js"></script>
+    <script src="js/dictionary.js"></script>
+    <script src="js/heroGallery.js"></script>
+    <header>
+        <nav class="custom-nav">
+            <div class="logo-group">
+                <img src="img/logos/isotipo.png" alt="Isotipo Jeyder" class="isotipo-logo">
+                <div class="logo">
+                    <img src="img/logos/jeyderlogo.png" alt="Jeyder Multimedia">
+                </div>
+            </div>
+            <div class="nav-actions">
+                <ul class="main-nav-links">
+                    <li><a href="#why-us" class="nav-btn" data-i18n="nav.whyus">Por qué nosotros</a></li>
+                    <li><a href="#solutions" class="nav-btn" data-i18n="nav.solutions">Soluciones</a></li>
+                    <li><a href="#contact" class="nav-btn" data-i18n="nav.contact">Contacto</a></li>
+                    <li><a href="#clients" class="nav-btn" data-i18n="nav.clients">Clientes</a></li>
+                    <li><a href="#login" class="nav-btn login-btn" data-i18n="nav.login"><i class="fa fa-user"></i> Login</a></li>
+                </ul>
+                <div class="lang-switcher-top">
+                    <button onclick="setLanguage('es')" class="lang-btn">ESP</button>
+                    <button onclick="setLanguage('en')" class="lang-btn">ENG</button>
+                    <button onclick="setLanguage('zh')" class="lang-btn">中文</button>
+                </div>
+                <div class="hamburger" id="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="mobile-menu" id="mobile-menu">
+                <ul class="mobile-nav-links">
+                    <li><a href="#why-us" class="nav-btn" data-i18n="nav.whyus">Por qué nosotros</a></li>
+                    <li><a href="#solutions" class="nav-btn" data-i18n="nav.solutions">Soluciones</a></li>
+                    <li><a href="#contact" class="nav-btn" data-i18n="nav.contact">Contacto</a></li>
+                    <li><a href="#clients" class="nav-btn" data-i18n="nav.clients">Clientes</a></li>
+                    <li><a href="#login" class="nav-btn login-btn" data-i18n="nav.login"><i class="fa fa-user"></i> Login</a></li>
+                    <li class="mobile-lang">
+                        <button onclick="setLanguage('es')" class="lang-btn">ESP</button>
+                        <button onclick="setLanguage('en')" class="lang-btn">ENG</button>
+                        <button onclick="setLanguage('zh')" class="lang-btn">中文</button>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="main-content">
+        <section class="landing-video-section">
+            <div class="video-wrapper">
+                <iframe 
+                    src="https://www.youtube.com/embed/1onyRN8eWdA?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=1onyRN8eWdA&controls=0&showinfo=0&modestbranding=1&rel=0&playsinline=1" 
+                    frameborder="0" 
+                    allow="autoplay; encrypted-media; picture-in-picture" 
+                    allowfullscreen
+                    title="Jeyder Multimedia Video"></iframe>
+            </div>
+        </section>
+        <section class="hero" id="why-us">
+            <div class="hero-flex">
+                <div class="hero-content">
+                    <div class="hero-gallery">
+                        <div class="hero-gallery-title bold-text" id="heroGalleryTitle"></div>
+                        <div class="hero-gallery-text" id="heroGalleryText"></div>
+                        <div id="heroGalleryDots"></div>
+                    </div>
+                </div>
+                <div class="hero-iframe-circle">
+                    <iframe src="https://jeyder.com.ar/coralcoral" frameborder="0" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </div>
+        </section>
+
+       <!-- <section id="services" class="services">
+            <h2 data-i18n="services.title"></h2>
+            <div class="trusted">
+                <p data-i18n="services.trusted"></p>
+            </div>
+        </section>-->
+
+        <!-- Section toggle buttons -->
+        <div class="section-toggle-container">
+            <button id="solutions-toggle" class="section-toggle-btn active" data-i18n="nav.solutions">Solutions</button>
+            <button id="readytogo-toggle" class="section-toggle-btn" data-i18n="nav.readytogo">Ready to Go</button>
+        </div>
+
+        <section class="skills" id="solutions">
+            <h2><span class="bold-text" data-i18n="skills.section"></span> <span data-i18n="skills.occasion"></span></h2>
+            <p class="section-description" data-i18n="skills.desc"></p>
+            
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <img src="img/services/kinect.png" alt="Kinect" class="skill-icon">
+                    <h3 data-i18n="skills.kinect.title"></h3>
+                    <p data-i18n="skills.kinect.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                
+                <div class="skill-card">
+                    <img src="img/services/touchscreen.png" alt="Touch Screen" class="skill-icon">
+                    <h3 data-i18n="skills.touch.title"></h3>
+                    <p data-i18n="skills.touch.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                
+                <div class="skill-card">
+                    <img src="img/services/artisticwebs.png" alt="Artistic Webs" class="skill-icon">
+                    <h3 data-i18n="skills.webs.title"></h3>
+                    <p data-i18n="skills.webs.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                
+                <div class="skill-card">
+                    <img src="img/services/avperformance.png" alt="AV Live Coding" class="skill-icon">
+                    <h3 data-i18n="skills.live.title"></h3>
+                    <p data-i18n="skills.live.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                
+                <div class="skill-card">
+                    <img src="img/services/videogamedev.png" alt="Videogame Dev" class="skill-icon">
+                    <h3 data-i18n="skills.videogame.title"></h3>
+                    <p data-i18n="skills.videogame.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                
+                <div class="skill-card">
+                    <img src="img/services/aisolutions.png" alt="AI Solutions" class="skill-icon">
+                    <h3 data-i18n="skills.ai.title"></h3>
+                    <p data-i18n="skills.ai.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                
+                <div class="skill-card">
+                    <img src="img/services/virtualreality.png" alt="Virtual Reality" class="skill-icon">
+                    <h3 data-i18n="skills.vr.title"></h3>
+                    <p data-i18n="skills.vr.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                
+                <div class="skill-card">
+                    <img src="img/services/arsolutions.png" alt="AR Solutions" class="skill-icon">
+                    <h3 data-i18n="skills.ar.title"></h3>
+                    <p data-i18n="skills.ar.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="skills" id="readytogo" style="display: none;">
+            <h2><span class="bold-text" data-i18n="readytogo.title"></span> <span data-i18n="readytogo.subtitle"></span></h2>
+            <p class="section-description" data-i18n="readytogo.desc"></p>
+            
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <img src="img/services/kinect.png" alt="Desarrollo web" class="skill-icon">
+                    <h3 data-i18n="readytogo.web.title"></h3>
+                    <p data-i18n="readytogo.web.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                <div class="skill-card">
+                    <img src="img/services/touchscreen.png" alt="Ecommerce" class="skill-icon">
+                    <h3 data-i18n="readytogo.ecommerce.title"></h3>
+                    <p data-i18n="readytogo.ecommerce.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                <div class="skill-card">
+                    <img src="img/services/artisticwebs.png" alt="Sistema de stock" class="skill-icon">
+                    <h3 data-i18n="readytogo.stock.title"></h3>
+                    <p data-i18n="readytogo.stock.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                <div class="skill-card">
+                    <img src="img/services/avperformance.png" alt="Gestión de RRSS" class="skill-icon">
+                    <h3 data-i18n="readytogo.rrss.title"></h3>
+                    <p data-i18n="readytogo.rrss.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                <div class="skill-card">
+                    <img src="img/services/videogamedev.png" alt="Branding" class="skill-icon">
+                    <h3 data-i18n="readytogo.branding.title"></h3>
+                    <p data-i18n="readytogo.branding.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                <div class="skill-card">
+                    <img src="img/services/aisolutions.png" alt="Diseño gráfico" class="skill-icon">
+                    <h3 data-i18n="readytogo.graphic.title"></h3>
+                    <p data-i18n="readytogo.graphic.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                <div class="skill-card">
+                    <img src="img/services/virtualreality.png" alt="Diseño 3D" class="skill-icon">
+                    <h3 data-i18n="readytogo.3d.title"></h3>
+                    <p data-i18n="readytogo.3d.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+                <div class="skill-card">
+                    <img src="img/services/arsolutions.png" alt="Motion Graphics" class="skill-icon">
+                    <h3 data-i18n="readytogo.motion.title"></h3>
+                    <p data-i18n="readytogo.motion.desc"></p>
+                    <span class="arrow">→</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="latest-work">
+            <h2 class="latest-work-title"><span class="bold" data-i18n="latestwork.ourwork"></span> <span data-i18n="latestwork.recent"></span></h2>
+            <div id="lastwork-gallery"></div>
+            <div class="lastwork-bottom">
+                <div class="lastwork-clients">
+                    <div class="lastwork-clients-title" data-i18n="lastwork.clients"></div>
+                    <div class="lastwork-clients-logos">
+                        <img src="img/ultimostrabajos/cocacola.png" alt="CocaCola"/>
+                        <img src="img/ultimostrabajos/redbull.png" alt="Red Bull"/>
+                    </div>
+                </div>
+                <div class="lastwork-partners">
+                    <div class="lastwork-partners-title" data-i18n="lastwork.partners"></div>
+                    <div class="lastwork-partners-logos">
+                        <img src="img/ultimostrabajos/socio1.png" alt="Socio 1"/>
+                        <img src="img/ultimostrabajos/socio2.png" alt="Socio 2"/>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="team-section" id="team">
+            <div class="team-grid" id="team-grid"></div>
+            <div class="team-detail" id="team-detail"></div>
+        </section>
+
+        <section id="contact" class="contact-form-section">
+            <div class="contact-form-container">
+                <h2 class="contact-title" data-i18n="contact.title"></h2>
+                <form class="contact-form">
+                    <input type="text" name="fullname" placeholder="Full Name" data-i18n-placeholder="contact.fullname" required>
+                    <input type="email" name="mail" placeholder="Mail" data-i18n-placeholder="contact.mail" required>
+                    <textarea name="message" rows="4" placeholder="Message" data-i18n-placeholder="contact.message" required></textarea>
+                    <button type="submit" class="contact-send-btn" data-i18n="contact.send"></button>
+                    <div id="contact-loader" class="contact-loader" style="display:none;"></div>
+                    <div id="contact-caption" class="contact-caption" style="display:none;margin-top:10px;"></div>
+                </form>
+            </div>
+        </section>
+
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo logo-row">
+                    <img src="img/logos/isotipo.png" alt="Isotipo Jeyder" class="footer-logo-img" style="width:85px; height:auto; margin:0 12px 0 0; vertical-align:middle;">
+                    <img src="img/logos/jeyderlogo.png" alt="Jeyder Multimedia" class="footer-logo-img" style="width:170px; height:auto; vertical-align:middle;">
+                </div>
+                <div class="footer-contact">
+                    <h3>Hablemos :)</h3>
+                    <p>Buenos Aires, Argentina</p>
+                    <p>hello@jeyder.com</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Links</h3>
+                    <a href="#lastwork">Nuestro Trabajo</a><br>
+                    <a href="#why-us">Por qué elegirnos</a>
+                </div>
+                <div class="footer-social">
+                    <h3>Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><img src="img/footer/facebook.png" alt="Facebook" class="social-icon"></a>
+                        <a href="https://www.instagram.com/jeyder.multimedia/" aria-label="Instagram"><img src="img/footer/instagram.png" alt="Instagram" class="social-icon"></a>
+                        <a href="https://www.linkedin.com/company/jeyder-multimedia/" aria-label="LinkedIn"><img src="img/footer/linkdin.png" alt="LinkedIn" class="social-icon"></a>
+                        <a href="http://www.tiktok.com/@jeyder.multimedia" aria-label="TikTok"><img src="img/footer/tiktok.png" alt="TikTok" class="social-icon"></a>
+                        <a href="https://www.youtube.com/channel/UCSddzCPmnH8hzF7TfeNKQMA" aria-label="YouTube"><img src="img/footer/youtube.png" alt="YouTube" class="social-icon"></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script>
+        new ShaderBackground();
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+            hamburger.classList.toggle('open');
+        });
+    </script>
+    <script src="js/contact.js"></script>
+    <script src="js/solutions.js"></script>
+    <script src="js/lastwork.js"></script>
+    <script src="js/team.js"></script>
+   <!-- <script src="js/scrolllogic.js"></script>-->
+    
+    <!-- Botón flotante de WhatsApp -->
+    <a href="https://wa.me/5491172363818" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</body>
+</html>
