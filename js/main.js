@@ -7,13 +7,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterButtons = document.querySelectorAll('.filter-btn');
 
     let currentFilter = 'all';
+    let currentSearch = '';
 
     // Función para renderizar los proyectos
-    function renderProjects(filter = 'all') {
+    function renderProjects(filter = 'all', searchTerm = '') {
+        const searchLower = searchTerm.toLowerCase();
         projectList.innerHTML = '';
         const filteredProjects = projects.filter(project => {
-            if (filter === 'all') return true;
-            return project.tags.includes(filter);
+            // Aplicar filtro de búsqueda
+            const matchesSearch = searchTerm === '' || 
+                project.title.toLowerCase().includes(searchLower) ||
+                project.description.toLowerCase().includes(searchLower);
+            
+            // Aplicar filtro de categoría
+            const matchesFilter = filter === 'all' || project.tags.includes(filter);
+            
+            return matchesSearch && matchesFilter;
         });
 
         filteredProjects.forEach(project => {
@@ -51,6 +60,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Event listener para el buscador
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value;
+        renderProjects(currentFilter, currentSearch);
+    });
+
     // Event listeners para los filtros
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -62,10 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Renderizar proyectos filtrados
             currentFilter = filter;
-            renderProjects(filter);
+            renderProjects(filter, currentSearch);
         });
     });
 
     // Renderizar todos los proyectos inicialmente
-    renderProjects();
+    renderProjects(currentFilter, currentSearch);
 });
