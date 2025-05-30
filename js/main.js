@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const previewLink = document.querySelector('.preview-link');
     const filterButtons = document.querySelectorAll('.filter-btn');
 
-    let currentFilter = 'all';
+    let selectedFilters = [];
     let currentSearch = '';
 
     // Función para renderizar los proyectos
-    function renderProjects(filter = 'all', searchTerm = '') {
+    function renderProjects(filters = [], searchTerm = '') {
         const searchLower = searchTerm.toLowerCase();
         projectList.innerHTML = '';
         const filteredProjects = projects.filter(project => {
@@ -30,8 +30,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 project.title.toLowerCase().includes(searchLower) ||
                 project.description.toLowerCase().includes(searchLower);
             
-            // Aplicar filtro de categoría
-            const matchesFilter = filter === 'all' || project.tags.includes(filter);
+            // Si no hay filtros, mostrar todos los proyectos
+            // Si hay filtros, mostrar solo los que tengan TODAS las categorías seleccionadas
+            const matchesFilter = filters.length === 0 || 
+                filters.every(filter => project.tags.includes(filter));
             
             return matchesSearch && matchesFilter;
         });
@@ -93,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const searchInput = document.getElementById('search-input');
     searchInput.addEventListener('input', (e) => {
         currentSearch = e.target.value;
-        renderProjects(currentFilter, currentSearch);
+        renderProjects(selectedFilters, currentSearch);
     });
 
     // Event listeners para los filtros
@@ -101,16 +103,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         button.addEventListener('click', () => {
             const filter = button.getAttribute('data-filter');
             
-            // Actualizar clases active de los botones
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+            // Toggle del filtro seleccionado
+            const filterIndex = selectedFilters.indexOf(filter);
+            if (filterIndex === -1) {
+                selectedFilters.push(filter);
+                button.classList.add('active');
+            } else {
+                selectedFilters.splice(filterIndex, 1);
+                button.classList.remove('active');
+            }
             
             // Renderizar proyectos filtrados
-            currentFilter = filter;
-            renderProjects(filter, currentSearch);
+            renderProjects(selectedFilters, currentSearch);
         });
     });
 
     // Renderizar todos los proyectos inicialmente
-    renderProjects(currentFilter, currentSearch);
+    renderProjects(selectedFilters, currentSearch);
 });
