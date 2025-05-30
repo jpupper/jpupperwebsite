@@ -53,8 +53,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Actualizar preview
                 previewTitle.textContent = project.title;
                 previewImage.style.backgroundImage = `url(${project.thumbnail})`;
+                previewImage.style.backgroundSize = 'contain';
+                previewImage.style.backgroundPosition = 'center';
+                previewImage.style.backgroundRepeat = 'no-repeat';
                 previewDescription.textContent = project.description;
                 previewLink.href = project.url;
+                
+                // Mostrar tags
+                const tagsContainer = document.querySelector('.preview-tags');
+                if (tagsContainer) {
+                    tagsContainer.innerHTML = project.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                }
             });
 
             projectList.appendChild(projectElement);
@@ -65,8 +74,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             const firstProject = filteredProjects[0];
             previewTitle.textContent = firstProject.title;
             previewImage.style.backgroundImage = `url(${firstProject.thumbnail})`;
+            previewImage.style.backgroundSize = 'contain';
+            previewImage.style.backgroundPosition = 'center';
+            previewImage.style.backgroundRepeat = 'no-repeat';
             previewDescription.textContent = firstProject.description;
             previewLink.href = firstProject.url;
+            
+            // Mostrar tags del primer proyecto
+            const tagsContainer = document.querySelector('.preview-tags');
+            if (tagsContainer) {
+                tagsContainer.innerHTML = firstProject.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+            }
             projectList.firstChild.classList.add('active');
         }
     }
