@@ -1,4 +1,15 @@
-document.addEventListener('DOMContentLoaded', () => {
+let projects = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await fetch('js/projects.json');
+        const data = await response.json();
+        projects = data.projects;
+    } catch (error) {
+        console.error('Error cargando los proyectos:', error);
+        return;
+    }
+
     const projectList = document.querySelector('.project-list');
     const previewImage = document.querySelector('.preview-image');
     const previewTitle = document.querySelector('.preview-content h3');
