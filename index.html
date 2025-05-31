@@ -28,8 +28,16 @@
         </section>
 
         <section class="gallery-section">
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="Buscar proyectos..." class="search-input">
+            <button class="close-fullscreen">&times;</button>
+            <button class="autoplay-btn">Autoplay</button>
+            <div class="gallery-controls">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Buscar proyectos..." class="search-input">
+                </div>
+                <div class="control-buttons">
+                    <button id="fullscreen-btn" class="control-btn"><span class="btn-text">Pantalla Completa</span></button>
+                    <button id="slideshow-btn" class="control-btn"><span class="btn-text">Autoplay</span></button>
+                </div>
             </div>
             <div class="filters">
                 <button class="filter-btn" data-filter="mobile">Mobile</button>
@@ -38,6 +46,18 @@
                 <button class="filter-btn" data-filter="3D">3D</button>
                 <button class="filter-btn" data-filter="2D">2D</button>
                 <button class="filter-btn" data-filter="static">Static</button>
+                <button class="filter-btn" data-filter="unreal">Unreal</button>
+                <button class="filter-btn" data-filter="opensource">Open Source</button>
+                <button class="filter-btn" data-filter="learning">Learning</button>
+                <button class="filter-btn" data-filter="unity">Unity</button>
+                <button class="filter-btn" data-filter="touchdesigner">TouchDesigner</button>
+                <button class="filter-btn" data-filter="python">Python</button>
+                <button class="filter-btn" data-filter="c++">C++</button>
+                <button class="filter-btn" data-filter="openframeworks">OpenFrameworks</button>
+                <button class="filter-btn" data-filter="processing">Processing</button>
+                <button class="filter-btn" data-filter="videogame">Video Game</button>
+                <button class="filter-btn" data-filter="multiplayer">Multiplayer</button>
+                <button class="filter-btn" data-filter="donemobile">Hecho en Mobile</button>
             </div>
 
             <div class="gallery-container">

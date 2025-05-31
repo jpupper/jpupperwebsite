@@ -1,6 +1,10 @@
 let projects = [];
+let slideshowInterval = null;
+let currentProjectIndex = 0;
 
 document.addEventListener('DOMContentLoaded', async () => {
+    let isFullscreen = false;
+    let isSlideshow = false;
     try {
         const response = await fetch('js/projects.json');
         const data = await response.json();
@@ -116,6 +120,87 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Renderizar proyectos filtrados
             renderProjects(selectedFilters, currentSearch);
         });
+    });
+
+    // Función para cambiar al siguiente proyecto en el slideshow
+    async function nextProject() {
+        const projectItems = document.querySelectorAll('.project-item');
+        if (projectItems.length === 0) return;
+        
+        const preview = document.querySelector('.project-preview');
+        preview.classList.add('transitioning');
+        
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        currentProjectIndex = (currentProjectIndex + 1) % projectItems.length;
+        projectItems[currentProjectIndex].click();
+        
+        setTimeout(() => {
+            preview.classList.remove('transitioning');
+        }, 50);
+    }
+
+    // Función para activar/desactivar el slideshow
+    function toggleSlideshow() {
+        const slideshowBtn = document.getElementById('slideshow-btn');
+        const autoplayBtn = document.querySelector('.autoplay-btn');
+        isSlideshow = !isSlideshow;
+        
+        const updateButtons = (btn, text) => {
+            if (btn.querySelector('.btn-text')) {
+                btn.querySelector('.btn-text').textContent = text;
+            } else {
+                btn.textContent = text;
+            }
+        };
+        
+        if (isSlideshow) {
+            updateButtons(slideshowBtn, 'Detener');
+            updateButtons(autoplayBtn, 'Detener');
+            slideshowInterval = setInterval(nextProject, 4000);
+        } else {
+            updateButtons(slideshowBtn, 'Autoplay');
+            updateButtons(autoplayBtn, 'Autoplay');
+            if (slideshowInterval) {
+                clearInterval(slideshowInterval);
+                slideshowInterval = null;
+            }
+        }
+    }
+
+    // Función para activar/desactivar pantalla completa
+    function toggleFullscreen() {
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const autoplayBtn = document.querySelector('.autoplay-btn');
+        isFullscreen = !isFullscreen;
+
+        if (isFullscreen) {
+            document.body.classList.add('fullscreen');
+            fullscreenBtn.querySelector('.btn-text').textContent = 'Salir';
+            autoplayBtn.style.display = 'block';
+            // Asegurarse de que haya un proyecto seleccionado
+            const activeProject = document.querySelector('.project-item.active');
+            if (!activeProject) {
+                const firstProject = document.querySelector('.project-item');
+                if (firstProject) firstProject.click();
+            }
+        } else {
+            document.body.classList.remove('fullscreen');
+            fullscreenBtn.querySelector('.btn-text').textContent = 'Pantalla Completa';
+            autoplayBtn.style.display = 'none';
+            if (isSlideshow) toggleSlideshow(); // Detener slideshow al salir
+        }
+    }
+
+    // Event listeners para los botones de control
+    document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
+    document.getElementById('slideshow-btn').addEventListener('click', toggleSlideshow);
+    document.querySelector('.autoplay-btn').addEventListener('click', toggleSlideshow);
+    document.querySelector('.close-fullscreen').addEventListener('click', () => {
+        if (isFullscreen) toggleFullscreen();
+    });
+    document.querySelector('.close-fullscreen').addEventListener('click', () => {
+        if (isFullscreen) toggleFullscreen();
     });
 
     // Renderizar todos los proyectos inicialmente
