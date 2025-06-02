@@ -184,11 +184,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const firstProject = document.querySelector('.project-item');
                 if (firstProject) firstProject.click();
             }
+            document.getElementById('galleryautoplay').style.display = 'block';
         } else {
             document.body.classList.remove('fullscreen');
             fullscreenBtn.querySelector('.btn-text').textContent = 'Pantalla Completa';
             autoplayBtn.style.display = 'none';
             if (isSlideshow) toggleSlideshow(); // Detener slideshow al salir
+            document.getElementById('galleryautoplay').style.display = 'none';
         }
     }
 

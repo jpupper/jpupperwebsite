@@ -301,6 +301,7 @@ body.fullscreen {
     cursor: pointer;
     font-size: 14px;
     transition: all 0.3s ease;
+    /* visibility: hidden; */
 }
 
 .fullscreen .autoplay-btn:hover {
@@ -408,4 +409,9 @@ body.fullscreen {
     .project-preview {
         height: auto;
     }
+}
+
+
+#galleryautoplay {
+    display: none;
 }
