@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             projectElement.classList.add('project-item');
             projectElement.innerHTML = `<h3>${project.title}</h3>`;
             
-            projectElement.addEventListener('click', () => {
+            projectElement.addEventListener('click', async () => {
                 // Remover clase active de todos los proyectos
                 document.querySelectorAll('.project-item').forEach(item => {
                     item.classList.remove('active');
@@ -55,6 +55,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 // Agregar clase active al proyecto seleccionado
                 projectElement.classList.add('active');
+                
+                // Agregar transición
+                const preview = document.querySelector('.project-preview');
+                preview.classList.add('transitioning');
+                
+                // Esperar a que termine el fade out
+                await new Promise(resolve => setTimeout(resolve, 500));
                 
                 // Actualizar preview
                 previewTitle.textContent = project.title;
@@ -70,6 +77,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (tagsContainer) {
                     tagsContainer.innerHTML = project.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
                 }
+                
+                // Quitar la clase transitioning para el fade in
+                setTimeout(() => {
+                    preview.classList.remove('transitioning');
+                }, 50);
             });
 
             projectList.appendChild(projectElement);

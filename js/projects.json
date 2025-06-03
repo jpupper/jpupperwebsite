@@ -11,18 +11,18 @@
         {
             "id": "burningmemories",
             "title": "Burning Memories",
-            "url": "https://jeyder.com.ar/jpupper/nftsapps/burningmemories/",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/fededisplace/",
             "thumbnail": "img/projects/burningmemories.webp",
             "description": "Experimento visual con efectos de desplazamiento y distorsión.",
             "tags": ["nft", "2D","p5js","web","shader"]
         },
         {
-            "id": "babylon2",
-            "title": "Babylon 2",
-            "url": "https://jeyder.com.ar/jpupper/nftsapps/babylon2/",
+            "id": "cosmicorigin",
+            "title": "Cosmic origin",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/cosmicorigin/",
             "thumbnail": "img/projects/babylon2.png",
             "description": "Exploración 3D con BabylonJS, creando ambientes inmersivos.",
-            "tags": ["3D", "interactive","nft"]
+            "tags": ["3D", "interactive","nft","3D","web","babylonjs"]
         },
         {
             "id": "blackforest",
@@ -57,17 +57,17 @@
             "tags": ["nft", "2D", "static","p5js","web"]
         },
         {
-            "id": "rxrboard",
-            "title": "RXRboard",
-            "url": "https://jeyder.com.ar/jpupper/nftsapps/rxrboard/",
+            "id": "rxrposter",
+            "title": "RXRposter",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/rxrposter/",
             "thumbnail": "img/projects/rxrboard.webp",
             "description": "Shader generativo que simula un tablero de ajedrez con movimiento fluido.",
-            "tags": ["nft", "2D", "interactive","static","shader"]
+            "tags": ["nft", "2D", "shader"]
         },
         {
             "id": "coralsofthesea",
             "title": "Corals of the Sea",
-            "url": "https://jeyder.com.ar/jpupper/nftsapps/corals/",
+            "url": "https://www.fxhash.xyz/project/corals-of-the-sea",
             "thumbnail": "img/projects/corals.webp",
             "description": "obra generativa que simula corales con el movimiento del click.",
             "tags": ["nft", "2D", "interactive","static","p5js"]
@@ -83,7 +83,7 @@
         {
             "id": "1888chroma",
             "title": "1888 Chroma",
-            "url": "https://jeyder.com.ar/jpupper/nftsapps/1888chroma/",
+            "url": "https://www.fxhash.xyz/project/1888chroma",
             "thumbnail": "img/projects/1888chroma.webp",
             "description": "Obra generativa inspirada en efectos cromáticos históricos.",
             "tags": ["nft", "2D", "p5js", "web"]
@@ -91,7 +91,7 @@
         {
             "id": "audioreactiveshinyspheres",
             "title": "Audio Reactive Shiny Spheres",
-            "url": "https://jeyder.com.ar/jpupper/nftsapps/audioreactiveshinyspheres/",
+            "url": "https://www.fxhash.xyz/project/audio-reactive-shiny-spheres",
             "thumbnail": "img/projects/audioreactiveshinyspheres.webp",
             "description": "Esferas brillantes que reaccionan al audio con efectos visuales dinámicos.",
             "tags": ["nft", "3D", "audio", "web","tonejs"]
@@ -99,7 +99,7 @@
         {
             "id": "cosmiccream",
             "title": "Cosmic Cream",
-            "url": "https://jeyder.com.ar/jpupper/nftsapps/cosmiccream/",
+            "url": "https://www.fxhash.xyz/project/cosmic-cream",
             "thumbnail": "img/projects/cosmiccream.webp",
             "description": "Fluidos cósmicos generativos con efectos de movimiento suave.",
             "tags": ["nft", "2D", "interactive", "p5js", "web"]
