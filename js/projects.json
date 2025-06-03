@@ -6,7 +6,7 @@
             "url": "https://jeyder.com.ar/jpupper/nftsapps/akalaca/",
             "thumbnail": "img/projects/akalaca.png",
             "description": "Una obra de arte generativo que explora patrones orgánicos y movimiento fluido.",
-            "tags": ["nft", "interactive", "2D"]
+            "tags": ["nft", "interactive", "2D","mobile","p5js","web"]
         },
         {
             "id": "burningmemories",
@@ -14,7 +14,7 @@
             "url": "https://jeyder.com.ar/jpupper/nftsapps/burningmemories/",
             "thumbnail": "img/projects/burningmemories.webp",
             "description": "Experimento visual con efectos de desplazamiento y distorsión.",
-            "tags": ["nft", "interactive", "2D"]
+            "tags": ["nft", "2D","p5js","web","shader"]
         },
         {
             "id": "babylon2",
@@ -22,7 +22,7 @@
             "url": "https://jeyder.com.ar/jpupper/nftsapps/babylon2/",
             "thumbnail": "img/projects/babylon2.png",
             "description": "Exploración 3D con BabylonJS, creando ambientes inmersivos.",
-            "tags": ["3D", "interactive"]
+            "tags": ["3D", "interactive","nft"]
         },
         {
             "id": "blackforest",
@@ -30,7 +30,7 @@
             "url": "https://jeyder.com.ar/jpupper/nftsapps/blackforest/",
             "thumbnail": "img/projects/blackforest.webp",
             "description": "Una experiencia visual oscura y misteriosa generada proceduralmente.",
-            "tags": ["nft", "2D", "static"]
+            "tags": ["nft", "2D", "static","p5js","web"]
         },
         {
             "id": "chalk",
@@ -38,7 +38,7 @@
             "url": "https://jeyder.com.ar/jpupper/nftsapps/chalk/",
             "thumbnail": "img/projects/chalk.webp",
             "description": "Simulación de trazos de tiza con efectos de textura únicos.",
-            "tags": ["2D", "interactive"]
+            "tags": ["2D", "interactive","nft","p5js","web"]
         },
         {
             "id": "desolated",
@@ -46,7 +46,7 @@
             "url": "https://jeyder.com.ar/jpupper/nftsapps/desolated/",
             "thumbnail": "img/projects/desolated.webp",
             "description": "Paisaje abstracto generativo que evoca sensaciones de soledad.",
-            "tags": ["nft", "2D", "static"]
+            "tags": ["nft", "2D", "static","p5js","web"]
         },
         {
             "id": "glitchflowers",
@@ -54,15 +54,247 @@
             "url": "https://jeyder.com.ar/jpupper/nftsapps/glitchflowers/",
             "thumbnail": "img/projects/glitchflowers.webp",
             "description": "Flores generativas con efectos de glitch y distorsión digital.",
-            "tags": ["nft", "2D", "interactive"]
+            "tags": ["nft", "2D", "static","p5js","web"]
+        },
+        {
+            "id": "rxrboard",
+            "title": "RXRboard",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/rxrboard/",
+            "thumbnail": "img/projects/rxrboard.webp",
+            "description": "Shader generativo que simula un tablero de ajedrez con movimiento fluido.",
+            "tags": ["nft", "2D", "interactive","static","shader"]
+        },
+        {
+            "id": "coralsofthesea",
+            "title": "Corals of the Sea",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/corals/",
+            "thumbnail": "img/projects/corals.webp",
+            "description": "obra generativa que simula corales con el movimiento del click.",
+            "tags": ["nft", "2D", "interactive","static","p5js"]
+        },
+        {
+            "id": "sunflowers",
+            "title": "Sun Flowers",
+            "url": "https://www.fxhash.xyz/project/sun-flowers",
+            "thumbnail": "img/projects/sunflowers.webp",
+            "description": "obra generativa que simula flores con movimiento fluido.",
+            "tags": ["nft", "2D","p5js"]
+        },
+        {
+            "id": "1888chroma",
+            "title": "1888 Chroma",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/1888chroma/",
+            "thumbnail": "img/projects/1888chroma.webp",
+            "description": "Obra generativa inspirada en efectos cromáticos históricos.",
+            "tags": ["nft", "2D", "p5js", "web"]
+        },
+        {
+            "id": "audioreactiveshinyspheres",
+            "title": "Audio Reactive Shiny Spheres",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/audioreactiveshinyspheres/",
+            "thumbnail": "img/projects/audioreactiveshinyspheres.webp",
+            "description": "Esferas brillantes que reaccionan al audio con efectos visuales dinámicos.",
+            "tags": ["nft", "3D", "audio", "web","tonejs"]
+        },
+        {
+            "id": "cosmiccream",
+            "title": "Cosmic Cream",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/cosmiccream/",
+            "thumbnail": "img/projects/cosmiccream.webp",
+            "description": "Fluidos cósmicos generativos con efectos de movimiento suave.",
+            "tags": ["nft", "2D", "interactive", "p5js", "web"]
+        },
+        {
+            "id": "dynamicuniverse",
+            "title": "Dynamic Universe",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/dynamicuniverse/",
+            "thumbnail": "img/projects/dynamicuniverse.webp",
+            "description": "Simulación de un universo dinámico con partículas interactivas.",
+            "tags": ["nft", "2D", "interactive", "p5js", "web","videogame"]
+        },
+        {
+            "id": "existenceindarkandlightness",
+            "title": "Existence in Dark and Lightness",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/existenceindarkandlightness/",
+            "thumbnail": "img/projects/existenceindarkandlightness.webp",
+            "description": "Exploración visual del contraste entre luz y oscuridad.",
+            "tags": ["nft", "2D", "interactive", "p5js", "web"]
+        },
+        {
+            "id": "feedbacklimit",
+            "title": "Feedback Limit",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/feedbacklimit/",
+            "thumbnail": "img/projects/feedbacklimit.webp",
+            "description": "Efectos de retroalimentación visual que crean patrones hipnóticos.",
+            "tags": ["nft", "2D", "interactive", "shader", "web"]
+        },
+        {
+            "id": "flowerfield",
+            "title": "Flower Field",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/flowerfield/",
+            "thumbnail": "img/projects/flowerfield.webp",
+            "description": "Campo de flores generativas con comportamientos orgánicos.",
+            "tags": ["nft", "2D", "static", "p5js", "web"]
+        },
+        {
+            "id": "generativeenciclopedia",
+            "title": "Generative Enciclopedia",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/generativeenciclopedia/",
+            "thumbnail": "img/projects/generativeenciclopedia.webp",
+            "description": "Enciclopedia visual generativa que crea patrones únicos.",
+            "tags": ["nft", "2D", "p5js", "web","3D"]
+        },
+        {
+            "id": "iluminatigenerator",
+            "title": "Iluminati Generator",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/iluminatigenerator/",
+            "thumbnail": "img/projects/iluminatigenerator.webp",
+            "description": "Generador de símbolos y patrones inspirados en iconografía esotérica.",
+            "tags": ["nft", "2D", "interactive", "p5js", "web"]
         },
         {
             "id": "jupiter",
             "title": "Jupiter",
             "url": "https://jeyder.com.ar/jpupper/nftsapps/jupiter/",
             "thumbnail": "img/projects/jupiter.webp",
-            "description": "Exploración espacial abstracta inspirada en el planeta Júpiter.",
-            "tags": ["nft", "2D", "interactive"]
+            "description": "Simulación artística del planeta Júpiter con efectos atmosféricos.",
+            "tags": ["nft", "2D", "shader", "web"]
+        },
+        {
+            "id": "megaspace",
+            "title": "Mega Space",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/megaspace/",
+            "thumbnail": "img/projects/megaspace.webp",
+            "description": "Exploración espacial generativa con efectos cósmicos.",
+            "tags": ["nft", "2D", "shader", "p5js", "web"]
+        },
+        {
+            "id": "musicalnoisyworms",
+            "title": "Musical Noisy Worms",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/musicalnoisyworms/",
+            "thumbnail": "img/projects/musicalnoisyworms.webp",
+            "description": "Gusanos generativos que responden a estímulos musicales.",
+            "tags": ["nft", "2D", "tonejs", "audio", "p5js", "web"]
+        },
+        {
+            "id": "pamilogenerator",
+            "title": "Pamilo Generator",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/pamilogenerator/",
+            "thumbnail": "img/projects/pamilogenerator.webp",
+            "description": "Generador de patrones geométricos inspirados en textiles tradicionales.",
+            "tags": ["nft", "2D", "static", "p5js", "web"]
+        },
+        {
+            "id": "papergiftgenerator",
+            "title": "Paper Gift Generator",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/papergiftgenerator/",
+            "thumbnail": "img/projects/papergiftgenerator.webp",
+            "description": "Generador de patrones para papel de regalo personalizado.",
+            "tags": ["nft", "2D", "shader", "web"]
+        },
+        {
+            "id": "purerxr",
+            "title": "Pure RXR",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/purerxr/",
+            "thumbnail": "img/projects/purerxr.webp",
+            "description": "Experiencia visual minimalista con efectos de distorsión.",
+            "tags": ["nft", "2D", "shader", "web"]
+        },
+        {
+            "id": "pyramids",
+            "title": "Pyramids",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/pyramids/",
+            "thumbnail": "img/projects/pyramids.webp",
+            "description": "Estructuras piramidales generativas con efectos de luz y sombra.",
+            "tags": ["nft", "2D", "static", "web"]
+        },
+        {
+            "id": "rageanddesolation",
+            "title": "Rage and Desolation",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/rageanddesolation/",
+            "thumbnail": "img/projects/rageanddesolation.webp",
+            "description": "Paisaje emocional abstracto que evoca sentimientos intensos.",
+            "tags": ["nft", "2D", "static", "p5js", "web"]
+        },
+        {
+            "id": "raices",
+            "title": "Raíces",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/raices/",
+            "thumbnail": "img/projects/raices.webp",
+            "description": "Simulación de crecimiento orgánico inspirado en sistemas de raíces.",
+            "tags": ["nft", "2D", "interactive","multiplayer", "p5js", "web"]
+        },
+        {
+            "id": "raymarchingexplorer",
+            "title": "Raymarching Explorer",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/raymarchingexplorer/",
+            "thumbnail": "img/projects/raymarchingexplorer.webp",
+            "description": "Explorador de mundos 3D generados mediante técnicas de raymarching.",
+            "tags": ["nft", "3D", "interactive", "shader", "web"]
+        },
+        {
+            "id": "rxrplanets3d",
+            "title": "RXR Planets 3D",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/rxrplanets3d/",
+            "thumbnail": "img/projects/rxrplanets3d.webp",
+            "description": "Sistema planetario 3D interactivo con efectos visuales únicos.",
+            "tags": ["nft", "3D", "interactive", "web"]
+        },
+        {
+            "id": "shadowpolys",
+            "title": "Shadow Polys",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/shadowpolys/",
+            "thumbnail": "img/projects/shadowpolys.webp",
+            "description": "Polígonos con efectos de sombra que crean composiciones dinámicas.",
+            "tags": ["nft", "2D", "static", "p5js", "web"]
+        },
+        {
+            "id": "silverwires",
+            "title": "Silver Wires",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/silverwires/",
+            "thumbnail": "img/projects/silverwires.webp",
+            "description": "Redes de cables plateados que forman patrones complejos.",
+            "tags": ["nft", "2D", "interactive", "p5js", "web"]
+        },
+        {
+            "id": "theandes",
+            "title": "The Andes",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/theandes/",
+            "thumbnail": "img/projects/theandes.webp",
+            "description": "Paisaje generativo inspirado en la cordillera de los Andes.",
+            "tags": ["nft", "2D", "static", "p5js", "web"]
+        },
+        {
+            "id": "tribalmasks",
+            "title": "Tribal Masks",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/tribalmasks/",
+            "thumbnail": "img/projects/tribalmasks.webp",
+            "description": "Generador de máscaras tribales con patrones únicos.",
+            "tags": ["nft", "2D", "interactive","audio", "p5js", "web"]
+        },
+        {
+            "id": "vaporwavegenerator",
+            "title": "Vaporwave Generator",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/vaporwavegenerator/",
+            "thumbnail": "img/projects/vaporwavegenerator.webp",
+            "description": "Generador de estética vaporwave con elementos retro y glitch.",
+            "tags": ["nft", "2D", "shader", "p5js", "web"]
+        },
+        {
+            "id": "vintageracing",
+            "title": "Vintage Racing",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/vintageracing/",
+            "thumbnail": "img/projects/vintageracing.webp",
+            "description": "Experiencia de carreras con estética vintage y efectos pixelados.",
+            "tags": ["nft", "2D", "static", "web"]
+        },
+        {
+            "id": "whathaveyoudonewiththewalls",
+            "title": "What Have You Done With The Walls",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/whathaveyoudonewiththewalls/",
+            "thumbnail": "img/projects/whathaveyoudonewiththewalls.webp",
+            "description": "Experiencia visual que juega con la percepción del espacio y los límites.",
+            "tags": ["nft", "2D", "static", "p5js", "web"]
         }
     ]
 }
