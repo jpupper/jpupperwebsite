@@ -152,10 +152,14 @@ main {
     transition: all 0.3s ease;
 }
 
-.filter-btn:hover,
-.filter-btn.active {
-    background: var(--hover-color);
+.filter-btn:hover {
+    background: var(--hover-color); /* #ff1493 */
     color: var(--primary-color);
+}
+
+.filter-btn.active {
+    background: #8a2be2; /* Color seleccionado especificado */
+    color: var(--text-color);
 }
 
 .gallery-container {
@@ -183,12 +187,16 @@ main {
     font-size: 14px;
 }
 
-.project-item:hover,
-.project-item.active {
-    background-color: #ff0099;
+.project-item:hover {
+    background-color: var(--hover-color); /* #ff1493 */
     color: white;
-    font-size: 18px;
-    font-weight: 600;
+    /* font-size and font-weight changes removed */
+}
+
+.project-item.active {
+    background-color: #8a2be2; /* Color seleccionado especificado */
+    color: white;
+    /* font-size and font-weight changes removed */
 }
 
 .project-preview {
@@ -202,6 +210,12 @@ main {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+}
+
+.preview-content h3 {
+    font-size: 1.25rem; /* Tamaño de fuente más pequeño para el título del preview */
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
 }
 
 .preview-image {
@@ -414,4 +428,7 @@ body.fullscreen {
     .project-preview {
         height: auto;
     }
+}
+.autoplay-btn{
+    display: none;
 }

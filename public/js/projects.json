@@ -107,7 +107,7 @@
         {
             "id": "dynamicuniverse",
             "title": "Dynamic Universe",
-            "url": "https://jeyder.com.ar/jpupper/nftsapps/dynamicuniverse/",
+            "url": "https://jeyder.com.ar/jpupper/nftsapps/nave7/",
             "thumbnail": "img/projects/dynamicuniverse.webp",
             "description": "Simulación de un universo dinámico con partículas interactivas.",
             "tags": ["nft", "2D", "interactive", "p5js", "web","videogame"]
@@ -115,7 +115,7 @@
         {
             "id": "existenceindarkandlightness",
             "title": "Existence in Dark and Lightness",
-            "url": "https://jeyder.com.ar/jpupper/nftsapps/existenceindarkandlightness/",
+            "url": "https://www.fxhash.xyz/project/existence-in-dark-and-lightness",
             "thumbnail": "img/projects/existenceindarkandlightness.webp",
             "description": "Exploración visual del contraste entre luz y oscuridad.",
             "tags": ["nft", "2D", "interactive", "p5js", "web"]
@@ -123,9 +123,9 @@
         {
             "id": "feedbacklimit",
             "title": "Feedback Limit",
-            "url": "https://jeyder.com.ar/jpupper/nftsapps/feedbacklimit/",
+            "url": "https://www.fxhash.xyz/project/f-e-e-d-b-a-c-k-l-i-m-i-t",
             "thumbnail": "img/projects/feedbacklimit.webp",
-            "description": "Efectos de retroalimentación visual que crean patrones hipnóticos.",
+            "description": "This is a mostly experimental artwork. I´ve discover this while travelling in the bus using the shader editor in android(wich i recommend cause is really really cool to make things fast). Those longs hours in the bus teach me weird techniques. This is based on a technique that accumulates feedback and once that passes certain limit(it depends on the edition) it decreases on another generative value(it deppens on the edition as well). Is rendered on a fragment shader in my p5.js system.",
             "tags": ["nft", "2D", "interactive", "shader", "web"]
         },
         {
@@ -213,7 +213,7 @@
             "title": "Rage and Desolation",
             "url": "https://jeyder.com.ar/jpupper/nftsapps/rageanddesolation/",
             "thumbnail": "img/projects/rageanddesolation.webp",
-            "description": "Paisaje emocional abstracto que evoca sentimientos intensos.",
+            "description": "Rage and desolation was made originally on my bed, dark at night programming from my cellphone without beeing able to sleep because that was the day i found out that society betrayed it self and in the name of hate there was a democratic defeat.",
             "tags": ["nft", "2D", "static", "p5js", "web"]
         },
         {
@@ -221,7 +221,7 @@
             "title": "Raíces",
             "url": "https://jeyder.com.ar/jpupper/nftsapps/raices/",
             "thumbnail": "img/projects/raices.webp",
-            "description": "Simulación de crecimiento orgánico inspirado en sistemas de raíces.",
+            "description": "Raices plantea una reflexión sobre nuestro origen y nuestro futuro en una tensión entre el condicionamiento del sistema en el que estamos inmersos y su superación mediante nuestra propia voluntad, entre el libre movimiento de la raiz y el seguimiento a un indicador.",
             "tags": ["nft", "2D", "interactive","multiplayer", "p5js", "web"]
         },
         {
