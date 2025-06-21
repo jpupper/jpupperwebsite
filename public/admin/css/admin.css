@@ -1,0 +1,73 @@
+.thumbnail-preview {
+    max-width: 100px;
+    height: auto;
+    margin: 10px 0;
+}
+
+.table img {
+    max-width: 100px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.tag-badge {
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    margin: 0.2em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    background-color: #6c757d;
+    color: white;
+}
+
+#thumbnailPreview img {
+    max-width: 200px;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+.description-cell {
+    max-height: 80px;
+    overflow-y: auto;
+    font-size: 0.9em;
+}
+
+.btn-group .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+#projectsPanel {
+    padding: 20px;
+}
+
+#projectsPanel h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
