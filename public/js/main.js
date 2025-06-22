@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     let isFullscreen = false;
     let isSlideshow = false;
     try {
-        // Usar la ruta API directa
-        const response = await fetch('/api/projects');
+        // Usar CONFIG para construir la URL correcta del API
+        const apiUrl = CONFIG.apiUrl;
+        console.log('Conectando a API:', `${apiUrl}/api/projects`);
+        const response = await fetch(`${apiUrl}/api/projects`);
         projects = await response.json();
     } catch (error) {
         console.error('Error cargando los proyectos:', error);

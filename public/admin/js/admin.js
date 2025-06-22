@@ -20,7 +20,9 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const password = document.getElementById('password').value;
 
     try {
-        const response = await fetch('/api/auth/login', {
+        const apiUrl = CONFIG.apiUrl;
+        console.log('Conectando a API para login:', `${apiUrl}/api/auth/login`);
+        const response = await fetch(`${apiUrl}/api/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -45,7 +47,9 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 // Load projects
 async function loadProjects() {
     try {
-        const response = await fetch('/api/projects');
+        const apiUrl = CONFIG.apiUrl;
+        console.log('Cargando proyectos desde:', `${apiUrl}/api/projects`);
+        const response = await fetch(`${apiUrl}/api/projects`);
         const projects = await response.json();
         
         const tbody = document.getElementById('projectsList');
@@ -54,7 +58,7 @@ async function loadProjects() {
         projects.forEach(project => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><img src="/${project.thumbnail}" alt="${project.title}" class="img-thumbnail"></td>
+                <td><img src="${CONFIG.getImagePath(project.thumbnail)}" alt="${project.title}" class="img-thumbnail"></td>
                 <td><strong>${project.title}</strong></td>
                 <td><div class="description-cell">${project.description}</div></td>
                 <td><a href="${project.url}" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px">${project.url}</a></td>
@@ -100,7 +104,7 @@ async function editProject(id) {
         document.getElementById('description').value = project.description;
         document.getElementById('tags').value = project.tags.join(', ');
         document.getElementById('thumbnailPreview').innerHTML = `
-            <img src="/${project.thumbnail}" alt="Current thumbnail" class="thumbnail-preview">
+            <img src="${CONFIG.getImagePath(project.thumbnail)}" alt="Current thumbnail" class="thumbnail-preview">
         `;
         document.getElementById('modalTitle').textContent = 'Edit Project';
         
@@ -139,7 +143,9 @@ async function saveProject() {
 
     try {
         const method = projectId ? 'PUT' : 'POST';
-        const endpoint = projectId ? `/api/projects/${projectId}` : '/api/projects';
+        const apiUrl = CONFIG.apiUrl;
+        const endpoint = projectId ? `${apiUrl}/api/projects/${projectId}` : `${apiUrl}/api/projects`;
+        console.log(`Guardando proyecto en: ${endpoint} (${method})`);
 
         if (!projectId) {
             formData.append('id', title.toLowerCase().replace(/[^a-z0-9]/g, ''));
@@ -173,7 +179,10 @@ async function deleteProject(id) {
     }
 
     try {
-        const response = await fetch(`/api/projects/${id}`, {
+        const apiUrl = CONFIG.apiUrl;
+        const endpoint = `${apiUrl}/api/projects/${id}`;
+        console.log(`Eliminando proyecto: ${endpoint}`);
+        const response = await fetch(endpoint, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
