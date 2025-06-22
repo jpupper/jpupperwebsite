@@ -22,6 +22,10 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    videolink: {
+        type: String,
+        default: ''
+    },
     tags: [{
         type: String
     }],

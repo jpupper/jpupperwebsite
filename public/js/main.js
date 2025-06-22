@@ -65,12 +65,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Actualizar preview
                 previewTitle.textContent = project.title;
                 
-                // Verificar si es un link de YouTube
+                // Verificar si hay un videolink de YouTube
                 const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/;
-                const youtubeMatch = project.url.match(youtubeRegex);
+                const videoUrl = project.videolink || '';
+                const youtubeMatch = videoUrl.match(youtubeRegex);
                 
-                if (youtubeMatch) {
-                    // Si es un video de YouTube, crear el iframe
+                if (youtubeMatch && videoUrl.trim() !== '') {
+                    // Si hay un video de YouTube válido, crear el iframe
                     const videoId = youtubeMatch[1];
                     previewImage.innerHTML = `
                         <iframe 
@@ -96,13 +97,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                     
                     // Verificar si el video carga correctamente
                     iframe.addEventListener('load', () => {
-                        if (iframe.contentWindow.document.body.innerHTML === '') {
-                            iframe.style.display = 'none';
-                            backupImage.style.display = 'block';
+                        try {
+                            if (iframe.contentWindow.document.body.innerHTML === '') {
+                                iframe.style.display = 'none';
+                                backupImage.style.display = 'block';
+                            }
+                        } catch (e) {
+                            // Si hay un error de seguridad por CORS, asumimos que el video está cargando correctamente
+                            console.log('No se pudo verificar el contenido del iframe debido a restricciones de CORS');
                         }
                     });
                 } else {
-                    // Si no es YouTube, mostrar la imagen normal
+                    // Si no hay videolink válido, mostrar la imagen normal
                     previewImage.innerHTML = '';
                     previewImage.style.backgroundImage = `url(${project.thumbnail})`;
                     previewImage.style.backgroundSize = 'contain';
@@ -133,10 +139,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (filteredProjects.length > 0) {
             const firstProject = filteredProjects[0];
             previewTitle.textContent = firstProject.title;
-            previewImage.style.backgroundImage = `url(${firstProject.thumbnail})`;
-            previewImage.style.backgroundSize = 'contain';
-            previewImage.style.backgroundPosition = 'center';
-            previewImage.style.backgroundRepeat = 'no-repeat';
+            
+            // Verificar si el primer proyecto tiene un videolink válido
+            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/;
+            const videoUrl = firstProject.videolink || '';
+            const youtubeMatch = videoUrl.match(youtubeRegex);
+            
+            if (youtubeMatch && videoUrl.trim() !== '') {
+                // Si hay un video de YouTube válido, crear el iframe
+                const videoId = youtubeMatch[1];
+                previewImage.innerHTML = `
+                    <iframe 
+                        width="100%" 
+                        height="100%" 
+                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen
+                    ></iframe>
+                    <div class="backup-image" style="display: none; width: 100%; height: 100%; background-image: url(${firstProject.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+                `;
+                previewImage.style.backgroundImage = 'none';
+            } else {
+                // Si no hay videolink válido, mostrar la imagen normal
+                previewImage.innerHTML = '';
+                previewImage.style.backgroundImage = `url(${firstProject.thumbnail})`;
+                previewImage.style.backgroundSize = 'contain';
+                previewImage.style.backgroundPosition = 'center';
+                previewImage.style.backgroundRepeat = 'no-repeat';
+            }
+            
             previewDescription.innerHTML = firstProject.description;
             previewLink.href = firstProject.url;
             

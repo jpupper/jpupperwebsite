@@ -96,6 +96,7 @@ async function editProject(id) {
         document.getElementById('projectId').value = project.id;
         document.getElementById('title').value = project.title;
         document.getElementById('projectUrl').value = project.url;
+        document.getElementById('videolink').value = project.videolink || '';
         document.getElementById('description').value = project.description;
         document.getElementById('tags').value = project.tags.join(', ');
         document.getElementById('thumbnailPreview').innerHTML = `
@@ -122,12 +123,14 @@ async function saveProject() {
     const projectId = document.getElementById('projectId').value;
     const title = document.getElementById('title').value;
     const url = document.getElementById('projectUrl').value;
+    const videolink = document.getElementById('videolink').value;
     const description = document.getElementById('description').value;
     const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim());
     const thumbnail = document.getElementById('thumbnail').files[0];
 
     formData.append('title', title);
     formData.append('url', url);
+    formData.append('videolink', videolink);
     formData.append('description', description);
     formData.append('tags', JSON.stringify(tags));
     if (thumbnail) {

@@ -62,6 +62,7 @@ router.post('/', auth, upload.single('thumbnail'), async (req, res) => {
             id: req.body.id,
             title: req.body.title,
             url: req.body.url,
+            videolink: req.body.videolink || '',
             thumbnail: `img/projects/${req.file.filename}`,
             description: req.body.description,
             tags: JSON.parse(req.body.tags)
@@ -85,6 +86,7 @@ router.put('/:id', auth, upload.single('thumbnail'), async (req, res) => {
 
         project.title = req.body.title || project.title;
         project.url = req.body.url || project.url;
+        project.videolink = req.body.videolink !== undefined ? req.body.videolink : project.videolink;
         if (req.file) {
             project.thumbnail = `img/projects/${req.file.filename}`;
         }
