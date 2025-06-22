@@ -64,11 +64,54 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 // Actualizar preview
                 previewTitle.textContent = project.title;
-                previewImage.style.backgroundImage = `url(${project.thumbnail})`;
-                previewImage.style.backgroundSize = 'contain';
-                previewImage.style.backgroundPosition = 'center';
-                previewImage.style.backgroundRepeat = 'no-repeat';
-                previewDescription.textContent = project.description;
+                
+                // Verificar si es un link de YouTube
+                const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/;
+                const youtubeMatch = project.url.match(youtubeRegex);
+                
+                if (youtubeMatch) {
+                    // Si es un video de YouTube, crear el iframe
+                    const videoId = youtubeMatch[1];
+                    previewImage.innerHTML = `
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                        ></iframe>
+                        <div class="backup-image" style="display: none; width: 100%; height: 100%; background-image: url(${project.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+                    `;
+                    previewImage.style.backgroundImage = 'none';
+                    
+                    // Agregar manejador de error adicional para el iframe
+                    const iframe = previewImage.querySelector('iframe');
+                    const backupImage = previewImage.querySelector('.backup-image');
+                    iframe.addEventListener('error', () => {
+                        iframe.style.display = 'none';
+                        backupImage.style.display = 'block';
+                    });
+                    
+                    // Verificar si el video carga correctamente
+                    iframe.addEventListener('load', () => {
+                        if (iframe.contentWindow.document.body.innerHTML === '') {
+                            iframe.style.display = 'none';
+                            backupImage.style.display = 'block';
+                        }
+                    });
+                } else {
+                    // Si no es YouTube, mostrar la imagen normal
+                    previewImage.innerHTML = '';
+                    previewImage.style.backgroundImage = `url(${project.thumbnail})`;
+                    previewImage.style.backgroundSize = 'contain';
+                    previewImage.style.backgroundPosition = 'center';
+                    previewImage.style.backgroundRepeat = 'no-repeat';
+                }
+                
+                // Renderizar descripción como HTML
+                previewDescription.innerHTML = project.description;
                 previewLink.href = project.url;
                 
                 // Mostrar tags
