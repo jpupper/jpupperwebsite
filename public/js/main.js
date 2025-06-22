@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             previewImage.style.backgroundSize = 'contain';
             previewImage.style.backgroundPosition = 'center';
             previewImage.style.backgroundRepeat = 'no-repeat';
-            previewDescription.textContent = firstProject.description;
+            previewDescription.innerHTML = firstProject.description;
             previewLink.href = firstProject.url;
             
             // Mostrar tags del primer proyecto

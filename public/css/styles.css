@@ -430,14 +430,9 @@ body.fullscreen {
         height: auto;
     }
 }
-<<<<<<< HEAD:css/styles.css
-
-
 #galleryautoplay {
     display: none;
 }
-=======
 .autoplay-btn{
     display: none;
 }
->>>>>>> bd9b0845a4cad80846fd0033f51616079cfee6c3:public/css/styles.css
