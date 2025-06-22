@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let isFullscreen = false;
     let isSlideshow = false;
     try {
+        // Usar la ruta API directa
         const response = await fetch('/api/projects');
         projects = await response.json();
     } catch (error) {
