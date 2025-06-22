@@ -73,16 +73,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (youtubeMatch && videoUrl.trim() !== '') {
                     // Si hay un video de YouTube válido, crear el iframe
                     const videoId = youtubeMatch[1];
+                    // Crear un contenedor de video con relación de aspecto 16:9
                     previewImage.innerHTML = `
-                        <iframe 
-                            width="100%" 
-                            height="100%" 
-                            src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen
-                            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-                        ></iframe>
+                        <div class="video-wrapper">
+                            <div class="video-container">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&modestbranding=1&showinfo=0&rel=0" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen
+                                ></iframe>
+                            </div>
+                        </div>
                         <div class="backup-image" style="display: none; width: 100%; height: 100%; background-image: url(${project.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
                     `;
                     previewImage.style.backgroundImage = 'none';
@@ -148,15 +150,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (youtubeMatch && videoUrl.trim() !== '') {
                 // Si hay un video de YouTube válido, crear el iframe
                 const videoId = youtubeMatch[1];
+                // Crear un contenedor de video con relación de aspecto 16:9
                 previewImage.innerHTML = `
-                    <iframe 
-                        width="100%" 
-                        height="100%" 
-                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen
-                    ></iframe>
+                    <div class="video-wrapper">
+                        <div class="video-container">
+                            <iframe 
+                                src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&modestbranding=1&showinfo=0&rel=0" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                    </div>
                     <div class="backup-image" style="display: none; width: 100%; height: 100%; background-image: url(${firstProject.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
                 `;
                 previewImage.style.backgroundImage = 'none';

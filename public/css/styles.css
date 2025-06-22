@@ -436,3 +436,58 @@ body.fullscreen {
 .autoplay-btn{
     display: none;
 }
+
+/* Estilos para el contenedor de video de YouTube */
+/* Técnica para mantener la relación de aspecto 16:9 */
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* Relación de aspecto 16:9 (9/16 = 0.5625) */
+    overflow: hidden;
+    background-color: transparent;
+}
+
+.video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Ajustes para la vista previa normal */
+.preview-image .video-wrapper {
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+}
+
+/* Ajustes específicos para pantalla completa */
+.fullscreen .video-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw; /* Usar un porcentaje del ancho de la ventana */
+    height: 0;
+    padding-bottom: 45vw; /* 56.25% del 80vw */
+    max-width: 1600px;
+    max-height: 900px;
+}
+
+.fullscreen .preview-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
