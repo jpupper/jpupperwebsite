@@ -94,7 +94,10 @@ function showAddProjectForm() {
 // Edit project
 async function editProject(id) {
     try {
-        const response = await fetch(`/api/projects/${id}`);
+        const apiUrl = CONFIG.apiUrl;
+        const endpoint = `${apiUrl}/api/projects/${id}`;
+        console.log(`Obteniendo detalles del proyecto: ${endpoint}`);
+        const response = await fetch(endpoint);
         const project = await response.json();
         
         document.getElementById('projectId').value = project.id;
