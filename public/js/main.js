@@ -5,7 +5,6 @@ let tiempoDefecto = 2000;
 let isFullscreen = false;
 let isSlideshow = false;
 
-
 document.addEventListener('DOMContentLoaded', async () => {
    
     try {
@@ -61,37 +60,39 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Agregar clase active al proyecto seleccionado
                 projectElement.classList.add('active');
                 
-                // Precargar el video si existe antes de iniciar la transición
-                let preloadedIframe = null;
-                if (project.videolink) {
-                    preloadedIframe = await preloadYoutubeVideo(project.videolink);
-                }
-                
-                // Agregar transición
                 const preview = document.querySelector('.project-preview');
+                
+                // Iniciar transición de salida
                 preview.classList.add('transitioning');
                 
                 // Esperar a que termine el fade out
                 await new Promise(resolve => setTimeout(resolve, 500));
                 
-                // Actualizar preview
+                // Actualizar preview con el nuevo proyecto
                 previewTitle.textContent = project.title;
                 
                 // Verificar si hay un videolink de YouTube
-                const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)[\w-]+/;
+                const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/;
                 const videoUrl = project.videolink || '';
                 const youtubeMatch = videoUrl.match(youtubeRegex);
                 
-                if (youtubeMatch && videoUrl.trim() !== '' && preloadedIframe) {
-                    // Si hay un video de YouTube válido y está precargado, usar el iframe precargado
+                if (youtubeMatch && videoUrl.trim() !== '') {
+                    const videoId = youtubeMatch[1];
+                    
+                    // Crear estructura de video
                     const videoWrapper = document.createElement('div');
                     videoWrapper.className = 'video-wrapper';
                     const videoContainer = document.createElement('div');
                     videoContainer.className = 'video-container';
                     
-                    // Mover el iframe precargado al contenedor
-                    preloadedIframe.style.display = 'block';
-                    videoContainer.appendChild(preloadedIframe);
+                    // Crear iframe con el video
+                    const iframe = document.createElement('iframe');
+                    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&modestbranding=1&showinfo=0&rel=0`;
+                    iframe.frameBorder = '0';
+                    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                    iframe.allowFullscreen = true;
+                    
+                    videoContainer.appendChild(iframe);
                     videoWrapper.appendChild(videoContainer);
                     
                     // Crear backup image
@@ -105,13 +106,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     previewImage.appendChild(backupImage);
                     previewImage.style.backgroundImage = 'none';
                     
-                    // Manejadores de error
-                    preloadedIframe.addEventListener('error', () => {
-                        preloadedIframe.style.display = 'none';
+                    // Manejador de error
+                    iframe.addEventListener('error', () => {
+                        iframe.style.display = 'none';
                         backupImage.style.display = 'block';
                     });
                 } else {
-                    // Si no hay videolink válido o falló la precarga, mostrar la imagen normal
+                    // Si no hay videolink válido, mostrar la imagen normal
                     previewImage.innerHTML = '';
                     previewImage.style.backgroundImage = `url(${project.thumbnail})`;
                     previewImage.style.backgroundSize = 'contain';
@@ -119,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     previewImage.style.backgroundRepeat = 'no-repeat';
                 }
                 
-                // Renderizar descripción como HTML
+                // Actualizar el resto del contenido
                 previewDescription.innerHTML = project.description;
                 previewLink.href = project.url;
                 
@@ -130,9 +131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 
                 // Quitar la clase transitioning para el fade in
-                setTimeout(() => {
-                    preview.classList.remove('transitioning');
-                }, 50);
+                preview.classList.remove('transitioning');
             });
 
             projectList.appendChild(projectElement);
@@ -245,49 +244,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const projectItems = document.querySelectorAll('.project-item');
         if (projectItems.length === 0) return;
         
-        const preview = document.querySelector('.project-preview');
-        preview.classList.add('transitioning');
-        
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
         currentProjectIndex = (currentProjectIndex - 1 + projectItems.length) % projectItems.length;
-        const nextProject = projects[currentProjectIndex];
-        
-        // Precargar el video si existe
-        if (nextProject.videolink) {
-            await preloadYoutubeVideo(nextProject.videolink);
-        }
-        
         projectItems[currentProjectIndex].click();
-        
-        setTimeout(() => {
-            preview.classList.remove('transitioning');
-        }, 50);
     }
 
     // Función para cambiar al siguiente proyecto en el slideshow
-    async function nextProject() {
+    function nextProject() {
         const projectItems = document.querySelectorAll('.project-item');
         if (projectItems.length === 0) return;
         
-        const preview = document.querySelector('.project-preview');
-        preview.classList.add('transitioning');
-        
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
         currentProjectIndex = (currentProjectIndex + 1) % projectItems.length;
-        const nextProject = projects[currentProjectIndex];
-        
-        // Precargar el video si existe
-        if (nextProject.videolink) {
-            await preloadYoutubeVideo(nextProject.videolink);
-        }
-        
         projectItems[currentProjectIndex].click();
-        
-        setTimeout(() => {
-            preview.classList.remove('transitioning');
-        }, 50);
     }
 
     // Función para activar/desactivar el slideshow
