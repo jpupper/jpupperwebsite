@@ -48,6 +48,40 @@ body.fullscreen {
     transform: scale(1.05);
 }
 
+.nav-arrow {
+    display: none;
+}
+
+.fullscreen .nav-arrow {
+    display: block;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1001;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 80px;
+    cursor: pointer;
+    font-size: 24px;
+    transition: all 0.3s ease;
+}
+
+.fullscreen .nav-arrow:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.fullscreen .prev-project {
+    left: 0;
+    border-radius: 0 5px 5px 0;
+}
+
+.fullscreen .next-project {
+    right: 0;
+    border-radius: 5px 0 0 5px;
+}
+
 .fullscreen .preview-content {
     height: 100%;
     display: flex;

@@ -61,6 +61,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Agregar clase active al proyecto seleccionado
                 projectElement.classList.add('active');
                 
+                // Precargar el video si existe antes de iniciar la transición
+                let preloadedIframe = null;
+                if (project.videolink) {
+                    preloadedIframe = await preloadYoutubeVideo(project.videolink);
+                }
+                
                 // Agregar transición
                 const preview = document.querySelector('.project-preview');
                 preview.classList.add('transitioning');
@@ -72,51 +78,40 @@ document.addEventListener('DOMContentLoaded', async () => {
                 previewTitle.textContent = project.title;
                 
                 // Verificar si hay un videolink de YouTube
-                const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/;
+                const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)[\w-]+/;
                 const videoUrl = project.videolink || '';
                 const youtubeMatch = videoUrl.match(youtubeRegex);
                 
-                if (youtubeMatch && videoUrl.trim() !== '') {
-                    // Si hay un video de YouTube válido, crear el iframe
-                    const videoId = youtubeMatch[1];
-                    // Crear un contenedor de video con relación de aspecto 16:9
-                    previewImage.innerHTML = `
-                        <div class="video-wrapper">
-                            <div class="video-container">
-                                <iframe 
-                                    src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&modestbranding=1&showinfo=0&rel=0" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                    allowfullscreen
-                                ></iframe>
-                            </div>
-                        </div>
-                        <div class="backup-image" style="display: none; width: 100%; height: 100%; background-image: url(${project.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
-                    `;
+                if (youtubeMatch && videoUrl.trim() !== '' && preloadedIframe) {
+                    // Si hay un video de YouTube válido y está precargado, usar el iframe precargado
+                    const videoWrapper = document.createElement('div');
+                    videoWrapper.className = 'video-wrapper';
+                    const videoContainer = document.createElement('div');
+                    videoContainer.className = 'video-container';
+                    
+                    // Mover el iframe precargado al contenedor
+                    preloadedIframe.style.display = 'block';
+                    videoContainer.appendChild(preloadedIframe);
+                    videoWrapper.appendChild(videoContainer);
+                    
+                    // Crear backup image
+                    const backupImage = document.createElement('div');
+                    backupImage.className = 'backup-image';
+                    backupImage.style.cssText = `display: none; width: 100%; height: 100%; background-image: url(${project.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;`;
+                    
+                    // Limpiar y actualizar previewImage
+                    previewImage.innerHTML = '';
+                    previewImage.appendChild(videoWrapper);
+                    previewImage.appendChild(backupImage);
                     previewImage.style.backgroundImage = 'none';
                     
-                    // Agregar manejador de error adicional para el iframe
-                    const iframe = previewImage.querySelector('iframe');
-                    const backupImage = previewImage.querySelector('.backup-image');
-                    iframe.addEventListener('error', () => {
-                        iframe.style.display = 'none';
+                    // Manejadores de error
+                    preloadedIframe.addEventListener('error', () => {
+                        preloadedIframe.style.display = 'none';
                         backupImage.style.display = 'block';
                     });
-                    
-                    // Verificar si el video carga correctamente
-                    iframe.addEventListener('load', () => {
-                        try {
-                            if (iframe.contentWindow.document.body.innerHTML === '') {
-                                iframe.style.display = 'none';
-                                backupImage.style.display = 'block';
-                            }
-                        } catch (e) {
-                            // Si hay un error de seguridad por CORS, asumimos que el video está cargando correctamente
-                            console.log('No se pudo verificar el contenido del iframe debido a restricciones de CORS');
-                        }
-                    });
                 } else {
-                    // Si no hay videolink válido, mostrar la imagen normal
+                    // Si no hay videolink válido o falló la precarga, mostrar la imagen normal
                     previewImage.innerHTML = '';
                     previewImage.style.backgroundImage = `url(${project.thumbnail})`;
                     previewImage.style.backgroundSize = 'contain';
@@ -219,6 +214,57 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    // Función para precargar el video de YouTube
+    async function preloadYoutubeVideo(videoUrl) {
+        return new Promise((resolve) => {
+            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/;
+            const youtubeMatch = videoUrl?.match(youtubeRegex);
+            
+            if (!youtubeMatch || !videoUrl?.trim()) {
+                resolve(null);
+                return;
+            }
+
+            const videoId = youtubeMatch[1];
+            const iframe = document.createElement('iframe');
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&modestbranding=1&showinfo=0&rel=0`;
+            iframe.style.display = 'none';
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+            iframe.allowFullscreen = true;
+
+            iframe.onload = () => {
+                resolve(iframe);
+            };
+
+            document.body.appendChild(iframe);
+        });
+    }
+
+    // Función para cambiar al proyecto anterior
+    async function prevProject() {
+        const projectItems = document.querySelectorAll('.project-item');
+        if (projectItems.length === 0) return;
+        
+        const preview = document.querySelector('.project-preview');
+        preview.classList.add('transitioning');
+        
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        currentProjectIndex = (currentProjectIndex - 1 + projectItems.length) % projectItems.length;
+        const nextProject = projects[currentProjectIndex];
+        
+        // Precargar el video si existe
+        if (nextProject.videolink) {
+            await preloadYoutubeVideo(nextProject.videolink);
+        }
+        
+        projectItems[currentProjectIndex].click();
+        
+        setTimeout(() => {
+            preview.classList.remove('transitioning');
+        }, 50);
+    }
+
     // Función para cambiar al siguiente proyecto en el slideshow
     async function nextProject() {
         const projectItems = document.querySelectorAll('.project-item');
@@ -230,6 +276,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         await new Promise(resolve => setTimeout(resolve, 500));
         
         currentProjectIndex = (currentProjectIndex + 1) % projectItems.length;
+        const nextProject = projects[currentProjectIndex];
+        
+        // Precargar el video si existe
+        if (nextProject.videolink) {
+            await preloadYoutubeVideo(nextProject.videolink);
+        }
+        
         projectItems[currentProjectIndex].click();
         
         setTimeout(() => {
@@ -272,8 +325,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelector('.close-fullscreen').addEventListener('click', () => {
         if (isFullscreen) toggleFullscreen();
     });
-    document.querySelector('.close-fullscreen').addEventListener('click', () => {
-        if (isFullscreen) toggleFullscreen();
+    
+    // Event listeners para los botones de navegación
+    document.querySelector('.prev-project').addEventListener('click', () => {
+        if (slideshowInterval) {
+            clearInterval(slideshowInterval);
+            slideshowInterval = null;
+            isSlideshow = false;
+            const slideshowBtn = document.getElementById('slideshow-btn');
+            const autoplayBtn = document.querySelector('.autoplay-btn');
+            if (slideshowBtn.querySelector('.btn-text')) {
+                slideshowBtn.querySelector('.btn-text').textContent = 'Autoplay';
+            }
+            autoplayBtn.textContent = 'Autoplay';
+        }
+        prevProject();
+    });
+    
+    document.querySelector('.next-project').addEventListener('click', () => {
+        if (slideshowInterval) {
+            clearInterval(slideshowInterval);
+            slideshowInterval = null;
+            isSlideshow = false;
+            const slideshowBtn = document.getElementById('slideshow-btn');
+            const autoplayBtn = document.querySelector('.autoplay-btn');
+            if (slideshowBtn.querySelector('.btn-text')) {
+                slideshowBtn.querySelector('.btn-text').textContent = 'Autoplay';
+            }
+            autoplayBtn.textContent = 'Autoplay';
+        }
+        nextProject();
     });
 
     // Renderizar todos los proyectos inicialmente
