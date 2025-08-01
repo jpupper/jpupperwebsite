@@ -1,0 +1,150 @@
+
+/* Fullscreen Mode */
+body.fullscreen {
+    overflow: hidden;
+}
+
+.fullscreen .gallery-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    background-color: rgb(0, 0, 0);
+    padding: 0;
+}
+
+.fullscreen .gallery-controls,
+.fullscreen .filters,
+.fullscreen .project-list {
+    display: none;
+}
+
+.fullscreen .project-preview {
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+}
+
+.fullscreen .autoplay-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1001;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    /* visibility: hidden; */
+}
+
+.fullscreen .autoplay-btn:hover {
+    background: var(--hover-color);
+    transform: scale(1.05);
+}
+
+.fullscreen .preview-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.fullscreen .preview-image {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-position: center !important;
+}
+
+.fullscreen .preview-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0));
+    padding: 40px 20px;
+    color: white;
+    width: 100%;
+    transform: translateY(0);
+    pointer-events: none;
+}
+
+@media (min-width: 769px) {
+    .fullscreen .preview-info {
+        transform: translateY(100%);
+        transition: transform 0.5s ease;
+    }
+    
+    .fullscreen .project-preview:hover .preview-info {
+        transform: translateY(0);
+    }
+}
+
+.fullscreen .preview-description {
+    max-width: 800px;
+    margin: 10px auto;
+}
+
+.fullscreen h3 {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.close-fullscreen {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+    background: var(--primary-color);
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-fullscreen:hover {
+    background: var(--hover-color);
+    transform: scale(1.1);
+}
+
+.fullscreen .close-fullscreen {
+    display: flex;
+}
+
+/* Ajustes específicos para pantalla completa */
+.fullscreen .video-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw; /* Usar un porcentaje del ancho de la ventana */
+    height: 0;
+    padding-bottom: 45vw; /* 56.25% del 80vw */
+    max-width: 1600px;
+    max-height: 900px;
+}
+
+.fullscreen .preview-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
