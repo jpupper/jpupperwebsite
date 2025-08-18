@@ -1,7 +1,7 @@
 let projects = [];
 let slideshowInterval = null;
 let currentProjectIndex = 0;
-let tiempoDefecto = 2000;
+let tiempoDefecto = 10000;
 let isFullscreen = false;
 let isSlideshow = false;
 
@@ -27,6 +27,54 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let selectedFilters = [];
     let currentSearch = '';
+
+    // Función para actualizar la URL con los filtros actuales
+    function updateURLWithFilters() {
+        const params = new URLSearchParams(window.location.search);
+        
+        if (selectedFilters.length > 0) {
+            params.set('filters', selectedFilters.join(','));
+        } else {
+            params.delete('filters');
+        }
+        
+        if (currentSearch) {
+            params.set('search', currentSearch);
+        } else {
+            params.delete('search');
+        }
+        
+        const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+        window.history.replaceState({}, '', newURL);
+    }
+
+    // Función para cargar filtros desde la URL
+    function loadFiltersFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        
+        // Cargar filtros
+        const filtersParam = params.get('filters');
+        if (filtersParam) {
+            selectedFilters = filtersParam.split(',').filter(f => f.trim() !== '');
+        }
+        
+        // Cargar búsqueda
+        const searchParam = params.get('search');
+        if (searchParam) {
+            currentSearch = searchParam;
+            searchInput.value = currentSearch;
+        }
+        
+        // Actualizar estado visual de los botones de filtro
+        filterButtons.forEach(button => {
+            const filter = button.getAttribute('data-filter');
+            if (selectedFilters.includes(filter)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    }
 
     // Función para renderizar los proyectos
     function renderProjects(filters = [], searchTerm = '') {
@@ -71,8 +119,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Actualizar preview con el nuevo proyecto
                 previewTitle.textContent = project.title;
                 
-                // Verificar si hay un videolink de YouTube
-                const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/;
+                // Verificar si hay un videolink de YouTube (incluyendo shorts)
+                const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]+)/;
                 const videoUrl = project.videolink || '';
                 const youtubeMatch = videoUrl.match(youtubeRegex);
                 
@@ -142,8 +190,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const firstProject = filteredProjects[0];
             previewTitle.textContent = firstProject.title;
             
-            // Verificar si el primer proyecto tiene un videolink válido
-            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/;
+            // Verificar si el primer proyecto tiene un videolink válido (incluyendo shorts)
+            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]+)/;
             const videoUrl = firstProject.videolink || '';
             const youtubeMatch = videoUrl.match(youtubeRegex);
             
@@ -191,6 +239,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     searchInput.addEventListener('input', (e) => {
         currentSearch = e.target.value;
         renderProjects(selectedFilters, currentSearch);
+        updateURLWithFilters();
     });
 
     // Event listeners para los filtros
@@ -208,15 +257,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 button.classList.remove('active');
             }
             
-            // Renderizar proyectos filtrados
+            // Renderizar proyectos filtrados y actualizar URL
             renderProjects(selectedFilters, currentSearch);
+            updateURLWithFilters();
         });
     });
 
     // Función para precargar el video de YouTube
     async function preloadYoutubeVideo(videoUrl) {
         return new Promise((resolve) => {
-            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/;
+            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]+)/;
             const youtubeMatch = videoUrl?.match(youtubeRegex);
             
             if (!youtubeMatch || !videoUrl?.trim()) {
@@ -324,6 +374,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         nextProject();
     });
 
-    // Renderizar todos los proyectos inicialmente
+    // Cargar filtros desde URL y renderizar proyectos
+    loadFiltersFromURL();
     renderProjects(selectedFilters, currentSearch);
 });
+
+// ... (rest of the code remains the same)

@@ -13,7 +13,7 @@ function checkAuth() {
     }
 }
 
-// Login handler
+// Login handlerCargando proyectos
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('username').value;
@@ -126,32 +126,52 @@ async function saveProject() {
         return;
     }
 
-    const formData = new FormData();
-    const projectId = document.getElementById('projectId').value;
-    const title = document.getElementById('title').value;
-    const url = document.getElementById('projectUrl').value;
-    const videolink = document.getElementById('videolink').value;
-    const description = document.getElementById('description').value;
-    const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim());
-    const thumbnail = document.getElementById('thumbnail').files[0];
-
-    formData.append('title', title);
-    formData.append('url', url);
-    formData.append('videolink', videolink);
-    formData.append('description', description);
-    formData.append('tags', JSON.stringify(tags));
-    if (thumbnail) {
-        formData.append('thumbnail', thumbnail);
-    }
-
     try {
+        const formData = new FormData();
+        const projectId = document.getElementById('projectId').value;
+        const title = document.getElementById('title').value;
+        const url = document.getElementById('projectUrl').value;
+        const videolink = document.getElementById('videolink').value;
+        const description = document.getElementById('description').value;
+        const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim());
+        const thumbnail = document.getElementById('thumbnail').files[0];
+
+        // Generar un ID basado en el título si es un nuevo proyecto
+        const id = projectId || title.toLowerCase().replace(/[^a-z0-9]/g, '');
+        
+        // Agregar todos los campos al FormData
+        formData.append('title', title);
+        formData.append('url', url);
+        formData.append('videolink', videolink);
+        formData.append('description', description);
+        formData.append('tags', JSON.stringify(tags));
+        
+        // Siempre incluir el ID en el FormData
+        if (!projectId) {
+            formData.append('id', id);
+        }
+        
+        // Agregar el thumbnail solo si existe
+        if (thumbnail) {
+            formData.append('thumbnail', thumbnail);
+            console.log('Agregando thumbnail:', thumbnail.name, thumbnail.size, thumbnail.type);
+        } else {
+            console.log('No se ha seleccionado thumbnail, se usará el predeterminado');
+        }
+
         const method = projectId ? 'PUT' : 'POST';
         const apiUrl = CONFIG.apiUrl;
         const endpoint = projectId ? `${apiUrl}/api/projects/${projectId}` : `${apiUrl}/api/projects`;
         console.log(`Guardando proyecto en: ${endpoint} (${method})`);
+        console.log('FormData contiene:', [...formData.entries()]);
 
-        if (!projectId) {
-            formData.append('id', title.toLowerCase().replace(/[^a-z0-9]/g, ''));
+        // Limpiar cualquier listener previo para evitar errores
+        if (window.stopListeners && typeof window.stopListeners === 'function') {
+            try {
+                window.stopListeners();
+            } catch (e) {
+                console.log('No se pudieron detener los listeners previos');
+            }
         }
 
         const response = await fetch(endpoint, {
@@ -165,13 +185,20 @@ async function saveProject() {
         if (response.ok) {
             projectModal.hide();
             loadProjects();
+            alert('Proyecto guardado correctamente');
         } else {
-            const error = await response.json();
-            alert('Failed to save project: ' + error.message);
+            try {
+                const error = await response.json();
+                console.error('Error del servidor:', error);
+                alert('Error al guardar proyecto: ' + (error.message || 'Error desconocido'));
+            } catch (parseError) {
+                console.error('Error al parsear respuesta:', parseError);
+                alert(`Error al guardar proyecto (${response.status}): No se pudo procesar la respuesta del servidor`);
+            }
         }
     } catch (error) {
-        console.error('Error saving project:', error);
-        alert('Failed to save project');
+        console.error('Error al guardar proyecto:', error);
+        alert('Error al guardar proyecto: ' + (error.message || 'Error de conexión'));
     }
 }
 
