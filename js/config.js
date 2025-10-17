@@ -17,10 +17,12 @@ const CONFIG = {
         // Asegurarse de que la ruta comience con una barra
         const normalizedPath = path.startsWith('/') ? path : `/${path}`;
         
+        // Codificar la URL para manejar espacios y caracteres especiales
+        const encodedPath = encodeURI(normalizedPath);
+        
         // Siempre usar la URL del frontend para las imágenes
-        // Esto asegura que las imágenes se carguen correctamente en el admin
-        const basePath = this.isLocal ? this.frontendUrl : `${this.frontendUrl}/jpupper`;
-        return `${basePath}${normalizedPath}`;
+        // Las imágenes se sirven desde la raíz del servidor, no desde /jpupper
+        return `${this.frontendUrl}${encodedPath}`;
     }
 };
 

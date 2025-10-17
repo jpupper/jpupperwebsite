@@ -1,3 +1,7 @@
+// Credenciales de admin
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'admin';
+
 let token = localStorage.getItem('adminToken');
 const projectModal = new bootstrap.Modal(document.getElementById('projectModal'));
 
@@ -13,40 +17,26 @@ function checkAuth() {
     }
 }
 
-// Login handlerCargando proyectos
+// Login handler - Validación local simple
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    try {
-        const apiUrl = CONFIG.apiUrl;
-        console.log('Conectando a API para login:', `${apiUrl}/api/auth/login`);
-        const response = await fetch(`${apiUrl}/api/auth/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, password })
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-            token = data.token;
-            localStorage.setItem('adminToken', token);
-            checkAuth();
-        } else {
-            alert('Login failed: ' + data.message);
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        alert('Login failed');
+    // Validación simple contra credenciales hardcodeadas
+    if (username === ADMIN_USER && password === ADMIN_PASS) {
+        token = 'local-admin-token';
+        localStorage.setItem('adminToken', token);
+        checkAuth();
+    } else {
+        alert('Login failed: Invalid credentials');
     }
 });
 
 // Load projects
 async function loadProjects() {
     try {
+        updateEnvironmentIndicator();
         const apiUrl = CONFIG.apiUrl;
         console.log('Cargando proyectos desde:', `${apiUrl}/api/projects`);
         const response = await fetch(`${apiUrl}/api/projects`);
@@ -56,9 +46,15 @@ async function loadProjects() {
         tbody.innerHTML = '';
         
         projects.forEach(project => {
+            console.log(`📦 Proyecto: "${project.title}"`);
+            console.log(`   - Thumbnail original: "${project.thumbnail}"`);
+            const thumbnailUrl = CONFIG.getImagePath(project.thumbnail);
+            console.log(`   - Thumbnail URL final: "${thumbnailUrl}"`);
+            console.log('---');
+            
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><img src="${CONFIG.getImagePath(project.thumbnail)}" alt="${project.title}" class="img-thumbnail"></td>
+                <td><img src="${thumbnailUrl}" alt="${project.title}" class="img-thumbnail" onerror="console.error('❌ Error cargando imagen: ${thumbnailUrl}');"></td>
                 <td><strong>${project.title}</strong></td>
                 <td><div class="description-cell">${project.description}</div></td>
                 <td><a href="${project.url}" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px">${project.url}</a></td>
@@ -245,5 +241,28 @@ document.getElementById('thumbnail').addEventListener('change', function(e) {
     }
 });
 
+// Update environment indicator
+function updateEnvironmentIndicator() {
+    const envElement = document.getElementById('currentEnvironment');
+    if (envElement) {
+        const env = CONFIG.isLocal ? 'Local (localhost:3243)' : 'VPS (vps-4455523-x.dattaweb.com)';
+        envElement.textContent = env;
+        console.log('🌐 Ambiente actual:', env);
+        console.log('🔗 API URL:', CONFIG.apiUrl);
+        console.log('🖼️ Ejemplo de imagen:', CONFIG.getImagePath('img/projects/test.jpg'));
+    }
+    
+    // Actualizar botones activos
+    const buttons = document.querySelectorAll('.btn-group button');
+    buttons.forEach(btn => {
+        btn.classList.remove('active');
+        if ((CONFIG.isLocal && btn.textContent.includes('Local')) || 
+            (!CONFIG.isLocal && btn.textContent.includes('VPS'))) {
+            btn.classList.add('active');
+        }
+    });
+}
+
 // Initialize
 checkAuth();
+updateEnvironmentIndicator();
