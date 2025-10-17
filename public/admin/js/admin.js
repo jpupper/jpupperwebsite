@@ -172,9 +172,6 @@ async function saveProject() {
 
         const response = await fetch(endpoint, {
             method,
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
             body: formData
         });
 
@@ -209,10 +206,7 @@ async function deleteProject(id) {
         const endpoint = `${apiUrl}/api/projects/${id}`;
         console.log(`Eliminando proyecto: ${endpoint}`);
         const response = await fetch(endpoint, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            method: 'DELETE'
         });
 
         if (response.ok) {

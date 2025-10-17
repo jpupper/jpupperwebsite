@@ -3,7 +3,6 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const Project = require('../models/Project');
-const auth = require('../middleware/auth');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -71,8 +70,8 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Create new project (protected route)
-router.post('/', auth, upload.single('thumbnail'), async (req, res) => {
+// Create new project (sin autenticación)
+router.post('/', upload.single('thumbnail'), async (req, res) => {
     try {
         console.log('Recibiendo solicitud para crear proyecto:', req.body);
         console.log('Archivo recibido:', req.file);
@@ -122,8 +121,8 @@ router.post('/', auth, upload.single('thumbnail'), async (req, res) => {
     }
 });
 
-// Update project (protected route)
-router.put('/:id', auth, upload.single('thumbnail'), async (req, res) => {
+// Update project (sin autenticación)
+router.put('/:id', upload.single('thumbnail'), async (req, res) => {
     try {
         console.log('Recibiendo solicitud para actualizar proyecto:', req.params.id);
         console.log('Datos recibidos:', req.body);
@@ -165,8 +164,8 @@ router.put('/:id', auth, upload.single('thumbnail'), async (req, res) => {
     }
 });
 
-// Delete project (protected route)
-router.delete('/:id', auth, async (req, res) => {
+// Delete project (sin autenticación)
+router.delete('/:id', async (req, res) => {
     try {
         const project = await Project.findOne({ id: req.params.id });
         
