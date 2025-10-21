@@ -1,6 +1,6 @@
 // Credenciales de admin
 const ADMIN_USER = 'admin';
-const ADMIN_PASS = 'admin';
+const ADMIN_PASS = 'vamossusan';
 
 let token = localStorage.getItem('adminToken');
 const projectModal = new bootstrap.Modal(document.getElementById('projectModal'));

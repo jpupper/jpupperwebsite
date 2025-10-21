@@ -121,8 +121,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 // Verificar si hay un videolink de YouTube (incluyendo shorts)
                 const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]+)/;
+                const instagramRegex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(p|reel|tv)\/([a-zA-Z0-9_-]+)\/?/;
                 const videoUrl = project.videolink || '';
                 const youtubeMatch = videoUrl.match(youtubeRegex);
+                const instagramMatch = videoUrl.match(instagramRegex);
                 
                 if (youtubeMatch && videoUrl.trim() !== '') {
                     const videoId = youtubeMatch[1];
@@ -139,6 +141,47 @@ document.addEventListener('DOMContentLoaded', async () => {
                     iframe.frameBorder = '0';
                     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
                     iframe.allowFullscreen = true;
+                    
+                    videoContainer.appendChild(iframe);
+                    videoWrapper.appendChild(videoContainer);
+                    
+                    // Crear backup image
+                    const backupImage = document.createElement('div');
+                    backupImage.className = 'backup-image';
+                    backupImage.style.cssText = `display: none; width: 100%; height: 100%; background-image: url(${project.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;`;
+                    
+                    // Limpiar y actualizar previewImage
+                    previewImage.innerHTML = '';
+                    previewImage.appendChild(videoWrapper);
+                    previewImage.appendChild(backupImage);
+                    previewImage.style.backgroundImage = 'none';
+                    
+                    // Manejador de error
+                    iframe.addEventListener('error', () => {
+                        iframe.style.display = 'none';
+                        backupImage.style.display = 'block';
+                    });
+                } else if (instagramMatch && videoUrl.trim() !== '') {
+                    const postType = instagramMatch[1];
+                    const postId = instagramMatch[2];
+                    
+                    // Crear estructura de video para Instagram
+                    const videoWrapper = document.createElement('div');
+                    videoWrapper.className = 'video-wrapper instagram-wrapper';
+                    const videoContainer = document.createElement('div');
+                    videoContainer.className = 'video-container instagram-container';
+                    
+                    // Crear iframe con el embed de Instagram
+                    const iframe = document.createElement('iframe');
+                    iframe.src = `https://www.instagram.com/${postType}/${postId}/embed`;
+                    iframe.frameBorder = '0';
+                    iframe.scrolling = 'no';
+                    iframe.allowTransparency = true;
+                    iframe.style.width = '100%';
+                    iframe.style.maxWidth = '540px';
+                    iframe.style.minHeight = '600px';
+                    iframe.style.border = 'none';
+                    iframe.style.overflow = 'hidden';
                     
                     videoContainer.appendChild(iframe);
                     videoWrapper.appendChild(videoContainer);
@@ -192,8 +235,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Verificar si el primer proyecto tiene un videolink válido (incluyendo shorts)
             const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]+)/;
+            const instagramRegex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(p|reel|tv)\/([a-zA-Z0-9_-]+)\/?/;
             const videoUrl = firstProject.videolink || '';
             const youtubeMatch = videoUrl.match(youtubeRegex);
+            const instagramMatch = videoUrl.match(instagramRegex);
             
             if (youtubeMatch && videoUrl.trim() !== '') {
                 // Si hay un video de YouTube válido, crear el iframe
@@ -207,6 +252,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen
+                            ></iframe>
+                        </div>
+                    </div>
+                    <div class="backup-image" style="display: none; width: 100%; height: 100%; background-image: url(${firstProject.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+                `;
+                previewImage.style.backgroundImage = 'none';
+            } else if (instagramMatch && videoUrl.trim() !== '') {
+                // Si hay un link de Instagram válido, crear el iframe
+                const postType = instagramMatch[1];
+                const postId = instagramMatch[2];
+                previewImage.innerHTML = `
+                    <div class="video-wrapper instagram-wrapper">
+                        <div class="video-container instagram-container">
+                            <iframe 
+                                src="https://www.instagram.com/${postType}/${postId}/embed" 
+                                frameborder="0" 
+                                scrolling="no" 
+                                allowtransparency="true"
+                                style="width: 100%; max-width: 540px; min-height: 600px; border: none; overflow: hidden;"
                             ></iframe>
                         </div>
                     </div>

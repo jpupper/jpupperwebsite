@@ -344,3 +344,37 @@ main {
     padding-bottom: 56.25%;
 }
 
+/* Estilos específicos para embeds de Instagram */
+.instagram-wrapper {
+    padding-bottom: 0; /* Remover padding-bottom para Instagram */
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.instagram-container {
+    position: relative;
+    width: 100%;
+    max-width: 540px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.instagram-container iframe {
+    position: relative;
+    width: 100%;
+    max-width: 540px;
+    min-height: 600px;
+    border: none;
+    overflow: hidden;
+}
+
+/* Ajustes responsive para Instagram */
+@media (max-width: 768px) {
+    .instagram-container iframe {
+        max-width: 100%;
+        min-height: 500px;
+    }
+}
+
