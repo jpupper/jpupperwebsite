@@ -171,20 +171,27 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const videoContainer = document.createElement('div');
                     videoContainer.className = 'video-container instagram-container';
                     
-                    // Crear iframe con el embed de Instagram
-                    const iframe = document.createElement('iframe');
-                    iframe.src = `https://www.instagram.com/${postType}/${postId}/embed`;
-                    iframe.frameBorder = '0';
-                    iframe.scrolling = 'no';
-                    iframe.allowTransparency = true;
-                    iframe.style.width = '100%';
-                    iframe.style.maxWidth = '540px';
-                    iframe.style.minHeight = '600px';
-                    iframe.style.border = 'none';
-                    iframe.style.overflow = 'hidden';
+                    // Crear blockquote para embed de Instagram (método oficial)
+                    const blockquote = document.createElement('blockquote');
+                    blockquote.className = 'instagram-media';
+                    blockquote.setAttribute('data-instgrm-captioned', '');
+                    blockquote.setAttribute('data-instgrm-permalink', `https://www.instagram.com/${postType}/${postId}/`);
+                    blockquote.setAttribute('data-instgrm-version', '14');
+                    blockquote.style.cssText = 'background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);';
                     
-                    videoContainer.appendChild(iframe);
+                    videoContainer.appendChild(blockquote);
+                    
+                    // Crear botón de play overlay
+                    const playOverlay = document.createElement('div');
+                    playOverlay.className = 'instagram-play-overlay';
+                    playOverlay.innerHTML = `
+                        <svg viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    `;
+                    
                     videoWrapper.appendChild(videoContainer);
+                    videoWrapper.appendChild(playOverlay);
                     
                     // Crear backup image
                     const backupImage = document.createElement('div');
@@ -197,10 +204,48 @@ document.addEventListener('DOMContentLoaded', async () => {
                     previewImage.appendChild(backupImage);
                     previewImage.style.backgroundImage = 'none';
                     
-                    // Manejador de error
-                    iframe.addEventListener('error', () => {
-                        iframe.style.display = 'none';
-                        backupImage.style.display = 'block';
+                    // Cargar el script de Instagram si no está cargado
+                    if (!window.instgrm) {
+                        const script = document.createElement('script');
+                        script.async = true;
+                        script.src = '//www.instagram.com/embed.js';
+                        document.body.appendChild(script);
+                        script.onload = () => {
+                            if (window.instgrm) {
+                                window.instgrm.Embeds.process();
+                            }
+                        };
+                    } else {
+                        window.instgrm.Embeds.process();
+                    }
+                    
+                    // Detectar interacción con el iframe de Instagram
+                    // Como los eventos dentro del iframe no se propagan, detectamos cuando el mouse entra y sale
+                    let mouseOverEmbed = false;
+                    let checkInterval;
+                    
+                    videoWrapper.addEventListener('mouseenter', () => {
+                        mouseOverEmbed = true;
+                        // Iniciar verificación de si el usuario está interactuando
+                        checkInterval = setInterval(() => {
+                            if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
+                                // El iframe tiene foco, el usuario está interactuando
+                                playOverlay.classList.add('hidden');
+                                clearInterval(checkInterval);
+                            }
+                        }, 100);
+                    });
+                    
+                    videoWrapper.addEventListener('mouseleave', () => {
+                        mouseOverEmbed = false;
+                        if (checkInterval) {
+                            clearInterval(checkInterval);
+                        }
+                    });
+                    
+                    // También ocultar el botón si se hace clic en el área del wrapper
+                    videoWrapper.addEventListener('click', () => {
+                        setTimeout(() => playOverlay.classList.add('hidden'), 300);
                     });
                 } else {
                     // Si no hay videolink válido, mostrar la imagen normal
@@ -259,24 +304,76 @@ document.addEventListener('DOMContentLoaded', async () => {
                 `;
                 previewImage.style.backgroundImage = 'none';
             } else if (instagramMatch && videoUrl.trim() !== '') {
-                // Si hay un link de Instagram válido, crear el iframe
+                // Si hay un link de Instagram válido, crear el embed
                 const postType = instagramMatch[1];
                 const postId = instagramMatch[2];
                 previewImage.innerHTML = `
                     <div class="video-wrapper instagram-wrapper">
                         <div class="video-container instagram-container">
-                            <iframe 
-                                src="https://www.instagram.com/${postType}/${postId}/embed" 
-                                frameborder="0" 
-                                scrolling="no" 
-                                allowtransparency="true"
-                                style="width: 100%; max-width: 540px; min-height: 600px; border: none; overflow: hidden;"
-                            ></iframe>
+                            <blockquote class="instagram-media" 
+                                data-instgrm-captioned 
+                                data-instgrm-permalink="https://www.instagram.com/${postType}/${postId}/" 
+                                data-instgrm-version="14"
+                                style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);">
+                            </blockquote>
+                        </div>
+                        <div class="instagram-play-overlay">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
                         </div>
                     </div>
                     <div class="backup-image" style="display: none; width: 100%; height: 100%; background-image: url(${firstProject.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
                 `;
                 previewImage.style.backgroundImage = 'none';
+                
+                // Agregar evento para ocultar el botón de play después de que se cargue el HTML
+                setTimeout(() => {
+                    const playOverlay = previewImage.querySelector('.instagram-play-overlay');
+                    const videoWrapper = previewImage.querySelector('.instagram-wrapper');
+                    
+                    if (playOverlay && videoWrapper) {
+                        // Detectar interacción con el iframe de Instagram
+                        let checkInterval;
+                        
+                        videoWrapper.addEventListener('mouseenter', () => {
+                            // Iniciar verificación de si el usuario está interactuando
+                            checkInterval = setInterval(() => {
+                                if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
+                                    // El iframe tiene foco, el usuario está interactuando
+                                    playOverlay.classList.add('hidden');
+                                    clearInterval(checkInterval);
+                                }
+                            }, 100);
+                        });
+                        
+                        videoWrapper.addEventListener('mouseleave', () => {
+                            if (checkInterval) {
+                                clearInterval(checkInterval);
+                            }
+                        });
+                        
+                        // También ocultar el botón si se hace clic en el área del wrapper
+                        videoWrapper.addEventListener('click', () => {
+                            setTimeout(() => playOverlay.classList.add('hidden'), 300);
+                        });
+                    }
+                }, 100);
+                
+                // Cargar el script de Instagram si no está cargado
+                if (!window.instgrm) {
+                    const script = document.createElement('script');
+                    script.async = true;
+                    script.src = '//www.instagram.com/embed.js';
+                    document.body.appendChild(script);
+                    script.onload = () => {
+                        if (window.instgrm) {
+                            window.instgrm.Embeds.process();
+                        }
+                    };
+                } else {
+                    window.instgrm.Embeds.process();
+                }
             } else {
                 // Si no hay videolink válido, mostrar la imagen normal
                 previewImage.innerHTML = '';

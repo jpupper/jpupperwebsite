@@ -350,7 +350,9 @@ main {
     height: auto;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    position: relative;
+    min-height: 650px;
 }
 
 .instagram-container {
@@ -361,20 +363,95 @@ main {
     margin: 0 auto;
 }
 
-.instagram-container iframe {
+.instagram-container iframe,
+.instagram-container blockquote {
     position: relative;
     width: 100%;
     max-width: 540px;
-    min-height: 600px;
+    min-height: 650px;
     border: none;
-    overflow: hidden;
+    overflow: visible !important;
+}
+
+/* Botón de play para Instagram */
+.instagram-play-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, #ff69b4, #ff1493, #8a2be2);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    box-shadow: 0 8px 32px rgba(255, 105, 180, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.instagram-play-overlay::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(135deg, #ff69b4, #ff1493, #8a2be2);
+    border-radius: 50%;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s ease;
+    filter: blur(10px);
+}
+
+.instagram-play-overlay:hover {
+    transform: translate(-50%, -50%) scale(1.15);
+    box-shadow: 0 12px 48px rgba(255, 105, 180, 0.6);
+}
+
+.instagram-play-overlay:hover::before {
+    opacity: 0.8;
+}
+
+.instagram-play-overlay svg {
+    width: 45px;
+    height: 45px;
+    fill: white;
+    margin-left: 6px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.instagram-play-overlay.hidden {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+    pointer-events: none;
 }
 
 /* Ajustes responsive para Instagram */
 @media (max-width: 768px) {
-    .instagram-container iframe {
+    .instagram-wrapper {
+        min-height: 550px;
+    }
+    
+    .instagram-container iframe,
+    .instagram-container blockquote {
         max-width: 100%;
-        min-height: 500px;
+        min-height: 550px;
+    }
+    
+    .instagram-play-overlay {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .instagram-play-overlay svg {
+        width: 30px;
+        height: 30px;
     }
 }
 
