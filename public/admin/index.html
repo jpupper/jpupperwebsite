@@ -51,6 +51,25 @@
                     </div>
                 </div>
 
+                <!-- Navigation Tabs -->
+                <ul class="nav nav-tabs mb-3" id="adminTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects-content" type="button" role="tab">
+                            <i class="bi bi-folder"></i> Projects
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tags-tab" data-bs-toggle="tab" data-bs-target="#tags-content" type="button" role="tab">
+                            <i class="bi bi-tags"></i> Tags Library
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="adminTabsContent">
+                    <!-- Projects Tab -->
+                    <div class="tab-pane fade show active" id="projects-content" role="tabpanel">
+
                 <!-- Project List -->
                 <div class="table-responsive">
                     <table class="table table-striped align-middle">
@@ -68,6 +87,34 @@
                             <!-- Projects will be loaded here -->
                         </tbody>
                     </table>
+                </div>
+                    </div>
+                    <!-- End Projects Tab -->
+
+                    <!-- Tags Tab -->
+                    <div class="tab-pane fade" id="tags-content" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>Tags Library</h4>
+                            <button class="btn btn-primary" onclick="showAddTagForm()">
+                                <i class="bi bi-plus-circle"></i> Add New Tag
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Tag Name</th>
+                                        <th>Created At</th>
+                                        <th style="width: 150px">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tagsList">
+                                    <!-- Tags will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- End Tags Tab -->
                 </div>
             </div>
         </div>
@@ -95,11 +142,12 @@
                         <div class="mb-3">
                             <label for="videolink" class="form-label">Video Link (YouTube o Instagram)</label>
                             <input type="url" class="form-control" id="videolink" placeholder="https://www.youtube.com/watch?v=... o https://www.instagram.com/p/...">
-                            <small class="form-text text-muted">Si se proporciona un enlace de YouTube o Instagram, se mostrará el video en lugar de la miniatura</small>
+                            <small class="form-text text-muted">El thumbnail se extraerá automáticamente del video</small>
                         </div>
                         <div class="mb-3">
-                            <label for="thumbnail" class="form-label">Thumbnail</label>
+                            <label for="thumbnail" class="form-label">Thumbnail (opcional si hay video link)</label>
                             <input type="file" class="form-control" id="thumbnail" accept="image/*">
+                            <small class="form-text text-muted">Solo necesario si no hay video link o quieres usar una imagen personalizada</small>
                             <div id="thumbnailPreview" class="mt-2"></div>
                         </div>
                         <div class="mb-3">
@@ -115,6 +163,32 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" onclick="saveProject()">Save Project</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Tag Modal -->
+    <div class="modal fade" id="tagModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tagModalTitle">Add New Tag</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="tagForm">
+                        <input type="hidden" id="tagId">
+                        <div class="mb-3">
+                            <label for="tagName" class="form-label">Tag Name</label>
+                            <input type="text" class="form-control" id="tagName" required placeholder="e.g., Mobile, NFT, 3D, Unreal">
+                            <small class="form-text text-muted">Este nombre se usará tanto como ID como para mostrar en los botones</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTag()">Save Tag</button>
                 </div>
             </div>
         </div>

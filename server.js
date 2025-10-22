@@ -32,10 +32,12 @@ app.use(express.static(path.join(__dirname, 'public'))); // Mantener compatibili
 // Rutas con prefijo /jpupper para producción
 app.use('/jpupper/api/auth', require('./routes/auth'));
 app.use('/jpupper/api/projects', require('./routes/projects'));
+app.use('/jpupper/api/tags', require('./routes/tags'));
 
 // Rutas sin prefijo para desarrollo local y compatibilidad
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/projects', require('./routes/projects'));
+app.use('/api/tags', require('./routes/tags'));
 
 // Export routes without authentication (if needed)
 app.get('/jpupper/api/export/projects', async (req, res) => {

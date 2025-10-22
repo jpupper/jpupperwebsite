@@ -13,8 +13,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('Conectando a API:', `${apiUrl}/api/projects`);
         const response = await fetch(`${apiUrl}/api/projects`);
         projects = await response.json();
+        
+        // Cargar tags dinámicamente desde la base de datos
+        console.log('Cargando tags desde:', `${apiUrl}/api/tags`);
+        const tagsResponse = await fetch(`${apiUrl}/api/tags`);
+        const tags = await tagsResponse.json();
+        
+        // Renderizar los botones de filtro dinámicamente
+        const filtersContainer = document.getElementById('filtersContainer');
+        filtersContainer.innerHTML = '';
+        tags.forEach(tag => {
+            const button = document.createElement('button');
+            button.className = 'filter-btn';
+            button.setAttribute('data-filter', tag.name);
+            button.textContent = tag.displayName;
+            filtersContainer.appendChild(button);
+        });
+        
+        console.log(`✅ ${tags.length} tags cargados dinámicamente`);
     } catch (error) {
-        console.error('Error cargando los proyectos:', error);
+        console.error('Error cargando los proyectos o tags:', error);
         return;
     }
 
@@ -23,6 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const previewTitle = document.querySelector('.preview-content h3');
     const previewDescription = document.querySelector('.preview-description');
     const previewLink = document.querySelector('.preview-link');
+    // Obtener filterButtons después de cargarlos dinámicamente
     const filterButtons = document.querySelectorAll('.filter-btn');
 
     let selectedFilters = [];

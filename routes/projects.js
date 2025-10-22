@@ -4,6 +4,14 @@ const multer = require('multer');
 const path = require('path');
 const Project = require('../models/Project');
 
+// Handle preflight requests for CORS
+router.options('*', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.sendStatus(200);
+});
+
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {

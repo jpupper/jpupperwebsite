@@ -4,6 +4,7 @@ const ADMIN_PASS = 'vamossusan';
 
 let token = localStorage.getItem('adminToken');
 const projectModal = new bootstrap.Modal(document.getElementById('projectModal'));
+const tagModal = new bootstrap.Modal(document.getElementById('tagModal'));
 
 // Check authentication
 function checkAuth() {
@@ -147,10 +148,26 @@ async function saveProject() {
             formData.append('id', id);
         }
         
-        // Agregar el thumbnail solo si existe
+        // Si hay thumbnail manual, usarlo
         if (thumbnail) {
             formData.append('thumbnail', thumbnail);
-            console.log('Agregando thumbnail:', thumbnail.name, thumbnail.size, thumbnail.type);
+            console.log('Agregando thumbnail manual:', thumbnail.name, thumbnail.size, thumbnail.type);
+        } 
+        // Si no hay thumbnail manual pero hay videolink de YouTube, extraer thumbnail
+        else if (videolink) {
+            const youtubeThumbnail = getYoutubeThumbnail(videolink);
+            if (youtubeThumbnail) {
+                try {
+                    // Descargar el thumbnail de YouTube y convertirlo a blob
+                    const response = await fetch(youtubeThumbnail);
+                    const blob = await response.blob();
+                    const file = new File([blob], `youtube-thumb-${id}.jpg`, { type: 'image/jpeg' });
+                    formData.append('thumbnail', file);
+                    console.log('Agregando thumbnail de YouTube automáticamente');
+                } catch (error) {
+                    console.log('No se pudo descargar thumbnail de YouTube, usando predeterminado');
+                }
+            }
         } else {
             console.log('No se ha seleccionado thumbnail, se usará el predeterminado');
         }
@@ -221,6 +238,74 @@ async function deleteProject(id) {
     }
 }
 
+// Función para extraer thumbnail de YouTube
+function getYoutubeThumbnail(url) {
+    const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]+)/;
+    const match = url.match(youtubeRegex);
+    if (match && match[1]) {
+        const videoId = match[1];
+        // YouTube ofrece varias calidades de thumbnails
+        // maxresdefault (1280x720) > sddefault (640x480) > hqdefault (480x360) > mqdefault (320x180) > default (120x90)
+        return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    }
+    return null;
+}
+
+// Función para extraer thumbnail de Instagram (usando un proxy o método alternativo)
+async function getInstagramThumbnail(url) {
+    // Instagram no proporciona thumbnails directamente sin autenticación
+    // Usaremos un placeholder o intentaremos con oEmbed
+    const instagramRegex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(p|reel|tv)\/([a-zA-Z0-9_-]+)\/?/;
+    const match = url.match(instagramRegex);
+    if (match) {
+        try {
+            // Intentar con oEmbed de Instagram
+            const response = await fetch(`https://graph.facebook.com/v12.0/instagram_oembed?url=${encodeURIComponent(url)}&access_token=YOUR_TOKEN`);
+            if (response.ok) {
+                const data = await response.json();
+                return data.thumbnail_url;
+            }
+        } catch (error) {
+            console.log('No se pudo obtener thumbnail de Instagram, usando placeholder');
+        }
+    }
+    return null;
+}
+
+// Event listener para videolink - extraer thumbnail automáticamente
+document.getElementById('videolink').addEventListener('input', async function(e) {
+    const videoUrl = e.target.value.trim();
+    if (!videoUrl) return;
+
+    const thumbnailPreview = document.getElementById('thumbnailPreview');
+    
+    // Intentar extraer thumbnail de YouTube
+    const youtubeThumbnail = getYoutubeThumbnail(videoUrl);
+    if (youtubeThumbnail) {
+        thumbnailPreview.innerHTML = `
+            <div class="alert alert-info">
+                <strong>✓ Thumbnail de YouTube detectado</strong>
+                <img src="${youtubeThumbnail}" alt="YouTube thumbnail" class="thumbnail-preview mt-2" 
+                     onerror="this.src='https://img.youtube.com/vi/${videoUrl.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]+)/)?.[1]}/hqdefault.jpg'">
+                <p class="mb-0 mt-2"><small>Este thumbnail se usará automáticamente si no subes una imagen personalizada</small></p>
+            </div>
+        `;
+        return;
+    }
+
+    // Intentar extraer thumbnail de Instagram
+    const instagramRegex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(p|reel|tv)\/([a-zA-Z0-9_-]+)\/?/;
+    if (instagramRegex.test(videoUrl)) {
+        thumbnailPreview.innerHTML = `
+            <div class="alert alert-info">
+                <strong>✓ Video de Instagram detectado</strong>
+                <p class="mb-0 mt-2"><small>Se usará el thumbnail del video de Instagram. Si quieres una imagen personalizada, súbela manualmente.</small></p>
+            </div>
+        `;
+        return;
+    }
+});
+
 // Thumbnail preview
 document.getElementById('thumbnail').addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -228,7 +313,7 @@ document.getElementById('thumbnail').addEventListener('change', function(e) {
         const reader = new FileReader();
         reader.onload = function(e) {
             document.getElementById('thumbnailPreview').innerHTML = `
-                <img src="${e.target.result}" alt="Thumbnail preview">
+                <img src="${e.target.result}" alt="Thumbnail preview" class="thumbnail-preview">
             `;
         };
         reader.readAsDataURL(file);
@@ -256,6 +341,175 @@ function updateEnvironmentIndicator() {
         }
     });
 }
+
+// ==================== TAGS MANAGEMENT ====================
+
+// Load tags
+async function loadTags() {
+    try {
+        const apiUrl = CONFIG.apiUrl;
+        console.log('Cargando tags desde:', `${apiUrl}/api/tags`);
+        const response = await fetch(`${apiUrl}/api/tags`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const tags = await response.json();
+        
+        const tbody = document.getElementById('tagsList');
+        tbody.innerHTML = '';
+        
+        if (tags.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No hay tags creados. Agrega tu primer tag!</td></tr>';
+            return;
+        }
+        
+        tags.forEach(tag => {
+            const tr = document.createElement('tr');
+            const createdDate = new Date(tag.createdAt).toLocaleDateString();
+            tr.innerHTML = `
+                <td><strong>${tag.displayName}</strong></td>
+                <td>${createdDate}</td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-primary" onclick="editTag('${tag._id}')">
+                            <i class="bi bi-pencil"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteTag('${tag._id}')">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (error) {
+        console.error('Error loading tags:', error);
+        const tbody = document.getElementById('tagsList');
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Error al cargar tags. Verifica que el servidor esté corriendo.</td></tr>';
+    }
+}
+
+// Show add tag form
+function showAddTagForm() {
+    document.getElementById('tagForm').reset();
+    document.getElementById('tagId').value = '';
+    document.getElementById('tagModalTitle').textContent = 'Add New Tag';
+    tagModal.show();
+}
+
+// Edit tag
+async function editTag(id) {
+    try {
+        const apiUrl = CONFIG.apiUrl;
+        const endpoint = `${apiUrl}/api/tags`;
+        const response = await fetch(endpoint);
+        const tags = await response.json();
+        const tag = tags.find(t => t._id === id);
+        
+        if (!tag) {
+            console.error('Tag not found');
+            return;
+        }
+        
+        document.getElementById('tagId').value = tag._id;
+        document.getElementById('tagName').value = tag.displayName;
+        document.getElementById('tagModalTitle').textContent = 'Edit Tag';
+        
+        tagModal.show();
+    } catch (error) {
+        console.error('Error loading tag:', error);
+        console.error('Failed to load tag details');
+    }
+}
+
+// Save tag
+async function saveTag() {
+    const form = document.getElementById('tagForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    try {
+        const tagId = document.getElementById('tagId').value;
+        const displayName = document.getElementById('tagName').value.trim();
+        const name = displayName.toLowerCase().replace(/\s+/g, '');
+
+        const method = tagId ? 'PUT' : 'POST';
+        const apiUrl = CONFIG.apiUrl;
+        const endpoint = tagId ? `${apiUrl}/api/tags/${tagId}` : `${apiUrl}/api/tags`;
+        
+        console.log(`Guardando tag en: ${endpoint} (${method})`);
+        console.log('Datos:', { name, displayName });
+
+        const response = await fetch(endpoint, {
+            method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, displayName })
+        });
+
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers.get('content-type'));
+
+        if (response.ok) {
+            tagModal.hide();
+            loadTags();
+        } else {
+            // Intentar leer como JSON, si falla leer como texto
+            const contentType = response.headers.get('content-type');
+            let errorMessage = 'Error desconocido';
+            
+            if (contentType && contentType.includes('application/json')) {
+                const error = await response.json();
+                errorMessage = error.message || 'Error desconocido';
+            } else {
+                const text = await response.text();
+                console.error('Respuesta no-JSON del servidor:', text.substring(0, 200));
+                errorMessage = `El servidor no está respondiendo correctamente. Status: ${response.status}. Verifica que el servidor esté corriendo en el puerto 3243.`;
+            }
+            
+            console.error('Error al guardar tag:', errorMessage);
+        }
+    } catch (error) {
+        console.error('Error al guardar tag:', error);
+        console.error('Error al guardar tag:', error.message, '- ¿Está el servidor corriendo?');
+    }
+}
+
+// Delete tag
+async function deleteTag(id) {
+    if (!confirm('Are you sure you want to delete this tag?')) {
+        return;
+    }
+
+    try {
+        const apiUrl = CONFIG.apiUrl;
+        const endpoint = `${apiUrl}/api/tags/${id}`;
+        console.log(`Eliminando tag: ${endpoint}`);
+        const response = await fetch(endpoint, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            loadTags();
+        } else {
+            const error = await response.json();
+            console.error('Failed to delete tag:', error.message);
+        }
+    } catch (error) {
+        console.error('Error deleting tag:', error);
+        console.error('Failed to delete tag');
+    }
+}
+
+// Event listener para el tab de Tags Library
+document.getElementById('tags-tab')?.addEventListener('click', function() {
+    loadTags();
+});
 
 // Initialize
 checkAuth();

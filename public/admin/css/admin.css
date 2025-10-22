@@ -26,9 +26,20 @@
 }
 
 #thumbnailPreview img {
-    max-width: 200px;
+    max-width: 300px;
     height: auto;
     margin-top: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#thumbnailPreview .alert {
+    margin-top: 10px;
+}
+
+#thumbnailPreview .alert img {
+    width: 100%;
+    max-width: 300px;
     border-radius: 4px;
 }
 
