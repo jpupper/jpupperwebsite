@@ -235,8 +235,16 @@
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Referencias (Proyectos)</label>
+                                <div class="d-flex justify-content-end align-items-center mb-2 gap-2">
+                                    <small class="text-muted">Origen:</small>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Origen de referencias">
+                                        <button type="button" class="btn btn-outline-secondary active" id="btnRefOriginLocal">Local</button>
+                                        <button type="button" class="btn btn-outline-secondary" id="btnRefOriginVps">VPS</button>
+                                    </div>
+                                </div>
                                 <div id="budgetRefTags" class="mb-2"></div>
                                 <div id="budgetRefSelected" class="mb-2"></div>
+                                <div id="budgetRefPreview" class="mb-3"></div>
                                 <div id="budgetRefGrid" class="row g-3"></div>
                                 <small class="text-muted">Filtrá por tags y seleccioná múltiples referencias</small>
                             </div>

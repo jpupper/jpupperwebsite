@@ -53,6 +53,12 @@ const budgetSchema = new mongoose.Schema({
         enum: ['USD', 'ARS'],
         default: 'USD'
     },
+    // Origen desde el cual se guardaron/seleccionaron las referencias
+    referencesOrigin: {
+        type: String,
+        enum: ['local', 'vps'],
+        default: 'local'
+    },
     references: [{
         type: String
     }],

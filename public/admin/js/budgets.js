@@ -1,6 +1,19 @@
 const budgetModal = new bootstrap.Modal(document.getElementById('budgetModal'));
 let budgetItemCounter = 0;
 
+// Helpers de origen de referencias y variable global
+let referencesOrigin = 'local';
+function getOriginBase(origin) {
+    return origin === 'vps' ? 'https://vps-4455523-x.dattaweb.com/jpupper' : 'http://localhost:3243';
+}
+function getImagePathForOrigin(src, origin) {
+    if (!src) return '';
+    if (/^https?:\/\//i.test(src)) return src;
+    const base = getOriginBase(origin);
+    const clean = src.startsWith('/') ? src : `/${src}`;
+    return `${base}${clean}`;
+}
+
 // Load budgets when tab is clicked
 document.getElementById('budgets-tab').addEventListener('click', loadBudgets);
 
@@ -110,8 +123,22 @@ function showAddBudgetForm() {
     const currencySelect = document.getElementById('budgetCurrency');
     if (currencySelect) currencySelect.value = 'USD';
     
-    // Cargar referencias
-    initReferencePicker();
+    // Reset referencias seleccionadas
+    selectedReferenceIds = [];
+
+    // Cargar referencias (según origen seleccionado)
+    const btnLocal = document.getElementById('btnRefOriginLocal');
+    const btnVps = document.getElementById('btnRefOriginVps');
+    referencesOrigin = 'local';
+    if (btnLocal && btnVps) {
+        btnLocal.classList.add('active');
+        btnVps.classList.remove('active');
+        btnLocal.onclick = (e) => { e.preventDefault(); referencesOrigin = 'local'; btnLocal.classList.add('active'); btnVps.classList.remove('active'); initReferencePicker(selectedReferenceIds); };
+        btnVps.onclick = (e) => { e.preventDefault(); referencesOrigin = 'vps'; btnVps.classList.add('active'); btnLocal.classList.remove('active'); initReferencePicker(selectedReferenceIds); };
+    }
+    
+    // Cargar referencias iniciales
+    initReferencePicker([]);
     
     // Add one initial item
     addBudgetItem();
@@ -245,7 +272,8 @@ async function saveBudget() {
             currency,
             references,
             images,
-            items
+            items,
+            referencesOrigin
         };
         
         const apiUrl = CONFIG.apiUrl;
@@ -325,6 +353,16 @@ async function editBudget(id) {
         budgetItemCounter = 0;
         budget.items.forEach(item => addBudgetItem(item));
         
+        // Origen de referencias desde presupuesto
+        referencesOrigin = budget.referencesOrigin || 'local';
+        const btnLocal = document.getElementById('btnRefOriginLocal');
+        const btnVps = document.getElementById('btnRefOriginVps');
+        if (btnLocal && btnVps) {
+            if (referencesOrigin === 'vps') { btnVps.classList.add('active'); btnLocal.classList.remove('active'); }
+            else { btnLocal.classList.add('active'); btnVps.classList.remove('active'); }
+            btnLocal.onclick = (e) => { e.preventDefault(); referencesOrigin = 'local'; btnLocal.classList.add('active'); btnVps.classList.remove('active'); initReferencePicker(selectedReferenceIds); };
+            btnVps.onclick = (e) => { e.preventDefault(); referencesOrigin = 'vps'; btnVps.classList.add('active'); btnLocal.classList.remove('active'); initReferencePicker(selectedReferenceIds); };
+        }
         // Cargar referencias y preseleccionar
         await initReferencePicker(budget.references || []);
         
@@ -433,20 +471,20 @@ let refProjects = [];
 
 async function initReferencePicker(selectedRefs = []) {
     selectedReferenceIds = Array.isArray(selectedRefs) ? [...selectedRefs] : [];
-    const apiUrl = CONFIG.apiUrl;
+    const base = referencesOrigin === 'vps' ? 'https://vps-4455523-x.dattaweb.com/jpupper' : 'http://localhost:3243';
     const tagsEl = document.getElementById('budgetRefTags');
     const gridEl = document.getElementById('budgetRefGrid');
     const selectedEl = document.getElementById('budgetRefSelected');
     if (!tagsEl || !gridEl) return;
 
     // Load projects
-    const projRes = await fetch(`${apiUrl}/api/projects`);
+    const projRes = await fetch(`${base}/api/projects`);
     refProjects = await projRes.json();
 
     // Load tags (fallback to infer from projects)
     let tagList = [];
     try {
-        const tagRes = await fetch(`${apiUrl}/api/tags`);
+        const tagRes = await fetch(`${base}/api/tags`);
         if (tagRes.ok) {
             tagList = await tagRes.json(); // [{name, displayName}]
         }
@@ -485,7 +523,7 @@ async function initReferencePicker(selectedRefs = []) {
         card.className = 'card h-100';
         card.dataset.id = p.id;
         card.dataset.tags = JSON.stringify(p.tags || []);
-        const thumbSrc = CONFIG.getImagePath(p.thumbnail || '');
+        const thumbSrc = getImagePathForOrigin(p.thumbnail || '', referencesOrigin);
         const thumb = thumbSrc || 'https://via.placeholder.com/400x300?text=Sin+imagen';
         card.innerHTML = `
             <img src="${thumb}" class="card-img-top" alt="${p.title || ''}">
@@ -496,12 +534,15 @@ async function initReferencePicker(selectedRefs = []) {
         `;
         if (selectedReferenceIds.includes(p.id)) card.classList.add('border-primary');
         card.style.cursor = 'pointer';
-        card.onclick = () => toggleReference(p.id);
+        card.onclick = () => { toggleReference(p.id); showReferencePreview(p.id); };
         col.appendChild(card);
         gridEl.appendChild(col);
     });
 
     syncSelectedChips();
+    // Mostrar preview inicial
+    const initialPreviewId = selectedReferenceIds[0] || (refProjects[0] ? refProjects[0].id : null);
+    if (initialPreviewId) showReferencePreview(initialPreviewId);
 }
 
 function applyTagFilter(tagName) {
@@ -548,4 +589,50 @@ function syncSelectedChips() {
         chip.onclick = () => toggleReference(id);
         selectedEl.appendChild(chip);
     });
+}
+
+function showReferencePreview(projectId) {
+    const container = document.getElementById('budgetRefPreview');
+    if (!container) return;
+    const p = refProjects.find(pr => pr.id === projectId);
+    container.innerHTML = '';
+    if (!p) {
+        container.innerHTML = '<small class="text-muted">Seleccioná una referencia para previsualizar</small>';
+        return;
+    }
+    const videoUrl = p.videolink || '';
+    const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]+)/;
+    const instagramRegex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(p|reel|tv)\/([a-zA-Z0-9_-]+)\/?/;
+    const youtubeMatch = videoUrl.match(youtubeRegex);
+    const instagramMatch = videoUrl.match(instagramRegex);
+
+    if (youtubeMatch && videoUrl.trim() !== '') {
+        const videoId = youtubeMatch[1];
+        container.innerHTML = `
+          <div style="position:relative;width:100%;height:0;padding-bottom:56.25%;overflow:hidden;border:1px solid #ddd;border-radius:.5rem;">
+            <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" src="https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        `;
+    } else if (instagramMatch && videoUrl.trim() !== '') {
+        const postType = instagramMatch[1];
+        const postId = instagramMatch[2];
+        container.innerHTML = `
+          <div style="display:flex;justify-content:center;align-items:flex-start;min-height:650px;border:1px solid #ddd;border-radius:.5rem;padding:8px;">
+            <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/${postType}/${postId}/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"></blockquote>
+          </div>
+        `;
+        if (!window.instgrm) {
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = '//www.instagram.com/embed.js';
+            document.body.appendChild(script);
+            script.onload = () => { if (window.instgrm) window.instgrm.Embeds.process(); };
+        } else {
+            window.instgrm.Embeds.process();
+        }
+    } else {
+        const thumbSrc = getImagePathForOrigin(p.thumbnail || '', referencesOrigin);
+        const thumb = thumbSrc || 'https://via.placeholder.com/640x360?text=Sin+imagen';
+        container.innerHTML = `<img src="${thumb}" alt="${p.title || ''}" class="img-fluid rounded border">`;
+    }
 }

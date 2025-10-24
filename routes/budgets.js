@@ -44,7 +44,7 @@ router.get('/:id', async (req, res) => {
 // Create new budget
 router.post('/', async (req, res) => {
     try {
-        const { projectName, description, client, paymentTerms, technicalRequirements, items, currency, references, images } = req.body;
+        const { projectName, description, client, paymentTerms, technicalRequirements, items, currency, references, images, referencesOrigin } = req.body;
         
         // Generate unique code
         let code;
@@ -74,6 +74,7 @@ router.post('/', async (req, res) => {
             paymentTerms,
             technicalRequirements,
             currency: currency || 'USD',
+            referencesOrigin: referencesOrigin === 'vps' ? 'vps' : 'local',
             references: Array.isArray(references) ? references : [],
             images: Array.isArray(images) ? images : [],
             items: processedItems,
@@ -92,7 +93,7 @@ router.post('/', async (req, res) => {
 // Update budget
 router.put('/:id', async (req, res) => {
     try {
-        const { projectName, description, client, paymentTerms, technicalRequirements, items, currency, references, images } = req.body;
+        const { projectName, description, client, paymentTerms, technicalRequirements, items, currency, references, images, referencesOrigin } = req.body;
         
         // Calculate totals
         let subtotal = 0;
@@ -114,6 +115,7 @@ router.put('/:id', async (req, res) => {
                 paymentTerms,
                 technicalRequirements,
                 currency: currency || 'USD',
+                referencesOrigin: referencesOrigin === 'vps' ? 'vps' : 'local',
                 references: Array.isArray(references) ? references : [],
                 images: Array.isArray(images) ? images : [],
                 items: processedItems,
