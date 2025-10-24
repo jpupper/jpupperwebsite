@@ -44,8 +44,8 @@ router.get('/:id', async (req, res) => {
 // Create new budget
 router.post('/', async (req, res) => {
     try {
-        const { projectName, description, client, paymentTerms, technicalRequirements, items, currency, references, images, referencesOrigin } = req.body;
-        
+        const { projectName, description, client, paymentTerms, technicalRequirements, items, references } = req.body;
+
         // Generate unique code
         let code;
         let isUnique = false;
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
             const existing = await Budget.findOne({ code });
             if (!existing) isUnique = true;
         }
-        
+
         // Calculate totals
         let subtotal = 0;
         const processedItems = items.map(item => {
@@ -65,7 +65,7 @@ router.post('/', async (req, res) => {
                 total: itemTotal
             };
         });
-        
+
         const budget = new Budget({
             code,
             projectName,
@@ -73,15 +73,12 @@ router.post('/', async (req, res) => {
             client,
             paymentTerms,
             technicalRequirements,
-            currency: currency || 'USD',
-            referencesOrigin: referencesOrigin === 'vps' ? 'vps' : 'local',
             references: Array.isArray(references) ? references : [],
-            images: Array.isArray(images) ? images : [],
             items: processedItems,
             subtotal,
             total: subtotal
         });
-        
+
         await budget.save();
         res.status(201).json(budget);
     } catch (error) {
@@ -93,8 +90,8 @@ router.post('/', async (req, res) => {
 // Update budget
 router.put('/:id', async (req, res) => {
     try {
-        const { projectName, description, client, paymentTerms, technicalRequirements, items, currency, references, images, referencesOrigin } = req.body;
-        
+        const { projectName, description, client, paymentTerms, technicalRequirements, items, references } = req.body;
+
         // Calculate totals
         let subtotal = 0;
         const processedItems = items.map(item => {
@@ -105,7 +102,7 @@ router.put('/:id', async (req, res) => {
                 total: itemTotal
             };
         });
-        
+
         const budget = await Budget.findByIdAndUpdate(
             req.params.id,
             {
@@ -114,10 +111,7 @@ router.put('/:id', async (req, res) => {
                 client,
                 paymentTerms,
                 technicalRequirements,
-                currency: currency || 'USD',
-                referencesOrigin: referencesOrigin === 'vps' ? 'vps' : 'local',
                 references: Array.isArray(references) ? references : [],
-                images: Array.isArray(images) ? images : [],
                 items: processedItems,
                 subtotal,
                 total: subtotal,
@@ -125,11 +119,11 @@ router.put('/:id', async (req, res) => {
             },
             { new: true }
         );
-        
+
         if (!budget) {
             return res.status(404).json({ message: 'Budget not found' });
         }
-        
+
         res.json(budget);
     } catch (error) {
         console.error('Error updating budget:', error);

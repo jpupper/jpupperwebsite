@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const referenceSchema = new mongoose.Schema({
+    id: { type: String, required: true },
+    title: { type: String, required: true },
+    url: { type: String, default: '' },
+    thumbnail: { type: String, default: '' }
+}, { _id: false });
+
 const budgetItemSchema = new mongoose.Schema({
     description: {
         type: String,
@@ -47,24 +54,8 @@ const budgetSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    references: [referenceSchema],
     items: [budgetItemSchema],
-    currency: {
-        type: String,
-        enum: ['USD', 'ARS'],
-        default: 'USD'
-    },
-    // Origen desde el cual se guardaron/seleccionaron las referencias
-    referencesOrigin: {
-        type: String,
-        enum: ['local', 'vps'],
-        default: 'local'
-    },
-    references: [{
-        type: String
-    }],
-    images: [{
-        type: String
-    }],
     subtotal: {
         type: Number,
         required: true,

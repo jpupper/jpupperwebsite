@@ -1,18 +1,9 @@
 const budgetModal = new bootstrap.Modal(document.getElementById('budgetModal'));
 let budgetItemCounter = 0;
 
-// Helpers de origen de referencias y variable global
-let referencesOrigin = 'local';
-function getOriginBase(origin) {
-    return origin === 'vps' ? 'https://vps-4455523-x.dattaweb.com/jpupper' : 'http://localhost:3243';
-}
-function getImagePathForOrigin(src, origin) {
-    if (!src) return '';
-    if (/^https?:\/\//i.test(src)) return src;
-    const base = getOriginBase(origin);
-    const clean = src.startsWith('/') ? src : `/${src}`;
-    return `${base}${clean}`;
-}
+// Referencias (proyectos) para presupuestos
+let availableProjects = [];
+let selectedReferences = [];
 
 // Load budgets when tab is clicked
 document.getElementById('budgets-tab').addEventListener('click', loadBudgets);
@@ -45,7 +36,7 @@ async function loadBudgets() {
         }
         
         budgets.forEach(budget => {
-            const fullscreenUrl = `${CONFIG.fullscreenUrl}/presupuesto.html?presupuesto=${budget.code}`;
+            const fullscreenUrl = `https://fullscreencode.com/presupuesto.html?presupuesto=${budget.code}`;
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><strong>${budget.code}</strong></td>
@@ -87,28 +78,6 @@ async function loadBudgets() {
 }
 
 // Show add budget form
-async function loadReferenceProjects(selectedRefs = []) {
-    try {
-        const apiUrl = CONFIG.apiUrl;
-        const response = await fetch(`${apiUrl}/api/projects`);
-        const projects = await response.json();
-        const select = document.getElementById('budgetReferences');
-        if (!select) return;
-        select.innerHTML = '';
-        projects.forEach(p => {
-            const opt = document.createElement('option');
-            opt.value = p.id; // usar el campo id del modelo Project
-            opt.textContent = p.title;
-            if (selectedRefs.includes(p.id)) opt.selected = true;
-            select.appendChild(opt);
-        });
-    } catch (error) {
-        console.error('Error cargando proyectos para referencias:', error);
-    }
-}
-
-let currentBudgetImages = [];
-
 function showAddBudgetForm() {
     document.getElementById('budgetForm').reset();
     document.getElementById('budgetId').value = '';
@@ -117,44 +86,23 @@ function showAddBudgetForm() {
     document.getElementById('budgetItemsContainer').innerHTML = '';
     document.getElementById('budgetLinkDisplay').style.display = 'none';
     budgetItemCounter = 0;
-    currentBudgetImages = [];
-    
-    // Default currency
-    const currencySelect = document.getElementById('budgetCurrency');
-    if (currencySelect) currencySelect.value = 'USD';
-    
-    // Reset referencias seleccionadas
-    selectedReferenceIds = [];
 
-    // Cargar referencias (según origen seleccionado)
-    const btnLocal = document.getElementById('btnRefOriginLocal');
-    const btnVps = document.getElementById('btnRefOriginVps');
-    referencesOrigin = 'local';
-    if (btnLocal && btnVps) {
-        btnLocal.classList.add('active');
-        btnVps.classList.remove('active');
-        btnLocal.onclick = (e) => { e.preventDefault(); referencesOrigin = 'local'; btnLocal.classList.add('active'); btnVps.classList.remove('active'); initReferencePicker(selectedReferenceIds); };
-        btnVps.onclick = (e) => { e.preventDefault(); referencesOrigin = 'vps'; btnVps.classList.add('active'); btnLocal.classList.remove('active'); initReferencePicker(selectedReferenceIds); };
-    }
-    
-    // Cargar referencias iniciales
-    initReferencePicker([]);
-    
+    // Reset referencias UI
+    selectedReferences = [];
+    const sel = document.getElementById('selectedReferences');
+    const selBox = document.getElementById('referencesSelector');
+    const list = document.getElementById('referencesList');
+    if (sel) sel.innerHTML = '';
+    if (list) list.innerHTML = '';
+    if (selBox) selBox.style.display = 'none';
+
     // Add one initial item
     addBudgetItem();
-    
-    budgetModal.show();
-}
 
-async function readFilesAsBase64(fileList) {
-    const files = Array.from(fileList || []);
-    const promises = files.map(file => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-    }));
-    return Promise.all(promises);
+    // Pre-cargar proyectos para referencias
+    loadProjectsForReferences();
+
+    budgetModal.show();
 }
 
 // Add budget item row
@@ -234,9 +182,7 @@ async function saveBudget() {
         const client = document.getElementById('budgetClient').value;
         const paymentTerms = document.getElementById('budgetPaymentTerms').value;
         const technicalRequirements = document.getElementById('budgetTechnicalRequirements').value;
-        const currency = document.getElementById('budgetCurrency').value;
-        const references = selectedReferenceIds;
-         
+        
         // Collect items
         const items = [];
         document.querySelectorAll('.budget-item').forEach(itemDiv => {
@@ -256,12 +202,12 @@ async function saveBudget() {
             return;
         }
         
-        // Imágenes
-        const imagesInput = document.getElementById('budgetImages');
-        let images = await readFilesAsBase64(imagesInput.files);
-        if (budgetId && (!images || images.length === 0)) {
-            images = currentBudgetImages; // conservar imágenes si no se suben nuevas
-        }
+        const references = selectedReferences.map(p => ({
+            id: p.id,
+            title: p.title,
+            url: p.url || '',
+            thumbnail: p.thumbnail || ''
+        }));
         
         const budgetData = {
             projectName,
@@ -269,11 +215,8 @@ async function saveBudget() {
             client,
             paymentTerms,
             technicalRequirements,
-            currency,
-            references,
-            images,
             items,
-            referencesOrigin
+            references
         };
         
         const apiUrl = CONFIG.apiUrl;
@@ -308,7 +251,7 @@ async function saveBudget() {
         const savedBudget = await response.json();
         
         // Show the FullScreen link
-        const fullscreenUrl = `${CONFIG.fullscreenUrl}/presupuesto.html?presupuesto=${savedBudget.code}`;
+        const fullscreenUrl = `https://fullscreencode.com/presupuesto.html?presupuesto=${savedBudget.code}`;
         document.getElementById('budgetFullScreenLink').href = fullscreenUrl;
         document.getElementById('budgetFullScreenLink').textContent = fullscreenUrl;
         document.getElementById('budgetLinkDisplay').style.display = 'block';
@@ -317,7 +260,6 @@ async function saveBudget() {
         document.getElementById('budgetId').value = savedBudget._id;
         document.getElementById('budgetCode').value = savedBudget.code;
         document.getElementById('budgetModalTitle').textContent = 'Editar Presupuesto';
-        currentBudgetImages = savedBudget.images || [];
         
         showBudgetSuccess('Presupuesto guardado exitosamente!');
         loadBudgets();
@@ -344,30 +286,25 @@ async function editBudget(id) {
         document.getElementById('budgetPaymentTerms').value = budget.paymentTerms;
         document.getElementById('budgetTechnicalRequirements').value = budget.technicalRequirements;
         document.getElementById('budgetModalTitle').textContent = 'Editar Presupuesto';
-        const currencySelect = document.getElementById('budgetCurrency');
-        if (currencySelect) currencySelect.value = budget.currency || 'USD';
-        currentBudgetImages = budget.images || [];
         
         // Clear and add items
         document.getElementById('budgetItemsContainer').innerHTML = '';
         budgetItemCounter = 0;
         budget.items.forEach(item => addBudgetItem(item));
         
-        // Origen de referencias desde presupuesto
-        referencesOrigin = budget.referencesOrigin || 'local';
-        const btnLocal = document.getElementById('btnRefOriginLocal');
-        const btnVps = document.getElementById('btnRefOriginVps');
-        if (btnLocal && btnVps) {
-            if (referencesOrigin === 'vps') { btnVps.classList.add('active'); btnLocal.classList.remove('active'); }
-            else { btnLocal.classList.add('active'); btnVps.classList.remove('active'); }
-            btnLocal.onclick = (e) => { e.preventDefault(); referencesOrigin = 'local'; btnLocal.classList.add('active'); btnVps.classList.remove('active'); initReferencePicker(selectedReferenceIds); };
-            btnVps.onclick = (e) => { e.preventDefault(); referencesOrigin = 'vps'; btnVps.classList.add('active'); btnLocal.classList.remove('active'); initReferencePicker(selectedReferenceIds); };
-        }
-        // Cargar referencias y preseleccionar
-        await initReferencePicker(budget.references || []);
+        // Referencias
+        selectedReferences = Array.isArray(budget.references) ? budget.references : [];
+        renderSelectedReferencesChips();
+        // Pre-cargar lista de proyectos y marcar checks
+        await loadProjectsForReferences();
+        // Marcar seleccionados en lista
+        selectedReferences.forEach(ref => {
+            const chk = document.querySelector(`#referencesList input[data-id="${ref.id}"]`);
+            if (chk) chk.checked = true;
+        });
         
         // Show FullScreen link
-        const fullscreenUrl = `${CONFIG.fullscreenUrl}/presupuesto.html?presupuesto=${budget.code}`;
+        const fullscreenUrl = `https://fullscreencode.com/presupuesto.html?presupuesto=${budget.code}`;
         document.getElementById('budgetFullScreenLink').href = fullscreenUrl;
         document.getElementById('budgetFullScreenLink').textContent = fullscreenUrl;
         document.getElementById('budgetLinkDisplay').style.display = 'block';
@@ -377,6 +314,91 @@ async function editBudget(id) {
         console.error('Error loading budget:', error);
         showBudgetError(`Error al cargar el presupuesto: ${error.message}`);
     }
+}
+
+// Referencias: cargar proyectos y UI
+async function loadProjectsForReferences() {
+    try {
+        const apiUrl = CONFIG.apiUrl;
+        const resp = await fetch(`${apiUrl}/api/projects`);
+        const projects = await resp.json();
+        availableProjects = Array.isArray(projects) ? projects : [];
+        const list = document.getElementById('referencesList');
+        if (!list) return;
+        list.innerHTML = '';
+        availableProjects.forEach(p => {
+            const thumb = (typeof CONFIG.getImagePath === 'function') ? CONFIG.getImagePath(p.thumbnail) : p.thumbnail;
+            const item = document.createElement('div');
+            item.className = 'form-check mb-2';
+            item.innerHTML = `
+                <input class="form-check-input" type="checkbox" id="ref-${p.id}" data-id="${p.id}" onchange="onReferenceToggle(event)">
+                <label class="form-check-label" for="ref-${p.id}">
+                    <img src="${thumb}" alt="${p.title}" style="width:28px;height:28px;object-fit:cover;border-radius:4px;margin-right:8px;vertical-align:middle;"> ${p.title}
+                </label>
+            `;
+            list.appendChild(item);
+        });
+    } catch (err) {
+        console.error('Error cargando proyectos para referencias:', err);
+    }
+}
+
+function toggleReferencesSelector() {
+    const box = document.getElementById('referencesSelector');
+    if (!box) return;
+    if (box.style.display === 'none' || box.style.display === '') {
+        box.style.display = 'block';
+        if (availableProjects.length === 0) loadProjectsForReferences();
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+function onReferenceToggle(event) {
+    const id = event.target.getAttribute('data-id');
+    if (!id) return;
+    const project = availableProjects.find(p => p.id === id);
+    if (!project) return;
+    if (event.target.checked) {
+        if (!selectedReferences.find(r => r.id === project.id)) {
+            selectedReferences.push({ id: project.id, title: project.title, url: project.url, thumbnail: project.thumbnail });
+        }
+    } else {
+        selectedReferences = selectedReferences.filter(r => r.id !== project.id);
+    }
+    renderSelectedReferencesChips();
+}
+
+function renderSelectedReferencesChips() {
+    const sel = document.getElementById('selectedReferences');
+    if (!sel) return;
+    sel.innerHTML = '';
+    selectedReferences.forEach(r => {
+        const chip = document.createElement('span');
+        chip.className = 'badge bg-primary me-2 mb-2';
+        chip.style.cursor = 'pointer';
+        chip.title = 'Click para quitar';
+        chip.innerHTML = `<i class="bi bi-link-45deg"></i> ${r.title}`;
+        chip.onclick = () => {
+            // uncheck in list
+            const chk = document.querySelector(`#referencesList input[data-id="${r.id}"]`);
+            if (chk) chk.checked = false;
+            selectedReferences = selectedReferences.filter(x => x.id !== r.id);
+            renderSelectedReferencesChips();
+        };
+        sel.appendChild(chip);
+    });
+}
+
+function filterReferences() {
+    const term = (document.getElementById('referencesSearch')?.value || '').toLowerCase();
+    const list = document.getElementById('referencesList');
+    if (!list) return;
+    list.querySelectorAll('.form-check').forEach(div => {
+        const label = div.querySelector('.form-check-label');
+        const txt = label?.textContent?.toLowerCase() || '';
+        div.style.display = txt.includes(term) ? '' : 'none';
+    });
 }
 
 // Delete budget
@@ -463,316 +485,4 @@ function showBudgetSuccess(message) {
     `;
     modalBody.insertBefore(alert, modalBody.firstChild);
     setTimeout(() => alert.remove(), 5000);
-}
-
-// Replace select-based references loader with tag-filtered picker
-let selectedReferenceIds = [];
-let refProjects = [];
-let selectedRefTagNames = [];
-
-async function initReferencePicker(selectedRefs = []) {
-    selectedReferenceIds = Array.isArray(selectedRefs) ? [...selectedRefs] : [];
-    const base = referencesOrigin === 'vps' ? 'https://vps-4455523-x.dattaweb.com/jpupper' : 'http://localhost:3243';
-    const tagsEl = document.getElementById('budgetRefTags');
-    const gridEl = document.getElementById('budgetRefGrid');
-    const selectedEl = document.getElementById('budgetRefSelected');
-    if (!tagsEl || !gridEl) return;
-
-    // Load projects
-    const projRes = await fetch(`${base}/api/projects`);
-    refProjects = await projRes.json();
-
-    // Load tags (fallback infer)
-    let tagList = [];
-    try {
-        const tagRes = await fetch(`${base}/api/tags`);
-        if (tagRes.ok) tagList = await tagRes.json();
-    } catch (_) {}
-    if (!Array.isArray(tagList) || tagList.length === 0) {
-        const set = new Set();
-        refProjects.forEach(p => (p.tags || []).forEach(t => set.add(t)));
-        tagList = Array.from(set).map(t => ({ name: t, displayName: t }));
-    }
-
-    // Build tag chips (multi-select con Ctrl)
-    tagsEl.innerHTML = '';
-    selectedRefTagNames = [];
-    const allBtn = document.createElement('button');
-    allBtn.className = 'btn btn-sm btn-outline-primary me-2 mb-2 active';
-    allBtn.textContent = 'Todos';
-    allBtn.dataset.tag = '__all__';
-    allBtn.type = 'button';
-    allBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        selectedRefTagNames = [];
-        tagsEl.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-        allBtn.classList.add('active');
-        applyTagFilter();
-    });
-    tagsEl.appendChild(allBtn);
-    tagList.forEach(tag => {
-        const btn = document.createElement('button');
-        btn.className = 'btn btn-sm btn-outline-primary me-2 mb-2';
-        btn.textContent = tag.displayName || tag.name;
-        btn.dataset.tag = tag.name;
-        btn.type = 'button';
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const t = tag.name;
-            const isCtrl = e.ctrlKey || e.metaKey; // soportar Cmd en Mac
-            if (isCtrl) {
-                const idx = selectedRefTagNames.indexOf(t);
-                if (idx === -1) selectedRefTagNames.push(t); else selectedRefTagNames.splice(idx, 1);
-                // actualizar estilos
-                btn.classList.toggle('active', selectedRefTagNames.includes(t));
-                allBtn.classList.toggle('active', selectedRefTagNames.length === 0);
-            } else {
-                selectedRefTagNames = [t];
-                tagsEl.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            }
-            applyTagFilter();
-        });
-        tagsEl.appendChild(btn);
-    });
-
-    // Build grid
-    gridEl.innerHTML = '';
-    refProjects.forEach(p => {
-        const col = document.createElement('div');
-        col.className = 'col-4 col-sm-3 col-lg-2';
-        const card = document.createElement('div');
-        card.className = 'card h-100 p-2';
-        card.dataset.id = p.id;
-        card.dataset.tags = JSON.stringify(p.tags || []);
-        const thumbSrc = getImagePathForOrigin(p.thumbnail || '', referencesOrigin);
-        const thumb = thumbSrc || 'https://via.placeholder.com/200x150?text=Sin+imagen';
-        card.innerHTML = `
-            <img src="${thumb}" class="card-img-top" alt="${p.title || ''}" style="height:100px;object-fit:cover;border-radius:.25rem;">
-            <div class="card-body p-2">
-                <h6 class="card-title small text-truncate" title="${p.title || ''}">${p.title || ''}</h6>
-                <div class="d-flex flex-wrap gap-1">${(p.tags || []).map(t => `<span class='badge text-bg-light'>${t}</span>`).join('')}</div>
-                <div class="d-flex justify-content-end mt-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Ver</button>
-                </div>
-            </div>
-        `;
-        if (selectedReferenceIds.includes(p.id)) card.classList.add('border-primary');
-        card.style.cursor = 'pointer';
-        card.style.maxWidth = '180px';
-        // Click en card: seleccionar/quitar referencia
-        card.onclick = (ev) => {
-            // evitar que el botón "Ver" dispare el toggle
-            const targetBtn = ev.target.closest('button');
-            if (targetBtn) return; 
-            toggleReference(p.id);
-        };
-        // Click en "Ver": setear preview activo
-        const viewBtn = card.querySelector('button.btn');
-        if (viewBtn) viewBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); showReferencePreview(p.id); };
-        col.appendChild(card);
-        gridEl.appendChild(col);
-    });
-
-    syncSelectedChips();
-    // Mostrar preview inicial
-    const initialPreviewId = selectedReferenceIds[0] || (refProjects[0] ? refProjects[0].id : null);
-    if (initialPreviewId) showReferencePreview(initialPreviewId);
-    // Aplicar filtro inicial (Todos)
-    applyTagFilter();
-}
-
-function applyTagFilter(tagNameOptional) {
-    // Si pasaron un tagName directo, tratarlo como selección única
-    if (typeof tagNameOptional === 'string' && tagNameOptional !== '__all__') {
-        selectedRefTagNames = [tagNameOptional];
-    }
-    // Actualizar estilos de chips
-    const tagsEl = document.getElementById('budgetRefTags');
-    const allBtn = tagsEl.querySelector(".btn[data-tag='__all__']");
-    tagsEl.querySelectorAll('.btn').forEach(b => {
-        const t = b.dataset.tag;
-        if (t === '__all__') {
-            b.classList.toggle('active', selectedRefTagNames.length === 0);
-        } else {
-            b.classList.toggle('active', selectedRefTagNames.includes(t));
-        }
-    });
-
-    // Mostrar/ocultar cards
-    const cards = document.querySelectorAll('#budgetRefGrid .card');
-    cards.forEach(card => {
-        if (selectedRefTagNames.length === 0) {
-            card.parentElement.style.display = '';
-        } else {
-            const tags = JSON.parse(card.dataset.tags || '[]');
-            const matches = selectedRefTagNames.every(t => tags.includes(t));
-            card.parentElement.style.display = matches ? '' : 'none';
-        }
-    });
-}
-
-function toggleReference(projectId) {
-    const idx = selectedReferenceIds.indexOf(projectId);
-    if (idx === -1) selectedReferenceIds.push(projectId); else selectedReferenceIds.splice(idx, 1);
-    const card = document.querySelector(`#budgetRefGrid .card[data-id='${projectId}']`);
-    if (card) card.classList.toggle('border-primary');
-    syncSelectedChips();
-}
-
-function syncSelectedChips() {
-  const chipsEl = document.getElementById('budgetRefSelected');
-  if (!chipsEl) return;
-  chipsEl.innerHTML = '';
-  (selectedReferenceIds || []).forEach(id => {
-    const project = (refProjects || []).find(p => String(p.id) === String(id));
-    if (!project) return;
-    const chip = document.createElement('span');
-    chip.className = 'badge bg-secondary me-2 mb-2';
-    chip.textContent = project.title || project.name || 'Proyecto';
-    chip.style.cursor = 'pointer';
-    chip.title = 'Quitar referencia';
-    chip.onclick = () => toggleReference(project.id, false);
-    chipsEl.appendChild(chip);
-  });
-}
-
-// Renderizar grilla con paginación 5/10/20 y botones Ver/Seleccionar
-function renderRefGrid() {
-  const gridEl = document.getElementById('budgetRefGrid');
-  if (!gridEl) return;
-  const all = Array.isArray(filteredProjectsCache) ? filteredProjectsCache : (refProjects || []);
-
-  const sizeSelect = document.getElementById('budgetRefPageSize');
-  const pageSize = sizeSelect ? Number(sizeSelect.value) || 10 : 10;
-  const start = (refPage || 0) * pageSize;
-  const slice = all.slice(start, start + pageSize);
-
-  gridEl.innerHTML = '';
-
-  slice.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'card m-2';
-    card.style.width = '220px';
-    const imgSrc = getImagePathForOrigin(p.thumbnail || '', referencesOrigin || null);
-    const isSelected = (selectedReferenceIds || []).includes(p.id);
-    card.innerHTML = `
-      <img src="${imgSrc}" class="card-img-top" alt="${p.title || ''}" style="height:120px;object-fit:cover;"/>
-      <div class="card-body p-2">
-        <div class="d-flex align-items-center justify-content-between">
-          <span class="small">${p.title || p.name || ''}</span>
-          <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-outline-primary" data-action="view">Ver</button>
-            <button type="button" class="btn btn-sm ${isSelected ? 'btn-success' : 'btn-outline-success'}" data-action="toggle">${isSelected ? '✓' : '+'}</button>
-          </div>
-        </div>
-      </div>
-    `;
-    const viewBtn = card.querySelector('[data-action="view"]');
-    const toggleBtn = card.querySelector('[data-action="toggle"]');
-    viewBtn.onclick = () => showReferencePreview(p.id);
-    toggleBtn.onclick = () => toggleReference(p.id);
-    gridEl.appendChild(card);
-  });
-
-  const totalPages = Math.max(1, Math.ceil(all.length / pageSize));
-  const pageLabel = document.getElementById('budgetRefPageLabel');
-  if (pageLabel) pageLabel.textContent = `${(refPage || 0) + 1} / ${totalPages}`;
-  const prevBtn = document.getElementById('budgetRefPrev');
-  const nextBtn = document.getElementById('budgetRefNext');
-  if (prevBtn) prevBtn.disabled = (refPage || 0) <= 0;
-  if (nextBtn) nextBtn.disabled = (refPage || 0) >= (totalPages - 1);
-}
-
-function getFilteredProjects() {
-  const tags = Array.from(selectedRefTagNames || []);
-  if (!tags.length) return refProjects || [];
-  return (refProjects || []).filter(p => Array.isArray(p.tags) && tags.every(t => p.tags.includes(t)));
-}
-
-function ensureRefGridControls() {
-  const controlsHost = document.getElementById('budgetRefControlsHost');
-  const gridEl = document.getElementById('budgetRefGrid');
-  if (!gridEl) return;
-  if (!controlsHost) {
-    const wrapper = document.createElement('div');
-    wrapper.id = 'budgetRefControlsHost';
-    wrapper.className = 'd-flex align-items-center justify-content-between my-2';
-    wrapper.innerHTML = `
-      <div class="d-flex align-items-center gap-2">
-        <label class="me-1 small">Items por página:</label>
-        <select id="budgetRefPageSize" class="form-select form-select-sm" style="width:90px">
-          <option value="5">5</option>
-          <option value="10" selected>10</option>
-          <option value="20">20</option>
-        </select>
-      </div>
-      <div class="d-flex align-items-center gap-2">
-        <button id="budgetRefPrev" type="button" class="btn btn-sm btn-outline-secondary">Prev</button>
-        <span id="budgetRefPageLabel" class="small">1 / 1</span>
-        <button id="budgetRefNext" type="button" class="btn btn-sm btn-outline-secondary">Next</button>
-      </div>
-    `;
-    gridEl.parentElement.insertBefore(wrapper, gridEl);
-    const pageSizeSelect = wrapper.querySelector('#budgetRefPageSize');
-    pageSizeSelect.onchange = () => { refPage = 0; renderRefGrid(); };
-    wrapper.querySelector('#budgetRefPrev').onclick = () => { if ((refPage || 0) > 0) { refPage--; renderRefGrid(); } };
-    wrapper.querySelector('#budgetRefNext').onclick = () => {
-      const all = Array.isArray(filteredProjectsCache) ? filteredProjectsCache : (refProjects || []);
-      const pageSize = Number(pageSizeSelect.value) || 10;
-      const totalPages = Math.max(1, Math.ceil(all.length / pageSize));
-      if ((refPage || 0) < totalPages - 1) { refPage++; renderRefGrid(); }
-    };
-  }
-}
-
-function applyTagFilter(tagName, isMultiSelect) {
-  const tagButtons = document.querySelectorAll('#budgetRefTags .btn');
-  if (!isMultiSelect) selectedRefTagNames.clear();
-  if (tagName) {
-    if (selectedRefTagNames.has(tagName) && isMultiSelect) {
-      selectedRefTagNames.delete(tagName);
-    } else {
-      selectedRefTagNames.add(tagName);
-    }
-  }
-  tagButtons.forEach(btn => {
-    const t = btn.dataset.tag;
-    btn.classList.toggle('btn-primary', selectedRefTagNames.has(t));
-    btn.classList.toggle('btn-outline-primary', !selectedRefTagNames.has(t));
-  });
-  filteredProjectsCache = getFilteredProjects();
-  refPage = 0;
-  renderRefGrid();
-}
-
-function initReferencePicker(selectedRefs = []) {
-  selectedReferenceIds = Array.isArray(selectedRefs) ? selectedRefs.map(String) : [];
-  const base = document.getElementById('btnRefOriginVps')?.classList.contains('active')
-    ? 'https://vps-4455523-x.dattaweb.com/jpupper/api'
-    : 'http://localhost:3243/api';
-  fetch(`${base}/projects`).then(r => r.json()).then(projects => {
-    refProjects = projects || [];
-    const tagsContainer = document.getElementById('budgetRefTags');
-    if (tagsContainer) {
-      const tagSet = new Set();
-      refProjects.forEach(p => (p.tags || []).forEach(t => tagSet.add(t)));
-      tagsContainer.innerHTML = '';
-      Array.from(tagSet).sort().forEach(t => {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'btn btn-sm btn-outline-primary me-2 mb-2';
-        b.dataset.tag = t;
-        b.textContent = t;
-        b.onclick = (e) => applyTagFilter(t, (e.ctrlKey || e.metaKey));
-        tagsContainer.appendChild(b);
-      });
-    }
-    ensureRefGridControls();
-    filteredProjectsCache = getFilteredProjects();
-    refPage = 0;
-    renderRefGrid();
-    syncSelectedChips();
-    if (selectedReferenceIds.length) showReferencePreview(selectedReferenceIds[0]);
-  }).catch(err => console.error('Error cargando proyectos para selector:', err));
 }

@@ -225,31 +225,6 @@
                             </div>
                         </div>
 
-                        <div class="row g-3 mb-3">
-                            <div class="col-12">
-                                <label class="form-label">Moneda</label>
-                                <select class="form-select" id="budgetCurrency">
-                                    <option value="USD">USD (Dólares)</option>
-                                    <option value="ARS">ARS (Pesos Argentinos)</option>
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Referencias (Proyectos)</label>
-                                <div class="d-flex justify-content-end align-items-center mb-2 gap-2">
-                                    <small class="text-muted">Origen:</small>
-                                    <div class="btn-group btn-group-sm" role="group" aria-label="Origen de referencias">
-                                        <button type="button" class="btn btn-outline-secondary active" id="btnRefOriginLocal">Local</button>
-                                        <button type="button" class="btn btn-outline-secondary" id="btnRefOriginVps">VPS</button>
-                                    </div>
-                                </div>
-                                <div id="budgetRefTags" class="mb-2"></div>
-                                <div id="budgetRefSelected" class="mb-2"></div>
-                                <div id="budgetRefPreview" class="mb-3"></div>
-                                <div id="budgetRefGrid" class="row g-3"></div>
-                                <small class="text-muted">Filtrá por tags y seleccioná múltiples referencias</small>
-                            </div>
-                        </div>
-
                         <div class="mb-3">
                             <label for="budgetDescription" class="form-label">Descripción</label>
                             <textarea class="form-control" id="budgetDescription" rows="3" required></textarea>
@@ -266,12 +241,6 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Imágenes del presupuesto (opcional)</label>
-                            <input type="file" id="budgetImages" class="form-control" accept="image/*" multiple>
-                            <small class="text-muted">Se guardan en la base como base64</small>
-                        </div>
-
-                        <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <label class="form-label mb-0">Items del Presupuesto</label>
                                 <button type="button" class="btn btn-sm btn-success" onclick="addBudgetItem()">
@@ -283,6 +252,20 @@
                             </div>
                             <div class="mt-3 p-3 bg-light rounded">
                                 <h5 class="mb-0">Total: $<span id="budgetTotalDisplay">0.00</span></h5>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0">Referencias (Proyectos)</label>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="toggleReferencesSelector()">
+                                    <i class="bi bi-collection"></i> Seleccionar referencias
+                                </button>
+                            </div>
+                            <div id="selectedReferences" class="d-flex flex-wrap gap-2"></div>
+                            <div id="referencesSelector" class="border rounded p-2" style="display:none; max-height:240px; overflow:auto;">
+                                <input type="text" class="form-control mb-2" id="referencesSearch" placeholder="Buscar proyectos..." oninput="filterReferences()">
+                                <div id="referencesList"></div>
                             </div>
                         </div>
 
