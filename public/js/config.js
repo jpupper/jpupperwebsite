@@ -15,10 +15,13 @@ const CONFIG = {
         window.location.reload();
     },
     get apiUrl() {
-        return this.isLocal ? 'http://localhost:3243/jpupper' : 'https://vps-4455523-x.dattaweb.com/jpupper';
+        return this.isLocal ? 'http://localhost:3243' : 'https://vps-4455523-x.dattaweb.com/jpupper';
     },
     get frontendUrl() {
         return this.isLocal ? 'http://localhost:3243/jpupper' : 'https://vps-4455523-x.dattaweb.com/jpupper';
+    },
+    get fullscreenUrl() {
+        return this.isLocal ? 'http://127.0.0.1:5500/fullscreencode' : 'https://fullscreencode.com';
     },
     get basePath() {
         return '/jpupper';

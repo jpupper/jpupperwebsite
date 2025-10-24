@@ -33,11 +33,13 @@ app.use(express.static(path.join(__dirname, 'public'))); // Mantener compatibili
 app.use('/jpupper/api/auth', require('./routes/auth'));
 app.use('/jpupper/api/projects', require('./routes/projects'));
 app.use('/jpupper/api/tags', require('./routes/tags'));
+app.use('/jpupper/api/budgets', require('./routes/budgets'));
 
 // Rutas sin prefijo para desarrollo local y compatibilidad
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/tags', require('./routes/tags'));
+app.use('/api/budgets', require('./routes/budgets'));
 
 // Export routes without authentication (if needed)
 app.get('/jpupper/api/export/projects', async (req, res) => {
@@ -108,8 +110,38 @@ async function startServer() {
 
         // Start HTTP server
         http.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-            console.log(`Local: http://localhost:${PORT}/jpupper`);
+            console.log('\n===========================================');
+            console.log(`✅ Server running on port ${PORT}`);
+            console.log('===========================================\n');
+            
+            console.log('📍 ADMIN PANEL:');
+            console.log(`   http://localhost:${PORT}/admin`);
+            console.log(`   http://localhost:${PORT}/jpupper/admin\n`);
+            
+            console.log('🔗 API ROUTES (LOCAL):');
+            console.log(`   GET    http://localhost:${PORT}/api/projects`);
+            console.log(`   POST   http://localhost:${PORT}/api/projects`);
+            console.log(`   GET    http://localhost:${PORT}/api/tags`);
+            console.log(`   POST   http://localhost:${PORT}/api/tags`);
+            console.log(`   GET    http://localhost:${PORT}/api/budgets`);
+            console.log(`   POST   http://localhost:${PORT}/api/budgets`);
+            console.log(`   GET    http://localhost:${PORT}/api/budgets/:id`);
+            console.log(`   PUT    http://localhost:${PORT}/api/budgets/:id`);
+            console.log(`   DELETE http://localhost:${PORT}/api/budgets/:id\n`);
+            
+            console.log('🔗 API ROUTES (CON PREFIJO /jpupper):');
+            console.log(`   GET    http://localhost:${PORT}/jpupper/api/projects`);
+            console.log(`   POST   http://localhost:${PORT}/jpupper/api/projects`);
+            console.log(`   GET    http://localhost:${PORT}/jpupper/api/tags`);
+            console.log(`   POST   http://localhost:${PORT}/jpupper/api/tags`);
+            console.log(`   GET    http://localhost:${PORT}/jpupper/api/budgets`);
+            console.log(`   POST   http://localhost:${PORT}/jpupper/api/budgets`);
+            console.log(`   GET    http://localhost:${PORT}/jpupper/api/budgets/:id`);
+            console.log(`   PUT    http://localhost:${PORT}/jpupper/api/budgets/:id`);
+            console.log(`   DELETE http://localhost:${PORT}/jpupper/api/budgets/:id\n`);
+            
+            console.log('===========================================\n');
+            
             const isLocal = ['localhost', '127.0.0.1'].includes(require('os').hostname());
             if (!isLocal) {
                 console.log(`VPS: https://vps-4455523-x.dattaweb.com/jpupper`);

@@ -152,22 +152,9 @@ async function saveProject() {
         if (thumbnail) {
             formData.append('thumbnail', thumbnail);
             console.log('Agregando thumbnail manual:', thumbnail.name, thumbnail.size, thumbnail.type);
-        } 
-        // Si no hay thumbnail manual pero hay videolink de YouTube, extraer thumbnail
-        else if (videolink) {
-            const youtubeThumbnail = getYoutubeThumbnail(videolink);
-            if (youtubeThumbnail) {
-                try {
-                    // Descargar el thumbnail de YouTube y convertirlo a blob
-                    const response = await fetch(youtubeThumbnail);
-                    const blob = await response.blob();
-                    const file = new File([blob], `youtube-thumb-${id}.jpg`, { type: 'image/jpeg' });
-                    formData.append('thumbnail', file);
-                    console.log('Agregando thumbnail de YouTube automáticamente');
-                } catch (error) {
-                    console.log('No se pudo descargar thumbnail de YouTube, usando predeterminado');
-                }
-            }
+        } else if (videolink) {
+            // Si hay videolink pero no thumbnail manual, el servidor lo descargará automáticamente
+            console.log('El servidor descargará el thumbnail automáticamente desde:', videolink);
         } else {
             console.log('No se ha seleccionado thumbnail, se usará el predeterminado');
         }
@@ -175,8 +162,11 @@ async function saveProject() {
         const method = projectId ? 'PUT' : 'POST';
         const apiUrl = CONFIG.apiUrl;
         const endpoint = projectId ? `${apiUrl}/api/projects/${projectId}` : `${apiUrl}/api/projects`;
-        console.log(`Guardando proyecto en: ${endpoint} (${method})`);
+        console.log('=== GUARDANDO PROYECTO ===');
+        console.log(`Endpoint: ${endpoint}`);
+        console.log(`Method: ${method}`);
         console.log('FormData contiene:', [...formData.entries()]);
+        console.log('Video link:', videolink);
 
         // Limpiar cualquier listener previo para evitar errores
         if (window.stopListeners && typeof window.stopListeners === 'function') {
@@ -191,6 +181,8 @@ async function saveProject() {
             method,
             body: formData
         });
+
+        console.log('Respuesta recibida:', response.status, response.statusText);
 
         if (response.ok) {
             projectModal.hide();
@@ -251,23 +243,16 @@ function getYoutubeThumbnail(url) {
     return null;
 }
 
-// Función para extraer thumbnail de Instagram (usando un proxy o método alternativo)
-async function getInstagramThumbnail(url) {
-    // Instagram no proporciona thumbnails directamente sin autenticación
-    // Usaremos un placeholder o intentaremos con oEmbed
+// Función para extraer ID de Instagram
+function getInstagramPostId(url) {
     const instagramRegex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(p|reel|tv)\/([a-zA-Z0-9_-]+)\/?/;
     const match = url.match(instagramRegex);
     if (match) {
-        try {
-            // Intentar con oEmbed de Instagram
-            const response = await fetch(`https://graph.facebook.com/v12.0/instagram_oembed?url=${encodeURIComponent(url)}&access_token=YOUR_TOKEN`);
-            if (response.ok) {
-                const data = await response.json();
-                return data.thumbnail_url;
-            }
-        } catch (error) {
-            console.log('No se pudo obtener thumbnail de Instagram, usando placeholder');
-        }
+        return {
+            type: match[1],
+            postId: match[2],
+            mediaUrl: `https://www.instagram.com/${match[1]}/${match[2]}/media/?size=l`
+        };
     }
     return null;
 }
@@ -294,12 +279,14 @@ document.getElementById('videolink').addEventListener('input', async function(e)
     }
 
     // Intentar extraer thumbnail de Instagram
-    const instagramRegex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(p|reel|tv)\/([a-zA-Z0-9_-]+)\/?/;
-    if (instagramRegex.test(videoUrl)) {
+    const instagramData = getInstagramPostId(videoUrl);
+    if (instagramData) {
         thumbnailPreview.innerHTML = `
-            <div class="alert alert-info">
+            <div class="alert alert-success">
                 <strong>✓ Video de Instagram detectado</strong>
-                <p class="mb-0 mt-2"><small>Se usará el thumbnail del video de Instagram. Si quieres una imagen personalizada, súbela manualmente.</small></p>
+                <img src="${instagramData.mediaUrl}" alt="Instagram thumbnail" class="thumbnail-preview mt-2" 
+                     onerror="this.parentElement.innerHTML='<div class=\\'alert alert-warning\\'><strong>⚠ Video de Instagram detectado</strong><p class=\\'mb-0 mt-2\\'><small>No se pudo cargar el preview. El thumbnail se intentará descargar al guardar.</small></p></div>'">
+                <p class="mb-0 mt-2"><small>Este thumbnail se usará automáticamente si no subes una imagen personalizada</small></p>
             </div>
         `;
         return;
