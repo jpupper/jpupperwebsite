@@ -468,6 +468,7 @@ function showBudgetSuccess(message) {
 // Replace select-based references loader with tag-filtered picker
 let selectedReferenceIds = [];
 let refProjects = [];
+let selectedRefTagNames = [];
 
 async function initReferencePicker(selectedRefs = []) {
     selectedReferenceIds = Array.isArray(selectedRefs) ? [...selectedRefs] : [];
@@ -481,13 +482,11 @@ async function initReferencePicker(selectedRefs = []) {
     const projRes = await fetch(`${base}/api/projects`);
     refProjects = await projRes.json();
 
-    // Load tags (fallback to infer from projects)
+    // Load tags (fallback infer)
     let tagList = [];
     try {
         const tagRes = await fetch(`${base}/api/tags`);
-        if (tagRes.ok) {
-            tagList = await tagRes.json(); // [{name, displayName}]
-        }
+        if (tagRes.ok) tagList = await tagRes.json();
     } catch (_) {}
     if (!Array.isArray(tagList) || tagList.length === 0) {
         const set = new Set();
@@ -495,14 +494,21 @@ async function initReferencePicker(selectedRefs = []) {
         tagList = Array.from(set).map(t => ({ name: t, displayName: t }));
     }
 
-    // Build tag chips
+    // Build tag chips (multi-select con Ctrl)
     tagsEl.innerHTML = '';
+    selectedRefTagNames = [];
     const allBtn = document.createElement('button');
     allBtn.className = 'btn btn-sm btn-outline-primary me-2 mb-2 active';
     allBtn.textContent = 'Todos';
     allBtn.dataset.tag = '__all__';
     allBtn.type = 'button';
-    allBtn.addEventListener('click', (e) => { e.preventDefault(); applyTagFilter('__all__'); });
+    allBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        selectedRefTagNames = [];
+        tagsEl.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+        allBtn.classList.add('active');
+        applyTagFilter();
+    });
     tagsEl.appendChild(allBtn);
     tagList.forEach(tag => {
         const btn = document.createElement('button');
@@ -510,7 +516,23 @@ async function initReferencePicker(selectedRefs = []) {
         btn.textContent = tag.displayName || tag.name;
         btn.dataset.tag = tag.name;
         btn.type = 'button';
-        btn.addEventListener('click', (e) => { e.preventDefault(); applyTagFilter(tag.name); });
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const t = tag.name;
+            const isCtrl = e.ctrlKey || e.metaKey; // soportar Cmd en Mac
+            if (isCtrl) {
+                const idx = selectedRefTagNames.indexOf(t);
+                if (idx === -1) selectedRefTagNames.push(t); else selectedRefTagNames.splice(idx, 1);
+                // actualizar estilos
+                btn.classList.toggle('active', selectedRefTagNames.includes(t));
+                allBtn.classList.toggle('active', selectedRefTagNames.length === 0);
+            } else {
+                selectedRefTagNames = [t];
+                tagsEl.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            applyTagFilter();
+        });
         tagsEl.appendChild(btn);
     });
 
@@ -518,23 +540,36 @@ async function initReferencePicker(selectedRefs = []) {
     gridEl.innerHTML = '';
     refProjects.forEach(p => {
         const col = document.createElement('div');
-        col.className = 'col-12 col-sm-6 col-lg-4';
+        col.className = 'col-4 col-sm-3 col-lg-2';
         const card = document.createElement('div');
-        card.className = 'card h-100';
+        card.className = 'card h-100 p-2';
         card.dataset.id = p.id;
         card.dataset.tags = JSON.stringify(p.tags || []);
         const thumbSrc = getImagePathForOrigin(p.thumbnail || '', referencesOrigin);
-        const thumb = thumbSrc || 'https://via.placeholder.com/400x300?text=Sin+imagen';
+        const thumb = thumbSrc || 'https://via.placeholder.com/200x150?text=Sin+imagen';
         card.innerHTML = `
-            <img src="${thumb}" class="card-img-top" alt="${p.title || ''}">
-            <div class="card-body">
-                <h6 class="card-title">${p.title || ''}</h6>
+            <img src="${thumb}" class="card-img-top" alt="${p.title || ''}" style="height:100px;object-fit:cover;border-radius:.25rem;">
+            <div class="card-body p-2">
+                <h6 class="card-title small text-truncate" title="${p.title || ''}">${p.title || ''}</h6>
                 <div class="d-flex flex-wrap gap-1">${(p.tags || []).map(t => `<span class='badge text-bg-light'>${t}</span>`).join('')}</div>
+                <div class="d-flex justify-content-end mt-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Ver</button>
+                </div>
             </div>
         `;
         if (selectedReferenceIds.includes(p.id)) card.classList.add('border-primary');
         card.style.cursor = 'pointer';
-        card.onclick = () => { toggleReference(p.id); showReferencePreview(p.id); };
+        card.style.maxWidth = '180px';
+        // Click en card: seleccionar/quitar referencia
+        card.onclick = (ev) => {
+            // evitar que el botón "Ver" dispare el toggle
+            const targetBtn = ev.target.closest('button');
+            if (targetBtn) return; 
+            toggleReference(p.id);
+        };
+        // Click en "Ver": setear preview activo
+        const viewBtn = card.querySelector('button.btn');
+        if (viewBtn) viewBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); showReferencePreview(p.id); };
         col.appendChild(card);
         gridEl.appendChild(col);
     });
@@ -543,22 +578,36 @@ async function initReferencePicker(selectedRefs = []) {
     // Mostrar preview inicial
     const initialPreviewId = selectedReferenceIds[0] || (refProjects[0] ? refProjects[0].id : null);
     if (initialPreviewId) showReferencePreview(initialPreviewId);
+    // Aplicar filtro inicial (Todos)
+    applyTagFilter();
 }
 
-function applyTagFilter(tagName) {
-    // Toggle active chip styles
-    document.querySelectorAll('#budgetRefTags .btn').forEach(b => b.classList.remove('active'));
-    const btn = document.querySelector(`#budgetRefTags .btn[data-tag='${tagName}']`);
-    if (btn) btn.classList.add('active');
+function applyTagFilter(tagNameOptional) {
+    // Si pasaron un tagName directo, tratarlo como selección única
+    if (typeof tagNameOptional === 'string' && tagNameOptional !== '__all__') {
+        selectedRefTagNames = [tagNameOptional];
+    }
+    // Actualizar estilos de chips
+    const tagsEl = document.getElementById('budgetRefTags');
+    const allBtn = tagsEl.querySelector(".btn[data-tag='__all__']");
+    tagsEl.querySelectorAll('.btn').forEach(b => {
+        const t = b.dataset.tag;
+        if (t === '__all__') {
+            b.classList.toggle('active', selectedRefTagNames.length === 0);
+        } else {
+            b.classList.toggle('active', selectedRefTagNames.includes(t));
+        }
+    });
 
-    // Show/hide grid cards
+    // Mostrar/ocultar cards
     const cards = document.querySelectorAll('#budgetRefGrid .card');
     cards.forEach(card => {
-        if (tagName === '__all__') {
+        if (selectedRefTagNames.length === 0) {
             card.parentElement.style.display = '';
         } else {
             const tags = JSON.parse(card.dataset.tags || '[]');
-            card.parentElement.style.display = tags.includes(tagName) ? '' : 'none';
+            const matches = selectedRefTagNames.every(t => tags.includes(t));
+            card.parentElement.style.display = matches ? '' : 'none';
         }
     });
 }
@@ -572,67 +621,158 @@ function toggleReference(projectId) {
 }
 
 function syncSelectedChips() {
-    const selectedEl = document.getElementById('budgetRefSelected');
-    if (!selectedEl) return;
-    selectedEl.innerHTML = '';
-    if (selectedReferenceIds.length === 0) {
-        selectedEl.innerHTML = '<small class="text-muted">No hay referencias seleccionadas</small>';
-        return;
-    }
-    selectedReferenceIds.forEach(id => {
-        const p = refProjects.find(pr => pr.id === id);
-        const chip = document.createElement('span');
-        chip.className = 'badge rounded-pill text-bg-primary me-2 mb-2';
-        chip.textContent = p ? p.title : id;
-        chip.style.cursor = 'pointer';
-        chip.title = 'Quitar';
-        chip.onclick = () => toggleReference(id);
-        selectedEl.appendChild(chip);
-    });
+  const chipsEl = document.getElementById('budgetRefSelected');
+  if (!chipsEl) return;
+  chipsEl.innerHTML = '';
+  (selectedReferenceIds || []).forEach(id => {
+    const project = (refProjects || []).find(p => String(p.id) === String(id));
+    if (!project) return;
+    const chip = document.createElement('span');
+    chip.className = 'badge bg-secondary me-2 mb-2';
+    chip.textContent = project.title || project.name || 'Proyecto';
+    chip.style.cursor = 'pointer';
+    chip.title = 'Quitar referencia';
+    chip.onclick = () => toggleReference(project.id, false);
+    chipsEl.appendChild(chip);
+  });
 }
 
-function showReferencePreview(projectId) {
-    const container = document.getElementById('budgetRefPreview');
-    if (!container) return;
-    const p = refProjects.find(pr => pr.id === projectId);
-    container.innerHTML = '';
-    if (!p) {
-        container.innerHTML = '<small class="text-muted">Seleccioná una referencia para previsualizar</small>';
-        return;
-    }
-    const videoUrl = p.videolink || '';
-    const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]+)/;
-    const instagramRegex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(p|reel|tv)\/([a-zA-Z0-9_-]+)\/?/;
-    const youtubeMatch = videoUrl.match(youtubeRegex);
-    const instagramMatch = videoUrl.match(instagramRegex);
+// Renderizar grilla con paginación 5/10/20 y botones Ver/Seleccionar
+function renderRefGrid() {
+  const gridEl = document.getElementById('budgetRefGrid');
+  if (!gridEl) return;
+  const all = Array.isArray(filteredProjectsCache) ? filteredProjectsCache : (refProjects || []);
 
-    if (youtubeMatch && videoUrl.trim() !== '') {
-        const videoId = youtubeMatch[1];
-        container.innerHTML = `
-          <div style="position:relative;width:100%;height:0;padding-bottom:56.25%;overflow:hidden;border:1px solid #ddd;border-radius:.5rem;">
-            <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" src="https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  const sizeSelect = document.getElementById('budgetRefPageSize');
+  const pageSize = sizeSelect ? Number(sizeSelect.value) || 10 : 10;
+  const start = (refPage || 0) * pageSize;
+  const slice = all.slice(start, start + pageSize);
+
+  gridEl.innerHTML = '';
+
+  slice.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'card m-2';
+    card.style.width = '220px';
+    const imgSrc = getImagePathForOrigin(p.thumbnail || '', referencesOrigin || null);
+    const isSelected = (selectedReferenceIds || []).includes(p.id);
+    card.innerHTML = `
+      <img src="${imgSrc}" class="card-img-top" alt="${p.title || ''}" style="height:120px;object-fit:cover;"/>
+      <div class="card-body p-2">
+        <div class="d-flex align-items-center justify-content-between">
+          <span class="small">${p.title || p.name || ''}</span>
+          <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-outline-primary" data-action="view">Ver</button>
+            <button type="button" class="btn btn-sm ${isSelected ? 'btn-success' : 'btn-outline-success'}" data-action="toggle">${isSelected ? '✓' : '+'}</button>
           </div>
-        `;
-    } else if (instagramMatch && videoUrl.trim() !== '') {
-        const postType = instagramMatch[1];
-        const postId = instagramMatch[2];
-        container.innerHTML = `
-          <div style="display:flex;justify-content:center;align-items:flex-start;min-height:650px;border:1px solid #ddd;border-radius:.5rem;padding:8px;">
-            <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/${postType}/${postId}/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"></blockquote>
-          </div>
-        `;
-        if (!window.instgrm) {
-            const script = document.createElement('script');
-            script.async = true;
-            script.src = '//www.instagram.com/embed.js';
-            document.body.appendChild(script);
-            script.onload = () => { if (window.instgrm) window.instgrm.Embeds.process(); };
-        } else {
-            window.instgrm.Embeds.process();
-        }
+        </div>
+      </div>
+    `;
+    const viewBtn = card.querySelector('[data-action="view"]');
+    const toggleBtn = card.querySelector('[data-action="toggle"]');
+    viewBtn.onclick = () => showReferencePreview(p.id);
+    toggleBtn.onclick = () => toggleReference(p.id);
+    gridEl.appendChild(card);
+  });
+
+  const totalPages = Math.max(1, Math.ceil(all.length / pageSize));
+  const pageLabel = document.getElementById('budgetRefPageLabel');
+  if (pageLabel) pageLabel.textContent = `${(refPage || 0) + 1} / ${totalPages}`;
+  const prevBtn = document.getElementById('budgetRefPrev');
+  const nextBtn = document.getElementById('budgetRefNext');
+  if (prevBtn) prevBtn.disabled = (refPage || 0) <= 0;
+  if (nextBtn) nextBtn.disabled = (refPage || 0) >= (totalPages - 1);
+}
+
+function getFilteredProjects() {
+  const tags = Array.from(selectedRefTagNames || []);
+  if (!tags.length) return refProjects || [];
+  return (refProjects || []).filter(p => Array.isArray(p.tags) && tags.every(t => p.tags.includes(t)));
+}
+
+function ensureRefGridControls() {
+  const controlsHost = document.getElementById('budgetRefControlsHost');
+  const gridEl = document.getElementById('budgetRefGrid');
+  if (!gridEl) return;
+  if (!controlsHost) {
+    const wrapper = document.createElement('div');
+    wrapper.id = 'budgetRefControlsHost';
+    wrapper.className = 'd-flex align-items-center justify-content-between my-2';
+    wrapper.innerHTML = `
+      <div class="d-flex align-items-center gap-2">
+        <label class="me-1 small">Items por página:</label>
+        <select id="budgetRefPageSize" class="form-select form-select-sm" style="width:90px">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button id="budgetRefPrev" type="button" class="btn btn-sm btn-outline-secondary">Prev</button>
+        <span id="budgetRefPageLabel" class="small">1 / 1</span>
+        <button id="budgetRefNext" type="button" class="btn btn-sm btn-outline-secondary">Next</button>
+      </div>
+    `;
+    gridEl.parentElement.insertBefore(wrapper, gridEl);
+    const pageSizeSelect = wrapper.querySelector('#budgetRefPageSize');
+    pageSizeSelect.onchange = () => { refPage = 0; renderRefGrid(); };
+    wrapper.querySelector('#budgetRefPrev').onclick = () => { if ((refPage || 0) > 0) { refPage--; renderRefGrid(); } };
+    wrapper.querySelector('#budgetRefNext').onclick = () => {
+      const all = Array.isArray(filteredProjectsCache) ? filteredProjectsCache : (refProjects || []);
+      const pageSize = Number(pageSizeSelect.value) || 10;
+      const totalPages = Math.max(1, Math.ceil(all.length / pageSize));
+      if ((refPage || 0) < totalPages - 1) { refPage++; renderRefGrid(); }
+    };
+  }
+}
+
+function applyTagFilter(tagName, isMultiSelect) {
+  const tagButtons = document.querySelectorAll('#budgetRefTags .btn');
+  if (!isMultiSelect) selectedRefTagNames.clear();
+  if (tagName) {
+    if (selectedRefTagNames.has(tagName) && isMultiSelect) {
+      selectedRefTagNames.delete(tagName);
     } else {
-        const thumbSrc = getImagePathForOrigin(p.thumbnail || '', referencesOrigin);
-        const thumb = thumbSrc || 'https://via.placeholder.com/640x360?text=Sin+imagen';
-        container.innerHTML = `<img src="${thumb}" alt="${p.title || ''}" class="img-fluid rounded border">`;
+      selectedRefTagNames.add(tagName);
     }
+  }
+  tagButtons.forEach(btn => {
+    const t = btn.dataset.tag;
+    btn.classList.toggle('btn-primary', selectedRefTagNames.has(t));
+    btn.classList.toggle('btn-outline-primary', !selectedRefTagNames.has(t));
+  });
+  filteredProjectsCache = getFilteredProjects();
+  refPage = 0;
+  renderRefGrid();
+}
+
+function initReferencePicker(selectedRefs = []) {
+  selectedReferenceIds = Array.isArray(selectedRefs) ? selectedRefs.map(String) : [];
+  const base = document.getElementById('btnRefOriginVps')?.classList.contains('active')
+    ? 'https://vps-4455523-x.dattaweb.com/jpupper/api'
+    : 'http://localhost:3243/api';
+  fetch(`${base}/projects`).then(r => r.json()).then(projects => {
+    refProjects = projects || [];
+    const tagsContainer = document.getElementById('budgetRefTags');
+    if (tagsContainer) {
+      const tagSet = new Set();
+      refProjects.forEach(p => (p.tags || []).forEach(t => tagSet.add(t)));
+      tagsContainer.innerHTML = '';
+      Array.from(tagSet).sort().forEach(t => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'btn btn-sm btn-outline-primary me-2 mb-2';
+        b.dataset.tag = t;
+        b.textContent = t;
+        b.onclick = (e) => applyTagFilter(t, (e.ctrlKey || e.metaKey));
+        tagsContainer.appendChild(b);
+      });
+    }
+    ensureRefGridControls();
+    filteredProjectsCache = getFilteredProjects();
+    refPage = 0;
+    renderRefGrid();
+    syncSelectedChips();
+    if (selectedReferenceIds.length) showReferencePreview(selectedReferenceIds[0]);
+  }).catch(err => console.error('Error cargando proyectos para selector:', err));
 }
