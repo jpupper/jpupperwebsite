@@ -55,13 +55,20 @@ router.post('/', async (req, res) => {
             if (!existing) isUnique = true;
         }
 
-        // Calculate totals
+        // Validate and calculate totals (robust to string numbers)
+        if (!Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ message: 'Items vacíos o inválidos' });
+        }
         let subtotal = 0;
         const processedItems = items.map(item => {
-            const itemTotal = item.quantity * item.unitPrice;
+            const qty = parseFloat(item.quantity);
+            const price = parseFloat(item.unitPrice);
+            const itemTotal = (isFinite(qty) ? qty : 0) * (isFinite(price) ? price : 0);
             subtotal += itemTotal;
             return {
-                ...item,
+                description: item.description,
+                quantity: isFinite(qty) ? qty : 0,
+                unitPrice: isFinite(price) ? price : 0,
                 total: itemTotal
             };
         });
@@ -83,7 +90,8 @@ router.post('/', async (req, res) => {
         res.status(201).json(budget);
     } catch (error) {
         console.error('Error creating budget:', error);
-        res.status(500).json({ message: 'Error creating budget', error: error.message });
+        const status = error.name === 'ValidationError' ? 400 : 500;
+        res.status(status).json({ message: 'Error creating budget', error: error.message });
     }
 });
 
@@ -92,13 +100,20 @@ router.put('/:id', async (req, res) => {
     try {
         const { projectName, description, client, paymentTerms, technicalRequirements, items, references } = req.body;
 
-        // Calculate totals
+        // Validate and calculate totals (robust to string numbers)
+        if (!Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ message: 'Items vacíos o inválidos' });
+        }
         let subtotal = 0;
         const processedItems = items.map(item => {
-            const itemTotal = item.quantity * item.unitPrice;
+            const qty = parseFloat(item.quantity);
+            const price = parseFloat(item.unitPrice);
+            const itemTotal = (isFinite(qty) ? qty : 0) * (isFinite(price) ? price : 0);
             subtotal += itemTotal;
             return {
-                ...item,
+                description: item.description,
+                quantity: isFinite(qty) ? qty : 0,
+                unitPrice: isFinite(price) ? price : 0,
                 total: itemTotal
             };
         });
@@ -127,7 +142,8 @@ router.put('/:id', async (req, res) => {
         res.json(budget);
     } catch (error) {
         console.error('Error updating budget:', error);
-        res.status(500).json({ message: 'Error updating budget', error: error.message });
+        const status = error.name === 'ValidationError' ? 400 : 500;
+        res.status(status).json({ message: 'Error updating budget', error: error.message });
     }
 });
 
