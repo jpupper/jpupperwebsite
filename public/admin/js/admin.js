@@ -230,3 +230,15 @@ document.getElementById('tags-tab')?.addEventListener('click', loadTags);
 // Initialize
 checkAuth();
 updateEnvironmentIndicator();
+
+// Handle tab switching via URL hash
+window.addEventListener('load', () => {
+    const hash = window.location.hash;
+    if (hash) {
+        const tabEl = document.querySelector(`button[data-bs-target="${hash}-content"]`);
+        if (tabEl) {
+            const tab = new bootstrap.Tab(tabEl);
+            tab.show();
+        }
+    }
+});

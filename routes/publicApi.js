@@ -122,6 +122,29 @@ router.post('/budgets', async (req, res) => {
             data.code = await Budget.generateCode();
         }
 
+        // Default Payment Terms
+        if (!data.paymentTerms || data.paymentTerms.trim() === '') {
+            data.paymentTerms = '4. CONDICIONES DE PAGO Y FACTURACIÓN\nMedios de Pago: Se acepta Factura C, Criptomonedas, Dólares (efectivo/transferencia) o Pesos.\nCotización: Para pagos en pesos, se tomará la cotización del dólar del día en que se realice la inversión inicial.\nMora en el Pago: Una vez realizada la entrega final, el cliente dispone de 15 días corridos para cancelar el saldo. Pasado ese período, se aplicará un recargo del 10% sobre el presupuesto total por demora.';
+        }
+
+        // Enrich references from database if only IDs are provided or for accuracy
+        if (data.references && Array.isArray(data.references)) {
+            for (let i = 0; i < data.references.length; i++) {
+                const ref = data.references[i];
+                if (ref.id) {
+                    const project = await Project.findOne({ id: ref.id });
+                    if (project) {
+                        data.references[i] = {
+                            id: project.id,
+                            title: project.title,
+                            url: project.url || (project.videolink || ''),
+                            thumbnail: project.thumbnail || ''
+                        };
+                    }
+                }
+            }
+        }
+
         // Calculate totals if items are provided
         if (data.items && Array.isArray(data.items)) {
             let total = 0;
@@ -156,6 +179,24 @@ router.put('/budgets/:id', async (req, res) => {
         }
 
         const data = req.body;
+
+        // Enrich references from database
+        if (data.references && Array.isArray(data.references)) {
+            for (let i = 0; i < data.references.length; i++) {
+                const ref = data.references[i];
+                if (ref.id) {
+                    const project = await Project.findOne({ id: ref.id });
+                    if (project) {
+                        data.references[i] = {
+                            id: project.id,
+                            title: project.title,
+                            url: project.url || (project.videolink || ''),
+                            thumbnail: project.thumbnail || ''
+                        };
+                    }
+                }
+            }
+        }
 
         // Recalculate totals if items are updated
         if (data.items && Array.isArray(data.items)) {

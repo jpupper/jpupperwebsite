@@ -45,7 +45,12 @@
                         <form id="login-form">
                             <div class="mb-3">
                                 <label for="accessCode" class="form-label">Código de Acceso</label>
-                                <input type="password" class="form-control" id="accessCode" placeholder="Ingrese el código..." required>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="accessCode" placeholder="Ingrese el código..." required>
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Entrar</button>
                         </form>
@@ -158,8 +163,9 @@ https://vps-4455523-x.dattaweb.com/jpupper/api/public/projects/new-project</pre>
                 </div>
 
                 <div class="card mb-4">
-                    <div class="card-header bg-dark border-bottom border-secondary">
+                    <div class="card-header bg-dark border-bottom border-secondary d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Endpoints de Presupuestos</h5>
+                        <span class="badge bg-info">v1.1</span>
                     </div>
                     <div class="card-body">
                         <!-- GET ALL -->
@@ -209,6 +215,31 @@ https://vps-4455523-x.dattaweb.com/jpupper/api/public/budgets</pre>
                         </div>
                     </div>
                 </div>
+
+                <!-- AI SKILLS SECTION -->
+                <div class="card mb-5 border-info">
+                    <div class="card-header bg-info text-dark d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-robot"></i> AI Integration & Skills</h5>
+                        <span class="badge bg-dark">Recommended</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6>Prompt para IA: Creador de Presupuestos</h6>
+                                <p class="text-secondary">Usa este botón para copiar una estructura de órdenes (System Prompt) que puedes pegar en ChatGPT, Claude o cualquier IA. Esto le permitirá a la IA entender exactamente cómo usar tu API para crear presupuestos para tus clientes.</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <button class="btn btn-info w-100 mb-2" onclick="copyAiPrompt()">
+                                    <i class="bi bi-clipboard-check"></i> COPIAR PROMPT (Skill)
+                                </button>
+                                <button class="btn btn-outline-info w-100" onclick="openBudgetTool()">
+                                    <i class="bi bi-box-arrow-up-right"></i> ABRIR SKILL / HERRAMIENTA
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -264,6 +295,19 @@ https://vps-4455523-x.dattaweb.com/jpupper/api/public/budgets</pre>
             }
         });
 
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('accessCode');
+            const icon = this.querySelector('i');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        });
+
         function toggleApiKey() {
             const display = document.getElementById('apiKeyDisplay');
             if (apiKeyHidden) {
@@ -273,6 +317,57 @@ https://vps-4455523-x.dattaweb.com/jpupper/api/public/budgets</pre>
                 display.textContent = '**********';
                 apiKeyHidden = true;
             }
+        }
+
+        function copyAiPrompt() {
+            const baseUrl = document.getElementById('baseUrlDisplay').textContent.trim();
+            const apiKey = fullApiKey;
+            
+            const prompt = `# JPUPPER BUDGET SPECIALIST SKILL
+You are a 'Budget Specialist' AI for the JPupper Studio. Your role is to help create professional project budgets by interacting with the JPupper API.
+
+## API CONFIGURATION
+- Base URL: ${baseUrl}
+- Auth: Header 'X-API-KEY' = ${apiKey}
+- Endpoint: POST /budgets
+
+## ACTION: GENERATE BUDGET
+To create a budget, you must send a POST request with the following JSON structure:
+
+\`\`\`json
+{
+  "projectName": "Title of the project",
+  "client": "Name of the client or company",
+  "description": "Brief description of the scope",
+  "paymentTerms": "Optional custom terms (e.g., 50% upfront)",
+  "technicalRequirements": "Optional technical stack",
+  "items": [
+    { "description": "Phase or Task", "quantity": 1, "unitPrice": 1000 }
+  ],
+  "references": [
+    { "id": "project-slug" }
+  ]
+}
+\`\`\`
+
+## YOUR WORKFLOW
+1. **Consultation**: Ask the user for the Project Title, Client name, Description, and the list of service items.
+2. **References**: You can use \`GET /projects\` to find relevant IDs for portfolio references.
+3. **Execution**: Formulate the JSON and execute the POST request.
+4. **Final Step**: Provide the user with the generated Budget Code and the view link if returned.
+
+Always maintain a professional, high-end software development studio tone.`;
+
+            navigator.clipboard.writeText(prompt).then(() => {
+                alert('¡Prompt de IA (Skill) copiado con éxito! Úsalo en ChatGPT, Claude u otra IA.');
+            }).catch(err => {
+                console.error('Error copying text: ', err);
+            });
+        }
+
+        function openBudgetTool() {
+            // Redirect to the budgets tab in index.html
+            window.location.href = 'index.html#budgets';
         }
 
         // Detect correct Base URL based on current host

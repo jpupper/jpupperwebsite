@@ -1,0 +1,16 @@
+{
+  "projectName": "Instalación Juego de Perros V3",
+  "client": "Cliente Mascotas (Final)",
+  "description": "Desarrollo de juego interactivo para perros.",
+  "items": [
+    {
+      "description": "Licencia y Software",
+      "quantity": 1,
+      "unitPrice": 4500
+    }
+  ],
+  "references": [
+    { "id": "akalaca" },
+    { "id": "1888chroma" }
+  ]
+}

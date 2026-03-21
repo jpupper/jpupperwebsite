@@ -1,0 +1,15 @@
+{
+  "projectName": "Juego de Perros - Versión API Inteligente",
+  "client": "Cliente Mascotas (Prueba API)",
+  "items": [
+    {
+      "description": "Desarrollo de Juego de Perros Interactivo",
+      "quantity": 1,
+      "unitPrice": 3200
+    }
+  ],
+  "references": [
+    { "id": "akalaca" },
+    { "id": "1888chroma" }
+  ]
+}

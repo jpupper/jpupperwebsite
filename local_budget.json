@@ -1,0 +1,28 @@
+{
+  "projectName": "Instalación Interactiva - Juego de Perros",
+  "client": "Evento Canino 2026",
+  "description": "Desarrollo de una experiencia lúdica donde los participantes interactúan con perros virtuales. El sistema detecta movimientos y gestos para simular el entrenamiento y juego con mascotas en una pantalla de gran formato.",
+  "paymentTerms": "50% Anticipo, 50% Finalización",
+  "technicalRequirements": "Sensores Leap Motion / Kinect, Pantalla LED P2.5 o similar, PC de Alto Rendimiento.",
+  "items": [
+    {
+      "description": "Desarrollo del motor de juego y física de perros virtuales (IA)",
+      "quantity": 1,
+      "unitPrice": 4200
+    },
+    {
+      "description": "Integración de hardware de trackeo de movimiento",
+      "quantity": 1,
+      "unitPrice": 1500
+    },
+    {
+      "description": "Diseño de personajes (perros) y entornos 3D interactivos",
+      "quantity": 1,
+      "unitPrice": 2500
+    }
+  ],
+  "references": [
+    { "id": "leap-motion-interactive", "title": "Referencia: Experiencia con Leap Motion" },
+    { "id": "interactive-show-dogs", "title": "Proyectos previos animales (Akalaca)" }
+  ]
+}

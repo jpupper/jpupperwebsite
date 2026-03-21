@@ -86,8 +86,11 @@ async function loadBudgets() {
 // Show add budget form
 function showAddBudgetForm() {
     document.getElementById('budgetForm').reset();
-    document.getElementById('budgetId').value = '';
-    document.getElementById('budgetCode').value = '';
+    document.getElementById('budgetProjectName').value = '';
+    document.getElementById('budgetClient').value = '';
+    document.getElementById('budgetDescription').value = '';
+    document.getElementById('budgetTechnicalRequirements').value = '';
+    document.getElementById('budgetPaymentTerms').value = '4. CONDICIONES DE PAGO Y FACTURACIÓN\nMedios de Pago: Se acepta Factura C, Criptomonedas, Dólares (efectivo/transferencia) o Pesos.\nCotización: Para pagos en pesos, se tomará la cotización del dólar del día en que se realice la inversión inicial.\nMora en el Pago: Una vez realizada la entrega final, el cliente dispone de 15 días corridos para cancelar el saldo. Pasado ese período, se aplicará un recargo del 10% sobre el presupuesto total por demora.';
     document.getElementById('budgetModalTitle').textContent = 'Crear Presupuesto';
     document.getElementById('budgetItemsContainer').innerHTML = '';
     document.getElementById('budgetLinkDisplay').style.display = 'none';

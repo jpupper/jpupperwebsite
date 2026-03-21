@@ -19,7 +19,12 @@
                         <form id="login-form">
                             <div class="mb-3">
                                 <label for="accessCode" class="form-label">Código de Acceso</label>
-                                <input type="password" class="form-control" id="accessCode" placeholder="Ingrese el código..." required>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="accessCode" placeholder="Ingrese el código..." required>
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Entrar</button>
                         </form>
@@ -235,5 +240,19 @@
     <script src="../js/config.js"></script>
     <script src="js/admin.js"></script>
     <script src="js/budgets.js"></script>
+    <script>
+        // Toggle password visibility for main admin login
+        document.getElementById('togglePassword')?.addEventListener('click', function() {
+            const passwordInput = document.getElementById('accessCode');
+            const icon = this.querySelector('i');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        });
+    </script>
 </body>
 </html>
