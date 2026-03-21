@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -34,12 +35,14 @@ app.use('/jpupper/api/auth', require('./routes/auth'));
 app.use('/jpupper/api/projects', require('./routes/projects'));
 app.use('/jpupper/api/tags', require('./routes/tags'));
 app.use('/jpupper/api/budgets', require('./routes/budgets'));
+app.use('/jpupper/api/public', require('./routes/publicApi')); // Public API with key
 
 // Rutas sin prefijo para desarrollo local y compatibilidad
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/tags', require('./routes/tags'));
 app.use('/api/budgets', require('./routes/budgets'));
+app.use('/api/public', require('./routes/publicApi')); // Public API with key
 
 // Export routes without authentication (if needed)
 app.get('/jpupper/api/export/projects', async (req, res) => {
@@ -73,6 +76,16 @@ app.get('/api/export/projects', async (req, res) => {
         console.error('Error exporting projects:', error);
         res.status(500).json({ success: false, message: 'Error exporting projects' });
     }
+});
+
+// Endpoint para obtener la configuración de la API (usado por la docu del admin)
+app.get('/api/admin/config', (req, res) => {
+    // En una app real esto debería estar muy protegido
+    // Por ahora lo exponemos para la página api.html
+    res.json({
+        apiKey: config.apiKey,
+        baseUrl: process.env.BASE_PATH ? `${process.env.BASE_PATH}/api/public` : '/api/public'
+    });
 });
 
 // Main route for /jpupper

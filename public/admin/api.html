@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public API Documentation - JPupper</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+    <style>
+        pre {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .endpoint-badge {
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .method-get { background-color: #61affe; color: white; }
+        .method-post { background-color: #49cc90; color: white; }
+        .method-put { background-color: #fca130; color: white; }
+        .method-delete { background-color: #f93e3e; color: white; }
+        .card { border: 1px solid #333; background-color: #121212; color: #fff; }
+        .secret-info {
+            background: #252525;
+            padding: 10px;
+            border-left: 4px solid #00cfcf;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div id="loginForm" class="row mt-5" style="display: none;">
+            <div class="col-md-4 offset-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Admin Access Required</h3>
+                        <form id="login-form">
+                            <div class="mb-3">
+                                <label for="accessCode" class="form-label">Código de Acceso</label>
+                                <input type="password" class="form-control" id="accessCode" placeholder="Ingrese el código..." required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="apiPanel" class="row mt-4" style="display: none;">
+            <div class="col-md-10 offset-md-1">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1><i class="bi bi-code-square"></i> Public API Documentation</h1>
+                    <a href="index.html" class="btn btn-outline-light">
+                        <i class="bi bi-arrow-left"></i> Volver al Admin
+                    </a>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-dark border-bottom border-secondary">
+                        <h5 class="mb-0">Configuración y Credenciales</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Para usar la API pública, debes incluir la siguiente cabecera en todas tus solicitudes:</p>
+                        <div class="secret-info mb-3">
+                            Header: <strong>X-API-KEY</strong><br>
+                            Value: <span id="apiKeyDisplay">**********</span>
+                            <button class="btn btn-sm btn-outline-info ms-2" onclick="toggleApiKey()">
+                                <i class="bi bi-eye"></i> Ver
+                            </button>
+                        </div>
+                        <p>Alternativamente, puedes pasarla como parámetro de consulta: <code>?apiKey=TU_CLAVE</code></p>
+                        <hr class="border-secondary">
+                        <p><strong>Base URL:</strong></p>
+                        <div class="secret-info" id="baseUrlDisplay">
+                            https://vps-4455523-x.dattaweb.com/jpupper/api/public
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-dark border-bottom border-secondary">
+                        <h5 class="mb-0">Endpoints de Proyectos</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- GET ALL -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="endpoint-badge method-get">GET</span>
+                                <strong>/projects</strong>
+                            </div>
+                            <p class="text-secondary small">Obtiene todos los proyectos del sistema.</p>
+                            <pre>curl -H "X-API-KEY: YOUR_API_KEY" https://vps-4455523-x.dattaweb.com/jpupper/api/public/projects</pre>
+                        </div>
+
+                        <!-- GET ONE -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="endpoint-badge method-get">GET</span>
+                                <strong>/projects/:id</strong>
+                            </div>
+                            <p class="text-secondary small">Obtiene los detalles de un proyecto específico.</p>
+                            <pre>curl -H "X-API-KEY: YOUR_API_KEY" https://vps-4455523-x.dattaweb.com/jpupper/api/public/projects/babylon-js</pre>
+                        </div>
+
+                        <!-- POST -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="endpoint-badge method-post">POST</span>
+                                <strong>/projects</strong>
+                            </div>
+                            <p class="text-secondary small">Crea un nuevo proyecto.</p>
+                            <pre>
+curl -X POST -H "Content-Type: application/json" -H "X-API-KEY: YOUR_API_KEY" \
+-d '{
+  "id": "new-project",
+  "title": "Nuevo Proyecto",
+  "description": "Descripción del proyecto",
+  "url": "https://example.com",
+  "tags": ["web", "design"]
+}' \
+https://vps-4455523-x.dattaweb.com/jpupper/api/public/projects</pre>
+                        </div>
+
+                        <!-- PUT -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="endpoint-badge method-put">PUT</span>
+                                <strong>/projects/:id</strong>
+                            </div>
+                            <p class="text-secondary small">Modifica un proyecto existente.</p>
+                            <pre>
+curl -X PUT -H "Content-Type: application/json" -H "X-API-KEY: YOUR_API_KEY" \
+-d '{
+  "title": "Título Actualizado"
+}' \
+https://vps-4455523-x.dattaweb.com/jpupper/api/public/projects/new-project</pre>
+                        </div>
+
+                        <!-- DELETE -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="endpoint-badge method-delete">DELETE</span>
+                                <strong>/projects/:id</strong>
+                            </div>
+                            <p class="text-secondary small">Elimina un proyecto.</p>
+                            <pre>curl -X DELETE -H "X-API-KEY: YOUR_API_KEY" https://vps-4455523-x.dattaweb.com/jpupper/api/public/projects/new-project</pre>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-dark border-bottom border-secondary">
+                        <h5 class="mb-0">Endpoints de Presupuestos</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- GET ALL -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="endpoint-badge method-get">GET</span>
+                                <strong>/budgets</strong>
+                            </div>
+                            <p class="text-secondary small">Obtiene todos los presupuestos.</p>
+                            <pre>curl -H "X-API-KEY: YOUR_API_KEY" https://vps-4455523-x.dattaweb.com/jpupper/api/public/budgets</pre>
+                        </div>
+
+                        <!-- GET ONE -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="endpoint-badge method-get">GET</span>
+                                <strong>/budgets/:id_o_codigo</strong>
+                            </div>
+                            <p class="text-secondary small">Obtiene un presupuesto por su ID de base de datos o su código alfanumérico.</p>
+                            <pre>curl -H "X-API-KEY: YOUR_API_KEY" https://vps-4455523-x.dattaweb.com/jpupper/api/public/budgets/ABC123XYZ789</pre>
+                        </div>
+
+                        <!-- POST -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="endpoint-badge method-post">POST</span>
+                                <strong>/budgets</strong>
+                            </div>
+                            <p class="text-secondary small">Crea un nuevo presupuesto (los items son opcionales).</p>
+                            <pre>
+curl -X POST -H "Content-Type: application/json" -H "X-API-KEY: YOUR_API_KEY" \
+-d '{
+  "projectName": "App Mobile",
+  "client": "Cliente S.A.",
+  "description": "Desarrollo de App",
+  "paymentTerms": "50% adelanto, 50% entrega",
+  "technicalRequirements": "React Native, Firebase",
+  "items": [
+    { "description": "Diseño UI", "quantity": 1, "unitPrice": 500 },
+    { "description": "Desarrollo", "quantity": 1, "unitPrice": 1500 }
+  ],
+  "references": [
+    { "id": "babylon-js", "title": "Referencia WebGL" }
+  ]
+}' \
+https://vps-4455523-x.dattaweb.com/jpupper/api/public/budgets</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ACCESS_CODE_REQUIRED = 'vamossusan';
+        let fullApiKey = 'jpupper_admin_api_key_2024_secret_v1';
+        let apiKeyHidden = true;
+
+        async function checkAuth() {
+            const token = localStorage.getItem('adminToken');
+            if (!token) {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('apiPanel').style.display = 'none';
+            } else {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('apiPanel').style.display = 'block';
+                
+                // Fetch dynamic config
+                try {
+                    const response = await fetch('/api/admin/config');
+                    const data = await response.json();
+                    if (data.apiKey) {
+                        fullApiKey = data.apiKey;
+                        // Determine base URL (vps or local)
+                        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                        const currentBase = isLocal 
+                            ? `http://${window.location.host}${data.baseUrl}`
+                            : `https://vps-4455523-x.dattaweb.com${data.baseUrl}`;
+                        
+                        document.getElementById('baseUrlDisplay').textContent = currentBase;
+                        
+                        // Update Curl examples
+                        const codeBlocks = document.querySelectorAll('pre');
+                        codeBlocks.forEach(pre => {
+                            pre.textContent = pre.textContent.replace(/https:\/\/vps-4455523-x.dattaweb.com\/jpupper\/api\/public/g, currentBase);
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error fetching API config', e);
+                }
+            }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const code = document.getElementById('accessCode').value;
+            if (code === ACCESS_CODE_REQUIRED) {
+                localStorage.setItem('adminToken', 'local-admin-token');
+                checkAuth();
+            } else {
+                alert('Acceso denegado');
+            }
+        });
+
+        function toggleApiKey() {
+            const display = document.getElementById('apiKeyDisplay');
+            if (apiKeyHidden) {
+                display.textContent = fullApiKey;
+                apiKeyHidden = false;
+            } else {
+                display.textContent = '**********';
+                apiKeyHidden = true;
+            }
+        }
+
+        // Detect correct Base URL based on current host
+        window.onload = () => {
+            checkAuth();
+        };
+    </script>
+</body>
+</html>

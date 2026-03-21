@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "init-tags": "node scripts/init-tags.js"
+    "init-tags": "node scripts/init-tags.js",
+    "deploy": "deploy_scripts/run_deploy.bat"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -16,7 +17,8 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.3.1",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "basic-ftp": "^5.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
