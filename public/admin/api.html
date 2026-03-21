@@ -33,6 +33,37 @@
             border-left: 4px solid #00cfcf;
             font-family: monospace;
         }
+        
+        /* AI Skill Custom Styles */
+        .ai-skill-card {
+            border: 2px solid #00D9FF !important;
+            background-color: #050505 !important;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.15);
+            margin-top: 2rem;
+        }
+        .ai-skill-header {
+            background-color: #00D9FF !important;
+            color: #000 !important;
+            font-weight: 900;
+        }
+        .btn-ai-copy {
+            background-color: #00D9FF !important;
+            color: #000 !important;
+            font-weight: 800 !important;
+            transition: all 0.3s ease;
+        }
+        .btn-ai-copy:hover {
+            background-color: #00b8e6 !important;
+            transform: translateY(-2px);
+        }
+        .btn-ai-open {
+            border: 1px solid #00D9FF !important;
+            color: #00D9FF !important;
+            font-weight: 800 !important;
+        }
+        .btn-ai-open:hover {
+            background-color: rgba(0, 217, 255, 0.1) !important;
+        }
     </style>
 </head>
 <body>
@@ -217,10 +248,10 @@ https://vps-4455523-x.dattaweb.com/jpupper/api/public/budgets</pre>
                 </div>
 
                 <!-- AI SKILLS SECTION -->
-                <div class="card mb-5 border-info">
-                    <div class="card-header bg-info text-dark d-flex justify-content-between align-items-center">
+                <div class="card mb-5 ai-skill-card">
+                    <div class="card-header ai-skill-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="bi bi-robot"></i> AI Integration & Skills</h5>
-                        <span class="badge bg-dark">Recommended</span>
+                        <span class="badge bg-dark">v1.2 - Premium</span>
                     </div>
                     <div class="card-body">
                         <div class="row align-items-center">
@@ -229,10 +260,10 @@ https://vps-4455523-x.dattaweb.com/jpupper/api/public/budgets</pre>
                                 <p class="text-secondary">Usa este botón para copiar una estructura de órdenes (System Prompt) que puedes pegar en ChatGPT, Claude o cualquier IA. Esto le permitirá a la IA entender exactamente cómo usar tu API para crear presupuestos para tus clientes.</p>
                             </div>
                             <div class="col-md-4 text-end">
-                                <button class="btn btn-info w-100 mb-2" onclick="copyAiPrompt()">
+                                <button class="btn btn-ai-copy w-100 mb-2" onclick="copyAiPrompt()">
                                     <i class="bi bi-clipboard-check"></i> COPIAR PROMPT (Skill)
                                 </button>
-                                <button class="btn btn-outline-info w-100" onclick="openBudgetTool()">
+                                <button class="btn btn-ai-open w-100" onclick="openBudgetTool()">
                                     <i class="bi bi-box-arrow-up-right"></i> ABRIR SKILL / HERRAMIENTA
                                 </button>
                             </div>
