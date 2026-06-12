@@ -9,20 +9,15 @@ let selectedRefTags = [];
 // Load budgets when tab is clicked
 document.getElementById('budgets-tab').addEventListener('click', loadBudgets);
 
-// Helper to VPS API
-function getApiUrlBase() {
-    return 'https://vps-4455523-x.dattaweb.com/jpupper/api';
-}
-
 // Load all budgets
 async function loadBudgets() {
     const tbody = document.getElementById('budgetsList');
     tbody.innerHTML = '<tr><td colspan="6" class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div></td></tr>';
     
     try {
-        const apiUrl = getApiUrlBase();
-        console.log('Cargando presupuestos desde:', `${apiUrl}/budgets`);
-        const response = await fetch(`${apiUrl}/budgets`);
+        const apiUrl = CONFIG.apiUrl;
+        console.log('Cargando presupuestos desde:', `${apiUrl}/api/budgets`);
+        const response = await fetch(`${apiUrl}/api/budgets`);
         const budgets = await response.json();
         tbody.innerHTML = '';
         
@@ -86,11 +81,8 @@ async function loadBudgets() {
 // Show add budget form
 function showAddBudgetForm() {
     document.getElementById('budgetForm').reset();
-    document.getElementById('budgetProjectName').value = '';
-    document.getElementById('budgetClient').value = '';
-    document.getElementById('budgetDescription').value = '';
-    document.getElementById('budgetTechnicalRequirements').value = '';
-    document.getElementById('budgetPaymentTerms').value = '4. CONDICIONES DE PAGO Y FACTURACIÓN\nMedios de Pago: Se acepta Factura C, Criptomonedas, Dólares (efectivo/transferencia) o Pesos.\nCotización: Para pagos en pesos, se tomará la cotización del dólar del día en que se realice la inversión inicial.\nMora en el Pago: Una vez realizada la entrega final, el cliente dispone de 15 días corridos para cancelar el saldo. Pasado ese período, se aplicará un recargo del 10% sobre el presupuesto total por demora.';
+    document.getElementById('budgetId').value = '';
+    document.getElementById('budgetCode').value = '';
     document.getElementById('budgetModalTitle').textContent = 'Crear Presupuesto';
     document.getElementById('budgetItemsContainer').innerHTML = '';
     document.getElementById('budgetLinkDisplay').style.display = 'none';
@@ -105,8 +97,8 @@ function showAddBudgetForm() {
     if (list) list.innerHTML = '';
     if (selBox) selBox.style.display = 'none';
 
-    // Add one initial item (Optional)
-    // addBudgetItem();
+    // Add one initial item
+    addBudgetItem();
 
     // Pre-cargar proyectos para referencias
     loadProjectsForReferences();
@@ -138,7 +130,7 @@ function addBudgetItem(item = null) {
             </div>
             <div class="col-md-2">
                 <label class="form-label">Total</label>
-                <input type="text" class="form-control item-total" value="$${item?.total?.toFixed(2) || '0.00'}" readonly>
+                <input type="text" class="form-control item-total" value="$${item?.total.toFixed(2) || '0.00'}" readonly>
             </div>
             <div class="col-md-1">
                 <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeBudgetItem(${budgetItemCounter})">
@@ -180,6 +172,7 @@ function calculateBudgetTotal() {
 
 // Save budget
 async function saveBudget() {
+    // Clear previous error messages
     const existingAlert = document.querySelector('#budgetModal .alert-danger');
     if (existingAlert) existingAlert.remove();
     
@@ -191,6 +184,7 @@ async function saveBudget() {
         const paymentTerms = document.getElementById('budgetPaymentTerms').value;
         const technicalRequirements = document.getElementById('budgetTechnicalRequirements').value;
         
+        // Collect items
         const items = [];
         document.querySelectorAll('.budget-item').forEach(itemDiv => {
             const itemDescription = itemDiv.querySelector('.item-description').value;
@@ -204,12 +198,10 @@ async function saveBudget() {
             });
         });
         
-        /* 
         if (items.length === 0) {
             showBudgetError('Debes agregar al menos un item al presupuesto');
             return;
         }
-        */
         
         const references = selectedReferences.map(p => ({
             id: p.id,
@@ -228,9 +220,12 @@ async function saveBudget() {
             references
         };
         
-        const apiUrl = getApiUrlBase();
-        const endpoint = budgetId ? `${apiUrl}/budgets/${budgetId}` : `${apiUrl}/budgets`;
+        const apiUrl = CONFIG.apiUrl;
+        const endpoint = budgetId ? `${apiUrl}/api/budgets/${budgetId}` : `${apiUrl}/api/budgets`;
         const method = budgetId ? 'PUT' : 'POST';
+        
+        console.log('Guardando presupuesto en:', endpoint);
+        console.log('Datos:', budgetData);
         
         const response = await fetch(endpoint, {
             method,
@@ -240,18 +235,29 @@ async function saveBudget() {
             body: JSON.stringify(budgetData)
         });
         
+        // Manejo robusto de errores no-JSON
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Error al guardar');
+            const contentType = response.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+                const error = await response.json();
+                throw new Error(error.message || 'Error al guardar');
+            } else {
+                const text = await response.text();
+                console.error('Respuesta no-JSON del servidor al guardar presupuesto:', text.substring(0, 200));
+                const envMsg = CONFIG.isLocal ? 'Verifica que el servidor Node esté corriendo en http://localhost:3243' : 'Verifica la ruta en el VPS: https://vps-4455523-x.dattaweb.com/jpupper';
+                throw new Error(`El servidor no respondió en formato JSON (status ${response.status}). ${envMsg}.`);
+            }
         }
         
         const savedBudget = await response.json();
         
+        // Show the FullScreen link
         const fullscreenUrl = `https://fullscreencode.com/presupuesto.html?presupuesto=${savedBudget.code}`;
         document.getElementById('budgetFullScreenLink').href = fullscreenUrl;
         document.getElementById('budgetFullScreenLink').textContent = fullscreenUrl;
         document.getElementById('budgetLinkDisplay').style.display = 'block';
         
+        // Update form to edit mode
         document.getElementById('budgetId').value = savedBudget._id;
         document.getElementById('budgetCode').value = savedBudget.code;
         document.getElementById('budgetModalTitle').textContent = 'Editar Presupuesto';
@@ -267,8 +273,9 @@ async function saveBudget() {
 // Edit budget
 async function editBudget(id) {
     try {
-        const apiUrl = getApiUrlBase();
-        const endpoint = `${apiUrl}/budgets/${id}`;
+        const apiUrl = CONFIG.apiUrl;
+        const endpoint = `${apiUrl}/api/budgets/${id}`;
+        console.log('Cargando presupuesto desde:', endpoint);
         const response = await fetch(endpoint);
         const budget = await response.json();
         
@@ -281,18 +288,23 @@ async function editBudget(id) {
         document.getElementById('budgetTechnicalRequirements').value = budget.technicalRequirements;
         document.getElementById('budgetModalTitle').textContent = 'Editar Presupuesto';
         
+        // Clear and add items
         document.getElementById('budgetItemsContainer').innerHTML = '';
         budgetItemCounter = 0;
         budget.items.forEach(item => addBudgetItem(item));
         
+        // Referencias
         selectedReferences = Array.isArray(budget.references) ? budget.references : [];
         renderSelectedReferencesChips();
+        // Pre-cargar lista de proyectos y marcar checks
         await loadProjectsForReferences();
+        // Marcar seleccionados en lista
         selectedReferences.forEach(ref => {
             const chk = document.querySelector(`#referencesList input[data-id="${ref.id}"]`);
             if (chk) chk.checked = true;
         });
         
+        // Show FullScreen link
         const fullscreenUrl = `https://fullscreencode.com/presupuesto.html?presupuesto=${budget.code}`;
         document.getElementById('budgetFullScreenLink').href = fullscreenUrl;
         document.getElementById('budgetFullScreenLink').textContent = fullscreenUrl;
@@ -305,21 +317,21 @@ async function editBudget(id) {
     }
 }
 
-// Additional helper functions for tags filtering and preview... (from FullScreen version)
+// Referencias: cargar proyectos y UI
 async function loadProjectsForReferences() {
     try {
-        const apiUrl = getApiUrlBase();
-        const resp = await fetch(`${apiUrl}/projects`);
+        const apiUrl = CONFIG.apiUrl;
+        const resp = await fetch(`${apiUrl}/api/projects`);
         const projects = await resp.json();
         availableProjects = Array.isArray(projects) ? projects : [];
         const list = document.getElementById('referencesList');
         if (!list) return;
         list.innerHTML = '';
-
+        // Render filtros por tags únicos
         try {
             const uniqueTags = Array.from(new Set(availableProjects.flatMap(p => Array.isArray(p.tags) ? p.tags : [])));
             renderReferencesTagFilters(uniqueTags);
-        } catch (e) {}
+        } catch (e) { console.warn('No se pudieron renderizar filtros de tags'); }
 
         availableProjects.forEach(p => {
             const thumb = (typeof CONFIG.getImagePath === 'function') ? CONFIG.getImagePath(p.thumbnail) : p.thumbnail;
@@ -332,7 +344,7 @@ async function loadProjectsForReferences() {
                     <img src="${thumb}" alt="${p.title}" style="width:28px;height:28px;object-fit:cover;border-radius:4px;margin-right:8px;vertical-align:middle;"> ${p.title}
                 </label>
                 <button type="button" class="btn btn-outline-secondary btn-sm ms-2" onclick="previewReference('${p.id}')">
-                    <i class="bi bi-eye"></i>
+                    <i class="bi bi-eye"></i> Ver
                 </button>
             `;
             list.appendChild(item);
@@ -342,15 +354,71 @@ async function loadProjectsForReferences() {
     }
 }
 
+function toggleReferencesSelector() {
+    const box = document.getElementById('referencesSelector');
+    if (!box) return;
+    if (box.style.display === 'none' || box.style.display === '') {
+        box.style.display = 'block';
+        if (availableProjects.length === 0) loadProjectsForReferences();
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+function onReferenceToggle(event) {
+    const id = event.target.getAttribute('data-id');
+    if (!id) return;
+    const project = availableProjects.find(p => p.id === id);
+    if (!project) return;
+    if (event.target.checked) {
+        if (!selectedReferences.find(r => r.id === project.id)) {
+            selectedReferences.push({ id: project.id, title: project.title, url: project.url, thumbnail: project.thumbnail });
+        }
+    } else {
+        selectedReferences = selectedReferences.filter(r => r.id !== project.id);
+    }
+    renderSelectedReferencesChips();
+}
+
+function renderSelectedReferencesChips() {
+    const sel = document.getElementById('selectedReferences');
+    if (!sel) return;
+    sel.innerHTML = '';
+    selectedReferences.forEach(r => {
+        const chip = document.createElement('span');
+        chip.className = 'badge bg-primary me-2 mb-2';
+        chip.style.cursor = 'pointer';
+        chip.title = 'Click para quitar';
+        chip.innerHTML = `<i class="bi bi-link-45deg"></i> ${r.title}`;
+        chip.onclick = () => {
+            // uncheck in list
+            const chk = document.querySelector(`#referencesList input[data-id="${r.id}"]`);
+            if (chk) chk.checked = false;
+            selectedReferences = selectedReferences.filter(x => x.id !== r.id);
+            renderSelectedReferencesChips();
+        };
+        sel.appendChild(chip);
+    });
+}
+
+function filterReferences() {
+    applyReferencesFilters();
+}
+
 function renderReferencesTagFilters(tags) {
     const box = document.getElementById('referencesTagFilters');
     if (!box) return;
     box.innerHTML = '';
+    if (!Array.isArray(tags) || tags.length === 0) {
+        box.innerHTML = '<span class="text-muted small">No hay tags disponibles</span>';
+        return;
+    }
     tags.forEach(tag => {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'btn btn-sm btn-outline-secondary me-1 mb-1';
+        btn.className = 'btn btn-sm btn-outline-secondary';
         btn.textContent = tag;
+        btn.dataset.tag = tag;
         btn.onclick = () => {
             const idx = selectedRefTags.indexOf(tag);
             if (idx >= 0) {
@@ -381,75 +449,131 @@ function applyReferencesFilters() {
     });
 }
 
-function onReferenceToggle(event) {
-    const id = event.target.getAttribute('data-id');
-    const project = availableProjects.find(p => p.id === id);
-    if (!project) return;
-    if (event.target.checked) {
-        if (!selectedReferences.find(r => r.id === project.id)) {
-            selectedReferences.push({ id: project.id, title: project.title, url: project.url, thumbnail: project.thumbnail });
-        }
-    } else {
-        selectedReferences = selectedReferences.filter(r => r.id !== project.id);
-    }
-    renderSelectedReferencesChips();
-}
-
-function renderSelectedReferencesChips() {
-    const sel = document.getElementById('selectedReferences');
-    if (!sel) return;
-    sel.innerHTML = '';
-    selectedReferences.forEach(r => {
-        const chip = document.createElement('span');
-        chip.className = 'badge bg-primary me-2 mb-2';
-        chip.style.cursor = 'pointer';
-        chip.innerHTML = `<i class="bi bi-link-45deg"></i> ${r.title}`;
-        chip.onclick = () => {
-            const chk = document.querySelector(`#referencesList input[data-id="${r.id}"]`);
-            if (chk) chk.checked = false;
-            selectedReferences = selectedReferences.filter(x => x.id !== r.id);
-            renderSelectedReferencesChips();
-        };
-        sel.appendChild(chip);
-    });
-}
-
+// ===== Preview dentro del selector =====
 function previewReference(id) {
     const project = availableProjects.find(p => p.id === id);
     const box = document.getElementById('referencePreview');
     if (!project || !box) return;
     const thumb = (typeof CONFIG.getImagePath === 'function') ? CONFIG.getImagePath(project.thumbnail) : project.thumbnail;
+    const title = project.title || '';
+    const url = project.url || '';
+    const videolink = project.videolink || '';
+
+    let mediaHTML = '';
+    const ytId = getYoutubeId(videolink);
+    if (ytId) {
+        mediaHTML = `<div class="ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/${ytId}" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+    } else if (isInstagramUrl(videolink)) {
+        mediaHTML = `<div class="alert alert-info mb-2"><i class="bi bi-instagram"></i> Preview de Instagram disponible al abrir el enlace.</div>`;
+    } else {
+        mediaHTML = `<img src="${thumb}" alt="${title}" class="img-fluid rounded" onerror="this.src='${thumb}';">`;
+    }
+
     box.innerHTML = `
-        <div class="border rounded p-2 mt-2">
-            <strong>${project.title}</strong>
-            <img src="${thumb}" class="img-fluid rounded mt-1">
+        <div class="border rounded p-2">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <strong>${title}</strong>
+                <a href="${url || videolink || '#'}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-box-arrow-up-right"></i> Abrir
+                </a>
+            </div>
+            ${mediaHTML}
+            ${project.description ? `<p class="mt-2 mb-0 text-muted small">${project.description}</p>` : ''}
         </div>
     `;
 }
 
-function toggleReferencesSelector() {
-    const box = document.getElementById('referencesSelector');
-    if (!box) return;
-    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+function getYoutubeId(url) {
+    if (!url) return null;
+    const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{6,})/i);
+    return m ? m[1] : null;
+}
+function isInstagramUrl(url) {
+    return /instagram\.com\//i.test(url || '');
 }
 
-function filterReferences() {
-    applyReferencesFilters();
-}
-
+// Delete budget
 async function deleteBudget(id) {
-    if (!confirm('¿Estás seguro de que quieres eliminar este presupuesto?')) return;
+    if (!confirm('¿Estás seguro de que quieres eliminar este presupuesto?')) {
+        return;
+    }
+    
     try {
-        const apiUrl = getApiUrlBase();
-        const response = await fetch(`${apiUrl}/budgets/${id}`, { method: 'DELETE' });
-        if (response.ok) loadBudgets();
-    } catch (error) { console.error('Error deleting:', error); }
+        const apiUrl = CONFIG.apiUrl;
+        const endpoint = `${apiUrl}/api/budgets/${id}`;
+        console.log('Eliminando presupuesto:', endpoint);
+        const response = await fetch(endpoint, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            loadBudgets();
+        } else {
+            throw new Error('Error al eliminar');
+        }
+    } catch (error) {
+        console.error('Error deleting budget:', error);
+        const tbody = document.getElementById('budgetsList');
+        const errorRow = document.createElement('tr');
+        errorRow.innerHTML = `
+            <td colspan="6" class="text-center">
+                <div class="alert alert-danger d-inline-block">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Error al eliminar el presupuesto: ${error.message}
+                </div>
+            </td>
+        `;
+        tbody.insertBefore(errorRow, tbody.firstChild);
+        setTimeout(() => errorRow.remove(), 5000);
+    }
 }
 
+// Copy budget link to clipboard
+function copyBudgetLink() {
+    const link = document.getElementById('budgetFullScreenLink').textContent;
+    navigator.clipboard.writeText(link).then(() => {
+        const btn = event.target.closest('button');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check"></i> Copiado!';
+        btn.classList.add('btn-success');
+        btn.classList.remove('btn-outline-primary');
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-outline-primary');
+        }, 2000);
+    }).catch(err => {
+        console.error('Error copying link:', err);
+        showBudgetError('Error al copiar el link');
+    });
+}
+
+// Helper functions for showing messages
 function showBudgetError(message) {
-    alert('Error: ' + message);
+    const modalBody = document.querySelector('#budgetModal .modal-body');
+    const existingAlert = modalBody.querySelector('.alert-danger');
+    if (existingAlert) existingAlert.remove();
+    
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-danger alert-dismissible fade show';
+    alert.innerHTML = `
+        <i class="bi bi-exclamation-triangle"></i> ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    modalBody.insertBefore(alert, modalBody.firstChild);
 }
 
 function showBudgetSuccess(message) {
-    alert('Éxito: ' + message);
+    const modalBody = document.querySelector('#budgetModal .modal-body');
+    const existingAlert = modalBody.querySelector('.alert-success');
+    if (existingAlert) existingAlert.remove();
+    
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success alert-dismissible fade show';
+    alert.innerHTML = `
+        <i class="bi bi-check-circle"></i> ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    modalBody.insertBefore(alert, modalBody.firstChild);
+    setTimeout(() => alert.remove(), 5000);
 }

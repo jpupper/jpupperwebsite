@@ -1,0 +1,489 @@
+/* ============================================
+   CV PAGE STYLES — Julián Puppo
+   ============================================ */
+
+/* Navigation */
+.main-nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-logo:hover {
+    opacity: 0.8;
+}
+
+/* Download Button */
+.download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.4rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+}
+
+.download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(255, 105, 180, 0.5);
+}
+
+.download-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* CV Page Layout */
+.cv-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem 3rem;
+}
+
+.cv-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.cv-sidebar {
+    background: linear-gradient(180deg, rgba(138, 43, 226, 0.15), rgba(18, 18, 18, 0.95));
+    padding: 2rem 1.5rem;
+    border-right: 1px solid var(--border-color);
+}
+
+.cv-photo {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.cv-photo img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 3px solid var(--primary-color);
+    object-fit: cover;
+}
+
+.sidebar-section {
+    margin-bottom: 2rem;
+}
+
+.sidebar-section h3 {
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+/* Contact */
+.contact-item {
+    margin-bottom: 0.8rem;
+}
+
+.contact-label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 0.2rem;
+}
+
+.contact-value {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+/* Skills */
+.skill-group {
+    margin-bottom: 1rem;
+}
+
+.skill-category {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.skill-tag {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    background: rgba(138, 43, 226, 0.3);
+    border: 1px solid rgba(138, 43, 226, 0.4);
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: #d4b0ff;
+    white-space: nowrap;
+}
+
+/* Social links */
+.social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.social-link {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.4rem 0;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.social-link::before {
+    content: '→';
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.social-link:hover {
+    color: var(--primary-color);
+}
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+.cv-main {
+    padding: 2.5rem;
+}
+
+/* Header */
+.cv-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(255, 105, 180, 0.15);
+}
+
+.cv-name {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.3rem;
+}
+
+.cv-title {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+.cv-tagline {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+}
+
+/* Sections */
+.cv-section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--secondary-color);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(255, 20, 147, 0.2);
+}
+
+/* Entries */
+.cv-entry {
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(138, 43, 226, 0.3);
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.entry-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.entry-date {
+    font-size: 0.8rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.entry-org {
+    display: block;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0.3rem 0 0.5rem;
+}
+
+.entry-details {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.entry-details li {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.6;
+    padding-left: 1.2rem;
+    position: relative;
+    margin-bottom: 0.3rem;
+}
+
+.entry-details li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+}
+
+/* Tools grid */
+.tools-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.tool-item {
+    display: inline-block;
+    padding: 0.35rem 0.9rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ============================================
+   PRINT STYLES — for window.print() fallback
+   ============================================ */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .background-overlay {
+        display: none !important;
+    }
+
+    header {
+        background: none !important;
+        padding: 0 !important;
+    }
+
+    .main-nav {
+        display: none !important;
+    }
+
+    .cv-page {
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .cv-container {
+        display: grid !important;
+        grid-template-columns: 250px 1fr !important;
+        border: none !important;
+        border-radius: 0 !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        background: white !important;
+    }
+
+    .cv-sidebar {
+        background: #1a1a2e !important;
+        border-right: 1px solid #333 !important;
+    }
+
+    .cv-sidebar h3 {
+        color: #ff69b4 !important;
+        border-bottom-color: rgba(255, 105, 180, 0.3) !important;
+    }
+
+    .contact-label {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .contact-value {
+        color: white !important;
+    }
+
+    .skill-tag {
+        background: rgba(138, 43, 226, 0.2) !important;
+        border-color: rgba(138, 43, 226, 0.5) !important;
+        color: #b088e0 !important;
+    }
+
+    .cv-main {
+        padding: 1.5rem !important;
+        background: white !important;
+    }
+
+    .cv-name {
+        color: #e6007e !important;
+    }
+
+    .cv-title {
+        color: #333 !important;
+    }
+
+    .cv-tagline {
+        color: #666 !important;
+    }
+
+    .section-title {
+        color: #e6007e !important;
+        border-bottom-color: rgba(230, 0, 126, 0.2) !important;
+    }
+
+    .entry-title {
+        color: #222 !important;
+    }
+
+    .entry-date {
+        color: #e6007e !important;
+    }
+
+    .entry-org {
+        color: #666 !important;
+    }
+
+    .entry-details li {
+        color: #444 !important;
+    }
+
+    .entry-details li::before {
+        color: #e6007e !important;
+    }
+
+    .tool-item {
+        background: #f5f5f5 !important;
+        border-color: #ddd !important;
+        color: #333 !important;
+    }
+
+    .social-link {
+        color: white !important;
+    }
+
+    .social-link::before {
+        color: #ff69b4 !important;
+    }
+
+    .cv-section {
+        page-break-inside: avoid;
+    }
+
+    .cv-entry {
+        page-break-inside: avoid;
+        border-left-color: rgba(138, 43, 226, 0.2) !important;
+    }
+
+    .cv-photo img {
+        border-color: #ff69b4 !important;
+    }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .main-nav {
+        padding: 0 1rem;
+    }
+
+    .cv-page {
+        padding: 1rem;
+    }
+
+    .cv-container {
+        grid-template-columns: 1fr;
+    }
+
+    .cv-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .cv-main {
+        padding: 1.5rem;
+    }
+
+    .cv-name {
+        font-size: 1.8rem;
+    }
+
+    .entry-header {
+        flex-direction: column;
+    }
+
+    .download-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .download-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+}

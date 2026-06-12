@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - JPupper Projects System</title>
+    <title>Admin Panel - JPupper</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
@@ -18,15 +18,14 @@
                         <h3 class="card-title text-center mb-4">Admin Login</h3>
                         <form id="login-form">
                             <div class="mb-3">
-                                <label for="accessCode" class="form-label">Código de Acceso</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="accessCode" placeholder="Ingrese el código..." required>
-                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                </div>
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" required>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Login</button>
                         </form>
                     </div>
                 </div>
@@ -36,32 +35,38 @@
             <div id="projectsPanel" class="col-12" style="display: none;">
                 <div class="d-flex justify-content-between align-items-center my-4">
                     <div>
-                        <h2 class="mb-0">JPupper Projects - Admin Panel</h2>
+                        <h2 class="mb-0">Projects Management</h2>
+                        <small class="text-muted">Environment: <strong id="currentEnvironment"></strong></small>
                     </div>
                     <div class="d-flex gap-2">
-                        <a href="api.html" class="btn btn-outline-info btn-sm">
-                            <i class="bi bi-code-square"></i> Public API
-                        </a>
-                        <button class="btn btn-danger btn-sm" onclick="logout()">
-                            <i class="bi bi-box-arrow-right"></i> Logout
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="switchEnvironment('local')">
+                                <i class="bi bi-laptop"></i> Local
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="switchEnvironment('vps')">
+                                <i class="bi bi-cloud"></i> VPS
+                            </button>
+                        </div>
+                        <button id="themeToggle" class="btn btn-outline-secondary btn-sm" type="button">
+                            <i class="bi bi-moon"></i> Dark
                         </button>
                     </div>
                 </div>
 
                 <!-- Navigation Tabs -->
                 <ul class="nav nav-tabs mb-3" id="adminTabs" role="tablist">
-                    <li class="nav-item">
-                        <button class="nav-link active" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects-content" type="button">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects-content" type="button" role="tab">
                             <i class="bi bi-folder"></i> Projects
                         </button>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="budgets-tab" data-bs-toggle="tab" data-bs-target="#budgets-content" type="button">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="budgets-tab" data-bs-toggle="tab" data-bs-target="#budgets-content" type="button" role="tab">
                             <i class="bi bi-receipt"></i> Presupuestos
                         </button>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="tags-tab" data-bs-toggle="tab" data-bs-target="#tags-content" type="button">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tags-tab" data-bs-toggle="tab" data-bs-target="#tags-content" type="button" role="tab">
                             <i class="bi bi-tags"></i> Tags Library
                         </button>
                     </li>
@@ -70,32 +75,37 @@
                 <!-- Tab Content -->
                 <div class="tab-content" id="adminTabsContent">
                     <!-- Projects Tab -->
-                    <div class="tab-pane fade show active" id="projects-content">
+                    <div class="tab-pane fade show active" id="projects-content" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center my-3">
                             <h4 class="mb-0">Projects</h4>
                             <button class="btn btn-primary" onclick="showAddProjectForm()">
-                                <i class="bi bi-plus-circle"></i> Add Project
+                                <i class="bi bi-plus-circle"></i> Add New Project
                             </button>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-striped align-middle">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 120px">Thumbnail</th>
-                                        <th>Title</th>
-                                        <th>Description</th>
-                                        <th>URL</th>
-                                        <th>Tags</th>
-                                        <th style="width: 150px">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="projectsList"></tbody>
-                            </table>
-                        </div>
+
+                <!-- Project List -->
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 120px">Thumbnail</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>URL</th>
+                                <th>Tags</th>
+                                <th style="width: 150px">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectsList">
+                            <!-- Projects will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
                     </div>
+                    <!-- End Projects Tab -->
 
                     <!-- Budgets Tab -->
-                    <div class="tab-pane fade" id="budgets-content">
+                    <div class="tab-pane fade" id="budgets-content" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h4>Generador de Presupuestos</h4>
                             <button class="btn btn-primary" onclick="showAddBudgetForm()">
@@ -114,13 +124,16 @@
                                         <th style="width: 200px">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="budgetsList"></tbody>
+                                <tbody id="budgetsList">
+                                    <!-- Budgets will be loaded here -->
+                                </tbody>
                             </table>
                         </div>
                     </div>
+                    <!-- End Budgets Tab -->
 
                     <!-- Tags Tab -->
-                    <div class="tab-pane fade" id="tags-content">
+                    <div class="tab-pane fade" id="tags-content" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h4>Tags Library</h4>
                             <button class="btn btn-primary" onclick="showAddTagForm()">
@@ -136,123 +149,182 @@
                                         <th style="width: 150px">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tagsList"></tbody>
+                                <tbody id="tagsList">
+                                    <!-- Tags will be loaded here -->
+                                </tbody>
                             </table>
                         </div>
                     </div>
+                    <!-- End Tags Tab -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modals (Simplified versions of the improved one) -->
-    <!-- Project Modal -->
+    <!-- Add/Edit Project Modal -->
     <div class="modal fade" id="projectModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Project</h5>
+                    <h5 class="modal-title" id="modalTitle">Add New Project</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="projectForm">
                         <input type="hidden" id="projectId">
-                        <div class="mb-3"><label class="form-label">Title</label><input type="text" class="form-control" id="title" required></div>
-                        <div class="mb-3"><label class="form-label">URL</label><input type="url" class="form-control" id="projectUrl" required></div>
-                        <div class="mb-3"><label class="form-label">Video Link</label><input type="url" class="form-control" id="videolink"></div>
-                        <div class="mb-3"><label class="form-label">Thumbnail</label><input type="file" class="form-control" id="thumbnail" accept="image/*">
-                        <div id="thumbnailPreview" class="mt-2"></div></div>
-                        <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" id="description" rows="3" required></textarea></div>
-                        <div class="mb-3"><label class="form-label">Tags (comma separated)</label><input type="text" class="form-control" id="tags"></div>
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="projectUrl" class="form-label">URL</label>
+                            <input type="url" class="form-control" id="projectUrl" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="videolink" class="form-label">Video Link (YouTube o Instagram)</label>
+                            <input type="url" class="form-control" id="videolink" placeholder="https://www.youtube.com/watch?v=... o https://www.instagram.com/p/...">
+                            <small class="form-text text-muted">El thumbnail se extraerá automáticamente del video</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="thumbnail" class="form-label">Thumbnail (opcional si hay video link)</label>
+                            <input type="file" class="form-control" id="thumbnail" accept="image/*">
+                            <small class="form-text text-muted">Solo necesario si no hay video link o quieres usar una imagen personalizada</small>
+                            <div id="thumbnailPreview" class="mt-2"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tags" class="form-label">Tags (comma separated)</label>
+                            <input type="text" class="form-control" id="tags" placeholder="nft, 2D, interactive">
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="saveProject()">Save</button>
+                    <button type="button" class="btn btn-primary" onclick="saveProject()">Save Project</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Budget Modal -->
+    <!-- Add/Edit Budget Modal -->
     <div class="modal fade" id="budgetModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="budgetModalTitle">Budget</h5>
+                    <h5 class="modal-title" id="budgetModalTitle">Crear Presupuesto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="budgetForm">
-                        <input type="hidden" id="budgetId"><input type="hidden" id="budgetCode">
-                        <div class="row">
-                            <div class="col-md-6 mb-3"><label class="form-label">Nombre del Proyecto</label><input type="text" class="form-control" id="budgetProjectName" required></div>
-                            <div class="col-md-6 mb-3"><label class="form-label">Cliente</label><input type="text" class="form-control" id="budgetClient" required></div>
-                        </div>
-                        <div class="mb-3"><label class="form-label">Descripción</label><textarea class="form-control" id="budgetDescription" rows="2" required></textarea></div>
-                        <div class="mb-3"><label class="form-label">Condiciones de Pago</label><textarea class="form-control" id="budgetPaymentTerms" rows="2" required></textarea></div>
-                        <div class="mb-3"><label class="form-label">Requerimientos Técnicos</label><textarea class="form-control" id="budgetTechnicalRequirements" rows="2" required></textarea></div>
+                        <input type="hidden" id="budgetId">
+                        <input type="hidden" id="budgetCode">
                         
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="form-label mb-0">Items</label>
-                                <button type="button" class="btn btn-sm btn-success" onclick="addBudgetItem()"><i class="bi bi-plus"></i> Item</button>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="budgetProjectName" class="form-label">Nombre del Proyecto</label>
+                                <input type="text" class="form-control" id="budgetProjectName" required>
                             </div>
-                            <div id="budgetItemsContainer"></div>
-                            <div class="mt-3 p-3 bg-light rounded"><h5 class="mb-0">Total: $<span id="budgetTotalDisplay">0.00</span></h5></div>
+                            <div class="col-md-6 mb-3">
+                                <label for="budgetClient" class="form-label">Cliente</label>
+                                <input type="text" class="form-control" id="budgetClient" required>
+                            </div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Referencias (Proyectos)</label>
-                            <button type="button" class="btn btn-sm btn-outline-primary ms-2" onclick="toggleReferencesSelector()">Seleccionar</button>
-                            <div id="selectedReferences" class="d-flex flex-wrap gap-2 mt-2"></div>
-                            <div id="referencesSelector" class="border rounded p-2 mt-2" style="display:none; max-height:250px; overflow:auto;">
-                                <input type="text" class="form-control mb-2" id="referencesSearch" placeholder="Buscar..." oninput="filterReferences()">
-                                <div id="referencesTagFilters" class="mb-2"></div>
+                            <label for="budgetDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="budgetDescription" rows="3" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="budgetPaymentTerms" class="form-label">Condiciones de Pago</label>
+                            <textarea class="form-control" id="budgetPaymentTerms" rows="2" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="budgetTechnicalRequirements" class="form-label">Requerimientos Técnicos</label>
+                            <textarea class="form-control" id="budgetTechnicalRequirements" rows="3" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0">Items del Presupuesto</label>
+                                <button type="button" class="btn btn-sm btn-success" onclick="addBudgetItem()">
+                                    <i class="bi bi-plus"></i> Agregar Item
+                                </button>
+                            </div>
+                            <div id="budgetItemsContainer">
+                                <!-- Items will be added here -->
+                            </div>
+                            <div class="mt-3 p-3 bg-light rounded">
+                                <h5 class="mb-0">Total: $<span id="budgetTotalDisplay">0.00</span></h5>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0">Referencias (Proyectos)</label>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="toggleReferencesSelector()">
+                                    <i class="bi bi-collection"></i> Seleccionar referencias
+                                </button>
+                            </div>
+                            <div id="selectedReferences" class="d-flex flex-wrap gap-2"></div>
+                            <div id="referencesSelector" class="border rounded p-2" style="display:none; max-height:420px; overflow:auto;">
+                                <input type="text" class="form-control mb-2" id="referencesSearch" placeholder="Buscar proyectos..." oninput="filterReferences()">
+                                <div id="referencesTagFilters" class="mb-2 d-flex flex-wrap gap-2"></div>
                                 <div id="referencesList"></div>
-                                <div id="referencePreview"></div>
+                                <div id="referencePreview" class="mt-2"></div>
                             </div>
                         </div>
 
                         <div id="budgetLinkDisplay" class="alert alert-info" style="display: none;">
-                            <strong>Link:</strong> <a href="#" id="budgetFullScreenLink" target="_blank"></a>
+                            <strong>Link de FullScreen:</strong><br>
+                            <a href="#" id="budgetFullScreenLink" target="_blank"></a>
+                            <button type="button" class="btn btn-sm btn-outline-primary ms-2" onclick="copyBudgetLink()">
+                                <i class="bi bi-clipboard"></i> Copiar
+                            </button>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="saveBudget()">Guardar</button>
+                    <button type="button" class="btn btn-primary" onclick="saveBudget()">Guardar Presupuesto</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tag Modal -->
+    <!-- Add/Edit Tag Modal -->
     <div class="modal fade" id="tagModal" tabindex="-1">
-        <div class="modal-dialog"><div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">New Tag</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body"><div class="mb-3"><label class="form-label">Tag Name</label><input type="text" class="form-control" id="tagName" required></div></div>
-            <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-primary" onclick="saveTag()">Save</button></div>
-        </div></div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tagModalTitle">Add New Tag</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="tagForm">
+                        <input type="hidden" id="tagId">
+                        <div class="mb-3">
+                            <label for="tagName" class="form-label">Tag Name</label>
+                            <input type="text" class="form-control" id="tagName" required placeholder="e.g., Mobile, NFT, 3D, Unreal">
+                            <small class="form-text text-muted">Este nombre se usará tanto como ID como para mostrar en los botones</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTag()">Save Tag</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/config.js"></script>
     <script src="js/admin.js"></script>
     <script src="js/budgets.js"></script>
-    <script>
-        // Toggle password visibility for main admin login
-        document.getElementById('togglePassword')?.addEventListener('click', function() {
-            const passwordInput = document.getElementById('accessCode');
-            const icon = this.querySelector('i');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.replace('bi-eye', 'bi-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.replace('bi-eye-slash', 'bi-eye');
-            }
-        });
-    </script>
 </body>
 </html>

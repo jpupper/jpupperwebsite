@@ -77,7 +77,6 @@ app.get('/api/export/projects', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error exporting projects' });
     }
 });
-
 // Endpoint para obtener la configuración de la API (usado por la docu del admin)
 app.get('/api/admin/config', (req, res) => {
     // En una app real esto debería estar muy protegido
@@ -88,6 +87,16 @@ app.get('/api/admin/config', (req, res) => {
     });
 });
 
+// CV route for /jpupper/cv
+app.get('/jpupper/cv', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'cv.html'));
+});
+
+// CV route without prefix for local development
+app.get('/cv', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'cv.html'));
+});
+
 // Main route for /jpupper
 app.get('/jpupper', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -96,6 +105,15 @@ app.get('/jpupper', (req, res) => {
 // Main route without prefix for local development
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// CV page route
+app.get('/cv', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'cv.html'));
+});
+
+app.get('/jpupper/cv', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'cv.html'));
 });
 
 // Catch-all route for /jpupper/* to handle client-side routing

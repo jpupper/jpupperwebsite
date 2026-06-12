@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Julián Puppo | Programador & Artista Multimedia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- PDF generation uses window.print() with @media print styles -->
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface2: #1a1a28;
+            --primary: #ff69b4;
+            --primary-dim: rgba(255, 105, 180, 0.15);
+            --secondary: #8a2be2;
+            --accent: #00d4ff;
+            --text: #e8e8f0;
+            --text-dim: #8888a0;
+            --text-muted: #555570;
+            --border: rgba(255, 105, 180, 0.15);
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ========== TOOLBAR ========== */
+        .cv-toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 64px;
+        }
+
+        .cv-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .cv-toolbar .back-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .cv-toolbar .back-link:hover { color: var(--primary); }
+
+        .cv-toolbar .cv-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            border-left: 1px solid var(--border);
+            padding-left: 16px;
+        }
+
+        .cv-toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-pdf {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+        .btn-pdf:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(255, 105, 180, 0.4);
+        }
+        .btn-pdf:active { transform: translateY(0); }
+        .btn-pdf svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+        /* ========== CV CONTAINER ========== */
+        .cv-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 96px 24px 60px;
+            background: var(--bg);
+        }
+
+        /* ========== HEADER ========== */
+        .cv-header {
+            text-align: center;
+            padding: 48px 32px 36px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cv-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+
+        .cv-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .cv-header .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            font-weight: 400;
+            margin-bottom: 24px;
+        }
+
+        .cv-contact-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px 24px;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+        .cv-contact-grid span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .cv-contact-grid .label { color: var(--text-muted); }
+        .cv-contact-grid a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .cv-contact-grid a:hover { color: var(--accent); }
+
+        /* ========== SECTIONS ========== */
+        .cv-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            margin-bottom: 24px;
+        }
+
+        .cv-section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cv-section-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.02em;
+        }
+
+        .cv-section-header .icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: var(--primary-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+
+        /* ========== ABOUT ========== */
+        .cv-about p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ========== EDUCATION ========== */
+        .edu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .edu-item:last-child { border-bottom: none; }
+        .edu-item .edu-info h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+        .edu-item .edu-info p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+        .edu-item .edu-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            padding: 2px 10px;
+            background: var(--primary-dim);
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* ========== SKILLS (5 items) ========== */
+        .skills-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .skill-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px 20px;
+            background: var(--bg);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+        .skill-item .skill-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--primary-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+        .skill-item .skill-text {
+            flex: 1;
+        }
+        .skill-item .skill-text h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+        .skill-item .skill-text p {
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        /* ========== WORK HISTORY ========== */
+        .work-item {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .work-item:last-child { border-bottom: none; }
+
+        .work-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .work-header h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .work-header .work-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 2px 10px;
+            background: var(--primary-dim);
+            border-radius: 20px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .work-item p {
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .work-item a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 4px;
+        }
+        .work-item a:hover { color: var(--accent); }
+
+        .work-sub-items {
+            margin-top: 8px;
+        }
+        .work-sub-item {
+            padding: 6px 0 6px 16px;
+            border-left: 2px solid var(--primary-dim);
+            margin-bottom: 4px;
+            padding-left: 16px;
+        }
+        .work-sub-item p { font-size: 0.85rem; }
+        .work-sub-item a { font-size: 0.8rem; }
+
+        /* ========== ACCORDION ========== */
+        .accordion-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            width: 100%;
+            border: none;
+            background: none;
+            color: var(--primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            padding: 0;
+            text-align: left;
+        }
+        .accordion-toggle:focus { outline: none; }
+        .accordion-toggle .accordion-arrow {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+        .accordion-toggle .accordion-arrow.open {
+            transform: rotate(180deg);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        .accordion-content.open {
+            max-height: 5000px;
+            opacity: 1;
+        }
+
+        /* ========== PROJECTS ========== */
+        .project-item {
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .project-item:last-child { border-bottom: none; }
+
+        .project-item .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .project-item h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .project-item .project-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 2px 10px;
+            background: var(--primary-dim);
+            border-radius: 20px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .project-item p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        .project-item a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.82rem;
+            display: inline-block;
+            margin-top: 4px;
+            word-break: break-all;
+        }
+        .project-item a:hover { color: var(--accent); }
+
+        /* ========== EVENTS / COURSES ========== */
+        .compact-list .list-item {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .compact-list .list-item:last-child { border-bottom: none; }
+        .compact-list .list-item p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+        .compact-list .list-item a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.82rem;
+        }
+        .compact-list .list-item a:hover { color: var(--accent); }
+        .compact-list .list-item .item-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 2px 10px;
+            background: var(--primary-dim);
+            border-radius: 20px;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* ========== REDES ========== */
+        .social-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .social-link:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        /* ========== PRINT / PDF STYLES ========== */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+
+            body {
+                background: #0a0a0f !important;
+                color: #e8e8f0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .cv-toolbar { display: none !important; }
+            .btn-pdf { display: none !important; }
+
+            .cv-container {
+                padding: 0.3in 0.4in !important;
+                max-width: none !important;
+                margin: 0 !important;
+                background: #0a0a0f !important;
+            }
+
+            .cv-header {
+                padding: 24px 0 16px !important;
+                margin-bottom: 16px !important;
+                background: #12121a !important;
+                border-color: rgba(255, 105, 180, 0.15) !important;
+            }
+            .cv-header h1 {
+                -webkit-text-fill-color: transparent !important;
+            }
+            .cv-header .subtitle { color: #8888a0 !important; }
+
+            .cv-section {
+                background: #12121a !important;
+                border-color: rgba(255, 105, 180, 0.15) !important;
+                page-break-inside: avoid;
+            }
+
+            .cv-section-header h2 { color: #ff69b4 !important; }
+
+            .cv-about p { color: #8888a0 !important; }
+            .edu-info h3 { color: #e8e8f0 !important; }
+            .edu-info p { color: #8888a0 !important; }
+
+            .skill-item { background: #0a0a0f !important; }
+            .skill-item .skill-text h3 { color: #e8e8f0 !important; }
+            .skill-item .skill-text p { color: #8888a0 !important; }
+
+            .work-header h3 { color: #e8e8f0 !important; }
+            .work-item p { color: #8888a0 !important; }
+            .work-item a { color: #ff69b4 !important; }
+
+            .project-item h3 { color: #e8e8f0 !important; }
+            .project-item p { color: #8888a0 !important; }
+            .project-item a { color: #ff69b4 !important; }
+
+            .compact-list .list-item p { color: #8888a0 !important; }
+            .compact-list .list-item a { color: #ff69b4 !important; }
+
+            .social-link {
+                background: #0a0a0f !important;
+                border-color: rgba(255, 105, 180, 0.15) !important;
+                color: #8888a0 !important;
+            }
+
+            .cv-section-header .icon { background: rgba(255, 105, 180, 0.15) !important; }
+
+            .edu-date, .work-date, .project-date, .item-date {
+                background: rgba(255, 105, 180, 0.15) !important;
+                color: #555570 !important;
+            }
+
+            .accordion-content { max-height: none !important; opacity: 1 !important; }
+            .accordion-arrow { display: none !important; }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .cv-container { padding: 80px 16px 40px; }
+            .cv-header h1 { font-size: 2rem; }
+            .cv-header { padding: 32px 20px 24px; }
+            .cv-section { padding: 20px; }
+            .skills-list { gap: 10px; }
+            .skill-item { padding: 12px 16px; flex-direction: column; gap: 8px; }
+            .cv-contact-grid { gap: 6px 16px; font-size: 0.82rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== TOOLBAR ========== -->
+    <nav class="cv-toolbar">
+        <div class="cv-toolbar-left">
+            <a href="/jpupper/" class="back-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                Volver al portfolio
+            </a>
+            <span class="cv-title">Curriculum Vitae</span>
+        </div>
+        <div class="cv-toolbar-right">
+            <button class="btn-pdf" onclick="downloadPDF()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Descargar como PDF
+            </button>
+        </div>
+    </nav>
+
+    <div class="cv-container" id="cv-content">
+
+        <!-- ========== HEADER ========== -->
+        <header class="cv-header">
+            <h1>Julian Puppo</h1>
+            <p class="subtitle">Programador & Artista Multimedia</p>
+            <div class="cv-contact-grid">
+                <span><span class="label">DNI:</span> 37607547</span>
+                <span><span class="label">Nacimiento:</span> 24/7/1993</span>
+                <span><span class="label">Celular:</span> 011.61850008</span>
+                <span><span class="label">Email:</span> <a href="mailto:julian.d.puppo@gmail.com">julian.d.puppo@gmail.com</a></span>
+            </div>
+        </header>
+
+        <!-- ========== SOBRE MI ========== -->
+        <section class="cv-section">
+            <div class="cv-section-header">
+                <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <h2>Sobre Mi</h2>
+            </div>
+            <div class="cv-about">
+                <p>Julian Puppo es programador grafico y artista multimedial. Se dedica a crear arte con codigo, interesandose en como el codigo y los algoritmos generativos pueden generar imagen, video y producciones que corran en tiempo real. Programa fluidamente en varios lenguajes y frameworks para la produccion multimedial y videojuegos como Unreal Engine, Unity, TouchDesigner, C++, Python, JavaScript, WebSockets y bases de datos. Tambien es profesor universitario ensenando shaders. Le gusta pensar al arte y a la produccion tecnologica como algo que deberia suceder en el plano de lo colectivo y la colaboracion mutua, por eso tambien siempre intenta formar comunidades y grupos de consulta donde socializar y expandir el conocimiento en el area.</p>
+            </div>
+        </section>
+
+        <!-- ========== FORMACION ========== -->
+        <section class="cv-section">
+            <div class="cv-section-header">
+                <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                </div>
+                <h2>Formacion Academica</h2>
+            </div>
+
+            <div class="edu-item">
+                <div class="edu-info">
+                    <h3>Licenciatura en Artes Multimediales</h3>
+                    <p>Universidad Nacional de las Artes (UNA)</p>
+                </div>
+                <span class="edu-date">2016 - Actualidad</span>
+            </div>
+            <div class="edu-item">
+                <div class="edu-info">
+                    <h3>Licenciatura en Artes Combinadas</h3>
+                    <p>Universidad de Buenos Aires (UBA)</p>
+                </div>
+                <span class="edu-date">2013 - 2015</span>
+            </div>
+            <div class="edu-item">
+                <div class="edu-info">
+                    <h3>Tecnico en Computacion</h3>
+                    <p>Otto Krause</p>
+                </div>
+                <span class="edu-date">2006 - 2012</span>
+            </div>
+            <div class="edu-item">
+                <div class="edu-info">
+                    <h3>6to ano de Ingles</h3>
+                    <p>Instituto particular de habla inglesa</p>
+                </div>
+                <span class="edu-date">2002 - 2008</span>
+            </div>
+        </section>
+        <!-- ========== CURSOS Y DOCENCIA ========== -->
+        <section class="cv-section">
+            <div class="cv-section-header">
+                <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <h2>Cursos y Docencia</h2>
+            </div>
+            <div class="compact-list">
+                <div class="list-item">
+                    <p>2026 - Creador, jefe de catedra y docente de: IA aplicada a la produccion multimedial - Image Campus</p>
+                    <a href="https://www.imagecampus.edu.ar/programas-profesionales/ia-produccion-multimedia" target="_blank">Ver curso</a>
+                    <br><span class="item-date">2026</span>
+                </div>
+                <div class="list-item">
+                    <p>2025, 2026 - Programacion de shaders en catedra &quot;Topicos avanzados de programacion&quot; - Image Campus</p>
+                    <span class="item-date">2025 - 2026</span>
+                </div>
+                <div class="list-item">
+                    <p>2025, 2026 - Modulo de codigo en diplomatura de inteligencia artificial - Universidad Nacional de las Artes</p>
+                    <a href="https://multimedia.una.edu.ar/diplomaturas/diplomatura-en-inteligencia-artificial-aplicada-al-arte-multimedial_44987" target="_blank">Ver diplomatura</a>
+                    <br><span class="item-date">2025 - 2026</span>
+                </div>
+                <div class="list-item">
+                    <p>2024 - Catedra de diseno interactivo UNSAM - Carrera de Animacion y VFX</p>
+                    <span class="item-date">2024</span>
+                </div>
+                <div class="list-item">
+                    <p>2022, 2023, 2024, 2025 - Curso de extension: Programacion de shaders aplicado a videojuegos - Image Campus</p>
+                    <a href="https://www.imagecampus.edu.ar/programas-profesionales/shaders-para-videojuegos" target="_blank">Ver curso</a>
+                    <br><span class="item-date">2022 - 2025</span>
+                </div>
+                <div class="list-item">
+                    <p>Arte generativo, shaders y NFTs - MediaLab CCEBA</p>
+                    <span class="item-date">2023</span>
+                </div>
+                <div class="list-item">
+                    <p>Clinicas de actualizacion Criptoarte NFTs - Universidad Nacional del Nordeste</p>
+                    <span class="item-date">2023</span>
+                </div>
+                <div class="list-item">
+                    <p>Curso de programacion de shaders aplicado a Processing para instalaciones interactivas - Maestria UNTREF</p>
+                    <span class="item-date">2022</span>
+                </div>
+                <div class="list-item">
+                    <p>Curso de programacion de shaders generativos - CCEBA (Centro Cultural de Espana)</p>
+                    <span class="item-date">2022</span>
+                </div>
+                <div class="list-item">
+                    <p>Curso de programacion de shaders en GLSL - Universidad Nacional de las Artes (Area de Multimediales)</p>
+                    <span class="item-date">2019 - 2021</span>
+                </div>
+                <div class="list-item">
+                    <p>Creador de la comunidad de arte digital: Artedigitaldata</p>
+                    <a href="https://artedigitaldata.com/" target="_blank">artedigitaldata.com</a>
+                    <br><span class="item-date">Comunidad activa</span>
+
+        <!-- ========== REDES ========== -->
+        <section class="cv-section">
+            <div class="cv-section-header">
+                <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                </div>
+                <h2>Redes</h2>
+            </div>
+            <div class="social-grid">
+                <a href="https://facebook.com/Jpupper/" target="_blank" class="social-link">Facebook</a>
+                <a href="https://instagram.com/julianpuppo/" target="_blank" class="social-link">Instagram</a>
+                <a href="https://youtube.com/user/aurelianobuendia24" target="_blank" class="social-link">YouTube</a>
+                <a href="https://twitter.com/julian_puppo" target="_blank" class="social-link">Twitter / X</a>
+                <a href="https://www.fxhash.xyz/u/JPupper" target="_blank" class="social-link">Fxhash</a>
+                <a href="https://hicetnunc.art/jpupper" target="_blank" class="social-link">Hic et Nunc</a>
+            </div>
+        </section>
+
+        <!-- ========== HABILIDADES TECNICAS ========== -->
+        <section class="cv-section">
+            <div class="cv-section-header">
+                <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                </div>
+                <h2>Habilidades Tecnicas</h2>
+            </div>
+            <div class="skills-list">
+                <div class="skill-item">
+                    <div class="skill-icon">&#x1F4BB;</div>
+                    <div class="skill-text">
+                        <h3>Programacion Avanzada</h3>
+                        <p>15 anos de experiencia en multiples lenguajes y paradigmas. Especializado en programacion grafica, sistemas en tiempo real y desarrollo full-stack.</p>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon">&#x1F3A8;</div>
+                    <div class="skill-text">
+                        <h3>Uso Profundo de Programas de Artes Multimediales</h3>
+                        <p>Dominio avanzado de Unity, TouchDesigner, Unreal Engine, Resolume, Processing, OpenFrameworks y herramientas de diseno audiovisual.</p>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon">&#x1F3AD;</div>
+                    <div class="skill-text">
+                        <h3>Produccion y Direccion de Eventos</h3>
+                        <p>Coordinacion de instalaciones interactivas, shows multimedia y experiencias inmersivas para marcas, festivales y espacios publicos.</p>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon">&#x1F465;</div>
+                    <div class="skill-text">
+                        <h3>Promocion y Organizacion de Comunidades</h3>
+                        <p>Fundador de comunidades especializadas en arte digital y programacion creativa. Organizacion de eventos, talleres y espacios de intercambio colectivo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== HISTORIA LABORAL (ACCORDION) ========== -->
+        <section class="cv-section">
+            <div class="cv-section-header" style="margin-bottom:0;padding-bottom:0;border-bottom:none;">
+                <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                </div>
+                <button class="accordion-toggle" onclick="toggleAccordion('work-content', this)">
+                    Historia Laboral
+                    <span class="accordion-arrow">&#x25BC;</span>
+                </button>
+            </div>
+            <div class="accordion-content" id="work-content">
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Coordinacion y programacion de juego interactivo Touch</h3>
+                    <span class="work-date">2023</span>
+                </div>
+                <p>Tecnopolis - Techin. Desarrollo de juego interactivo para pantalla tactil.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Realidad Aumentada con Unity + Vuforia</h3>
+                    <span class="work-date">2023</span>
+                </div>
+                <p>Aplicacion de RA para stand del Ejercito Argentino en Tecnopolis.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Campana Budweiser + Messi con Realidad Aumentada</h3>
+                    <span class="work-date">2023</span>
+                </div>
+                <p>Direccion y coordinacion en conjunto con Wolfpack Multimedia y Sebastian Zavatarelli.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Instalaciones Interactivas Kinect - Fiesta Nacional del Sol</h3>
+                    <span class="work-date">2023</span>
+                </div>
+                <div class="work-sub-items">
+                    <div class="work-sub-item">
+                        <p>Libro interactivo con Kinect</p>
+                        <a href="https://www.youtube.com/shorts/JKDNdXI5TvQ" target="_blank">Ver video</a>
+                    </div>
+                    <div class="work-sub-item">
+                        <p>Videojuego de reciclaje interactivo con Kinect</p>
+                        <a href="https://www.youtube.com/shorts/EtTTCFgjR-A" target="_blank">Ver video</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Instalacion Interactiva de RAP para Red Bull</h3>
+                    <span class="work-date">2022</span>
+                </div>
+                <p>Desarrollada en conjunto con Luciano Toledo y Adrian Lex.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Karaoke para La Voz Argentina - Telefe</h3>
+                    <span class="work-date">2022</span>
+                </div>
+                <p>Desarrollado en JavaScript y Web Audio para Jota Ideas.</p>
+                <a href="https://www.instagram.com/reel/CkjY7vhuNYM/" target="_blank">Ver en Instagram</a>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Instalacion Interactiva para Disney - Espacio y Planetas</h3>
+                    <span class="work-date">2022</span>
+                </div>
+                <p>Desarrollado en OpenFrameworks.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Plexus Interactivo para Coca Cola</h3>
+                    <span class="work-date">2022</span>
+                </div>
+                <p>Evento privado - instalacion interactiva.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Instalaciones Interactivas para Pantallas Tactiles - Ecoparque</h3>
+                    <span class="work-date">2022</span>
+                </div>
+                <div class="work-sub-items">
+                    <div class="work-sub-item"><a href="https://www.youtube.com/shorts/JigA4-trz3U" target="_blank">Ver video 1</a></div>
+                    <div class="work-sub-item"><a href="https://www.youtube.com/watch?v=cgwB4wh-GIY" target="_blank">Ver video 2</a></div>
+                </div>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Videojuego para el Gobierno de la Ciudad</h3>
+                    <span class="work-date">2021</span>
+                </div>
+                <p>Programado responsive (Android, iOS y Web) usando Unity. <a href="https://ciudadverde.gob.ar/mcl/" target="_blank">ciudadverde.gob.ar/mcl</a></p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Pagina Web para Eventos Interactivos - MERK y Miami</h3>
+                    <span class="work-date">2020</span>
+                </div>
+                <p>Realizado en Three.js. <a href="http://mmtt.com.ar/mmtt_eventoVirtual/" target="_blank">Ver sitio</a></p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Instalaciones Interactivas - Fiesta Nacional del Sol</h3>
+                    <span class="work-date">2020</span>
+                </div>
+                <p>Turbina, Muro de tarjetas y videojuego interactivo con Kinect.</p>
+                <div class="work-sub-items">
+                    <div class="work-sub-item"><a href="https://vimeo.com/manage/videos/398055154" target="_blank">Ver video 1</a></div>
+                    <div class="work-sub-item"><a href="https://vimeo.com/manage/videos/398088365" target="_blank">Ver video 2</a></div>
+                    <div class="work-sub-item"><a href="https://vimeo.com/manage/videos/398097318" target="_blank">Ver video 3</a></div>
+                </div>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Montaje y Animaciones de Luces - Estudio Biopus</h3>
+                    <span class="work-date">2019</span>
+                </div>
+                <p>Control de tachos VDMX mediante software en Processing para &quot;El Jaguar y la Serpiente&quot;. <a href="http://www.estudiobiopus.com.ar/estudio/" target="_blank">Estudio Biopus</a></p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Banners Interactivos - Simposio Inmuno-Oncologia</h3>
+                    <span class="work-date">2019</span>
+                </div>
+                <a href="https://www.youtube.com/watch?v=-2vQanaaDCY" target="_blank">Ver video</a>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Juego Interactivo Kinect - Lucky Strike</h3>
+                    <span class="work-date">2019</span>
+                </div>
+                <p>Reversion del Rat Park, videojuego creado en OpenFrameworks con GLSL. <a href="https://www.youtube.com/watch?v=LDAiW7hHYSQ" target="_blank">Ver video</a></p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Sistema de Visuales con Fluidos y Kinect - Costa Salguero</h3>
+                    <span class="work-date">2018</span>
+                </div>
+                <p>Realizado en TouchDesigner. <a href="https://www.youtube.com/watch?v=SEaSqZ95bl8" target="_blank">Ver video</a></p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Desarrollo de Sitio Web - NovaWorks</h3>
+                    <span class="work-date">2018</span>
+                </div>
+                <p>Sitio de muebles en Three.js.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Clases de Apoyo - Universidad Nacional de las Artes</h3>
+                    <span class="work-date">2018</span>
+                </div>
+                <p>Programacion en la carrera Artes Multimediales.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Instalacion Interactiva Kinect - Ramiro Quartz</h3>
+                    <span class="work-date">2017</span>
+                </div>
+                <p>Conexion con redes sociales.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Realidad Aumentada y OSC - Ciudad Automatica</h3>
+                    <span class="work-date">2017</span>
+                </div>
+                <p>Controlador OSC para dispositivos Android bajo direccion de Josie Watson. <a href="https://www.facebook.com/tienequesalir/videos/448195138875674" target="_blank">Ver video</a></p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Raspberry Pi - CONAE Lanzamiento al Espacio - Tecnopolis</h3>
+                    <span class="work-date">2016</span>
+                </div>
+                <p>Instalacion y configuracion. Productora Lumma - Ingenieria Audiovisual.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Controlador de Video Gear VR - Samsung</h3>
+                    <span class="work-date">2016</span>
+                </div>
+                <p>Desarrollado en Android Studio (Java). Productora Lumma.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>WordPress - Ittel Comunicaciones</h3>
+                    <span class="work-date">2015</span>
+                </div>
+                <p>Instalacion y mantenimiento.</p>
+            </div>
+
+            <div class="work-item">
+                <div class="work-header">
+                    <h3>Mantenimiento Tecnico - Tecnopolis 2015</h3>
+                    <span class="work-date">2015</span>
+                </div>
+                <p>Edicion &quot;Futuro para siempre&quot;. Productora Lumma - Ingenieria Audiovisual. <a href="http://lumma.com.ar" target="_blank">lumma.com.ar</a></p>
+            </div>
+            </div>
+        </section>
+
+        <!-- ========== PROYECTOS PERSONALES (ACCORDION) ========== -->
+        <section class="cv-section">
+            <div class="cv-section-header" style="margin-bottom:0;padding-bottom:0;border-bottom:none;">
+                <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <button class="accordion-toggle" onclick="toggleAccordion('projects-content', this)">
+                    Proyectos Personales
+                    <span class="accordion-arrow">&#x25BC;</span>
+                </button>
+            </div>
+            <div class="accordion-content" id="projects-content">
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Prototipo VR en Unity - Kali Shade</h3>
+                        <span class="project-date">2023</span>
+                    </div>
+                    <a href="https://www.youtube.com/shorts/rI8vfBl1XbI" target="_blank">Ver video</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Dynamic Universe - Videojuego de naves generativo</h3>
+                        <span class="project-date">2022</span>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=6D9J2fiDGPk" target="_blank">Ver video</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>HellMalware OS - Simulacion de SO Glitch</h3>
+                        <span class="project-date">2022 - Actualidad</span>
+                    </div>
+                    <a href="https://mmtt.com.ar/jpupper/nftsapps/hellmalware/" target="_blank">Ver proyecto</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Galeria de NFTs Generativos - FXHASH</h3>
+                        <span class="project-date">2022 - Actualidad</span>
+                    </div>
+                    <a href="https://www.fxhash.xyz/u/JPupper" target="_blank">fxhash.xyz/u/JPupper</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Tutorial: Subir obra interactiva a Hic et Nunc como NFT</h3>
+                        <span class="project-date">2021</span>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=h8LXiI8tVNw" target="_blank">Ver tutorial</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Tutorial: Vertices con degrade y sombras en Processing</h3>
+                        <span class="project-date">2020</span>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=J067BVsobeM" target="_blank">Ver tutorial</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Tutoriales Guipper</h3>
+                        <span class="project-date">2021</span>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=rOPMYAHRxRU&list=PLfar0iGmq1QLaV4g0J6rfsSUxda1kYTBn" target="_blank">Ver lista de reproduccion</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Guipper - Software para mezcla de shaders en tiempo real</h3>
+                        <span class="project-date">2021</span>
+                    </div>
+                    <a href="https://mmtt.com.ar/guipper" target="_blank">mmtt.com.ar/guipper</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Tutoriales de Fragment Shaders en GLSL</h3>
+                        <span class="project-date">2019</span>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=A0I8bCQCijI" target="_blank">Ver tutorial</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Galleta de la Fortuna - Videojuego</h3>
+                        <span class="project-date">2019</span>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=A0I8bCQCijI" target="_blank">Ver video</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Principio de Videojuego con Sistemas de Fisicas</h3>
+                        <span class="project-date">2017</span>
+                    </div>
+                    <a href="https://www.facebook.com/Jpupper/videos/852779851529567/" target="_blank">Ver video</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>La Dualidad de Quetzacoatl</h3>
+                        <span class="project-date">2017</span>
+                    </div>
+                    <a href="https://www.facebook.com/tienequesalir/videos/vl.135713897058894/488348174860370/?type=1" target="_blank">Ver video</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Alina Kinect - Sistema de dibujos generativos con Kinect</h3>
+                        <span class="project-date">2017</span>
+                    </div>
+                    <p>OpenFrameworks.</p>
+                    <a href="https://www.facebook.com/Jpupper/videos/984712615002956/" target="_blank">Ver video</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>GuipperFX - Plugin de visuales audioritmicas</h3>
+                        <span class="project-date">2017</span>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=AiFj7tocT20" target="_blank">Ver video</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Videojuego para &quot;El Ultimo Jardin del Mundo&quot;</h3>
+                        <span class="project-date">2017</span>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=AnGL1jAIInE" target="_blank">Ver video</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>ALRAC MIDI - Sistema pedagogico para organo MIDI</h3>
+                        <span class="project-date">2017</span>
+                    </div>
+                    <a href="https://www.facebook.com/Jpupper/videos/868489809958571/" target="_blank">Ver video</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>SuperFractalShape</h3>
+                        <span class="project-date">2017</span>
+                    </div>
+                    <a href="https://www.facebook.com/Jpupper/videos/950628068411411/" target="_blank">Ver video</a>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-header">
+                        <h3>Spirographics - Plugin de visuales para Resolume</h3>
+                        <span class="project-date">2016</span>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=QqH8csJEEi4&t=4s" target="_blank">Ver video</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== EVENTOS (ACCORDION) ========== -->
+        <section class="cv-section">
+            <div class="cv-section-header" style="margin-bottom:0;padding-bottom:0;border-bottom:none;">
+                <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <button class="accordion-toggle" onclick="toggleAccordion('events-content', this)">
+                    Eventos
+                    <span class="accordion-arrow">&#x25BC;</span>
+                </button>
+            </div>
+            <div class="accordion-content" id="events-content">
+                <div class="compact-list">
+                    <div class="list-item">
+                        <p>Presentacion del stand de inteligencia artificial en IT Joven</p>
+                    </div>
+                    <div class="list-item">
+                        <p>Presentacion de instalaciones interactivas para Tecnopolis - VTheJ y Guipper</p>
+                        <span class="item-date">2022</span>
+                    </div>
+                    <div class="list-item">
+                        <p>Presentacion de visuales generativas con GLSL en Processing Day</p>
+                        <span class="item-date">2019</span>
+                        <br><a href="https://www.youtube.com/watch?v=lkcuDGQjJHg&t=4418s" target="_blank">Ver video</a>
+                    </div>
+                    <div class="list-item">
+                        <p>Presentacion del plugin Spirographics en el taller de interfaces inalambricas de Luciano Toledo - Centro Cultural Kirchner</p>
+                        <span class="item-date">2017</span>
+                        <br><a href="https://www.facebook.com/tienequesalir/videos/504764583218729/" target="_blank">Ver video</a>
+                    </div>
+                    <div class="list-item">
+                        <p>Visuales para &quot;Buenas Noches Egipto&quot; - Teatro Vorterix</p>
+                        <span class="item-date">2017</span>
+                        <br><a href="https://www.facebook.com/tienequesalir/videos/vl.135713897058894/454751098220078/?type=1" target="_blank">Ver video</a>
+                    </div>
+                    <div class="list-item">
+                        <p>Presentacion de SuperFractales - Club Cultural Matienzo</p>
+                        <span class="item-date">2017</span>
+                        <br><a href="https://www.facebook.com/events/125753531426660/" target="_blank">Ver evento</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        function downloadPDF() {
+            // Open all accordions first
+            document.querySelectorAll('.accordion-content').forEach(el => el.classList.add('open'));
+            document.querySelectorAll('.accordion-arrow').forEach(el => el.classList.add('open'));
+            // Use browser's native print with our @media print styles
+            window.print();
+        }
+
+        function toggleAccordion(id, btn) {
+            const content = document.getElementById(id);
+            const arrow = btn.querySelector('.accordion-arrow');
+            content.classList.toggle('open');
+            if (arrow) arrow.classList.toggle('open');
+        }
+
+        // Detectar si estamos en VPS para ajustar el link de &quot;Volver al portfolio&quot;
+        document.addEventListener('DOMContentLoaded', function() {
+            const backLink = document.querySelector('.back-link');
+            if (backLink) {
+                const isVPS = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+                if (isVPS || window.location.pathname.startsWith('/jpupper')) {
+                    backLink.href = '/jpupper/';
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
