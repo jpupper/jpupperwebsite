@@ -196,6 +196,19 @@ section {
     font-size: 15px;
 }
 
+/* En la sección de hitos la bajada va sobre el shader pelado: se le pone un
+   chip de vidrio para que se lea (dentro de la caja de la galería no hace falta). */
+.hitos .sec-sub {
+    color: #c2c0d4;
+    background: rgba(7, 8, 15, 0.55);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--line-soft);
+    border-radius: 10px;
+    padding: 7px 14px;
+    text-shadow: none;
+}
+
 /* ---------- hero --------------------------------------------------------- */
 
 .hero {
