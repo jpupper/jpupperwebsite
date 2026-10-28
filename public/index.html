@@ -3,76 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Julián Puppo - Programador Gráfico & Artista Multimedial</title>
- 
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/fullscreen.css">
+    <title>Julián Puppo — Programador gráfico &amp; artista multimedial</title>
+    <meta name="description" content="Julián Puppo: programador gráfico y artista multimedial. Fundador de FullScreen Code Solutions, creador de Arte Digital Data y profesor universitario de shaders e inteligencia artificial aplicada al arte.">
+    <meta name="theme-color" content="#07080f">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/jpupper.css?v=1">
 </head>
 <body>
-    <div class="background-overlay"></div>
-    
-    <header>
-        <nav class="top-nav">
-            <a href="/jpupper/cv" class="nav-cv-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                Curriculum Vitae
-            </a>
-        </nav>
-        <div class="profile-container">
-            <img src="img/julian.png" alt="Julián Puppo" class="profile-image">
-            <div class="profile-info">
-                <h1>Julián Puppo</h1>
-                <h2>Programador Gráfico & Artista Multimedial</h2>
-                <a href="/cv" class="cv-nav-link">Ver Currículum Vitae</a>
-            </div>
+
+    <header class="jp-head">
+        <div class="jp-head__in">
+            <a href="index.html" class="jp-brand">Julián Puppo <span>/ JP</span></a>
+            <nav class="jp-nav">
+                <a href="#hitos">Hitos</a>
+                <a href="gallery.html">Galería</a>
+                <a href="cv.html">CV</a>
+                <a href="gallery.html" class="is-cta">Ver proyectos</a>
+            </nav>
         </div>
     </header>
 
     <main>
-        <section class="bio">
-            <p>Hola soy Julián Puppo, soy programador gráfico y artista multimedial, me dedico a crear arte con código, me interesa cómo el código y los algoritmos generativos pueden generar imagen, video y producciones que corran en tiempo real. Programo fluido en varios lenguajes y frameworks para la producción multimedial y videojuegos como Unreal Engine, Unity, TouchDesigner, C++, Python, JavaScript, WebSockets, bases de datos. También soy profesor universitario enseñando shaders. Me gusta pensar al arte y a la producción tecnológica como algo que debería suceder en el plano de lo colectivo y la colaboración mutua por eso también siempre intento formar comunidades y grupos de consulta donde podamos socializar y expandir el conocimiento en el área.</p>
-        </section>
 
-        <section class="gallery-section">
-            <button class="close-fullscreen">&times;</button>
-            <button class="autoplay-btn" id="galleryautoplay">Autoplay</button>
-            <button class="nav-arrow prev-project">&lt;</button>
-            <button class="nav-arrow next-project">&gt;</button>
-            <div class="gallery-controls">
-                <div class="search-container">
-                    <input type="text" id="search-input" placeholder="Buscar proyectos..." class="search-input">
-                </div>
-                <div class="control-buttons">
-                    <button id="fullscreen-btn" class="control-btn"><span class="btn-text">Pantalla Completa</span></button>
-                    <button id="slideshow-btn" class="control-btn"><span class="btn-text">Autoplay</span></button>
-                </div>
-            </div>
-            <div class="filters" id="filtersContainer">
-                <!-- Los filtros se cargarán dinámicamente desde la base de datos -->
-            </div>
-
-            <div class="gallery-container">
-                <div class="project-list"></div>
-                <div class="project-preview">
-                    <div class="preview-content">
-                        <h3>Selecciona un proyecto</h3>
-                        <div class="preview-image"></div>
-                        <div class="preview-info">
-                            <p class="preview-description"></p>
-                            <a href="#" class="preview-link" target="_blank">Ver proyecto</a>
-                            <div class="preview-tags"></div>
+        <!-- ============ PORTADA ============ -->
+        <section class="hero">
+            <div class="wrap">
+                <div class="hero__card">
+                    <div class="hero__text">
+                        <p class="hero__role">Programador gráfico &amp; artista multimedial</p>
+                        <h1>Julián Puppo</h1>
+                        <p class="hero__tagline">Arte con código, en tiempo real.</p>
+                        <p class="hero__bio">
+                            Hola soy Julián Puppo. Me dedico a crear arte con código: me interesa cómo el código y los
+                            algoritmos generativos pueden generar imagen, video y producciones que corran en tiempo real.
+                            Programo fluido en varios lenguajes y frameworks para la producción multimedial y videojuegos
+                            como Unreal Engine, Unity, TouchDesigner, C++, Python, JavaScript, WebSockets y bases de datos.
+                        </p>
+                        <p class="hero__bio">
+                            Me gusta pensar al arte y a la producción tecnológica como algo que debería suceder en el
+                            plano de lo colectivo y la colaboración mutua, por eso también siempre intento formar
+                            comunidades y grupos de consulta donde podamos socializar y expandir el conocimiento en el área.
+                        </p>
+                        <div class="hero__actions">
+                            <a href="gallery.html" class="btn btn--solid">Ver galería de proyectos</a>
+                            <a href="cv.html" class="btn btn--ghost">Curriculum Vitae</a>
                         </div>
+                    </div>
+                    <div class="hero__photo">
+                        <img src="img/julian.png" alt="Retrato de Julián Puppo" loading="eager">
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- ============ HITOS ============ -->
+        <section class="hitos" id="hitos">
+            <div class="wrap">
+                <div class="sec-head">
+                    <div>
+                        <span class="sec-label">Hitos</span>
+                        <h2 class="sec-title">Lo que construyo y lo que enseño</h2>
+                    </div>
+                    <p class="sec-sub">
+                        Tres ejes de trabajo: el estudio, la comunidad y la docencia.
+                    </p>
+                </div>
+
+                <div class="hitos__grid">
+
+                    <!-- 01 · FullScreen Code -->
+                    <article class="hito hito--fsc">
+                        <div class="hito__head">
+                            <span class="hito__num">01</span>
+                            <p class="hito__role">Desarrollador y fundador</p>
+                        </div>
+                        <img class="fsc-logo" src="img/rebrand/imagotipo.png" alt="FullScreen Code Solutions" loading="lazy">
+                        <h3 class="hito__title">FullScreen Code Solutions</h3>
+                        <p class="hito__desc">
+                            Estudio de desarrollo de software para instalaciones interactivas, proyectos multimediales
+                            y páginas web. Dirijo el equipo y el stack técnico: gráfica en tiempo real, hardware
+                            interactivo, backends y puesta en escena.
+                        </p>
+                        <a class="hito__link" href="https://fullscreencode.com/" target="_blank" rel="noopener">
+                            fullscreencode.com <span aria-hidden="true">↗</span>
+                        </a>
+                    </article>
+
+                    <!-- 02 · Arte Digital Data -->
+                    <article class="hito hito--add">
+                        <figure class="hito__flyer">
+                            <img src="img/rebrand/flyer-artedigitaldata.jpg" alt="Captura de la portada de Arte Digital Data" loading="lazy">
+                            <figcaption>artedigitaldata.com</figcaption>
+                        </figure>
+                        <div class="hito__body">
+                            <div class="hito__head">
+                                <span class="hito__num">02</span>
+                                <p class="hito__role">Creador</p>
+                            </div>
+                            <h3 class="hito__title">Arte Digital Data</h3>
+                            <p class="hito__desc">
+                                La plataforma social del arte digital argentino: obras, recursos, eventos,
+                                convocatorias y concurso mensual. Un espacio para publicar, encontrarse y
+                                hacer circular la producción del campo.
+                            </p>
+                            <a class="hito__link" href="https://artedigitaldata.com/" target="_blank" rel="noopener">
+                                artedigitaldata.com <span aria-hidden="true">↗</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- 03 · Docencia -->
+                    <article class="hito hito--doc">
+                        <div class="hito__head">
+                            <span class="hito__num">03</span>
+                            <p class="hito__role">Profesor universitario</p>
+                        </div>
+                        <h3 class="hito__title">Docencia en arte, shaders e inteligencia artificial</h3>
+                        <p class="hito__desc">
+                            Programas de grado y formación profesional donde enseño programación gráfica,
+                            shaders, instalaciones inmersivas y modelos generativos aplicados a la producción
+                            multimedial.
+                        </p>
+                        <div class="doc-list">
+                            <a class="doc-row" href="https://multimedia.una.edu.ar/diplomaturas/diplomatura-en-inteligencia-artificial-aplicada-al-arte-multimedial_44987" target="_blank" rel="noopener">
+                                <span class="doc-inst">Universidad Nacional de las Artes</span>
+                                <span class="doc-go">Ver programa ↗</span>
+                                <span class="doc-prog">Diplomatura en Inteligencia Artificial aplicada al Arte Multimedial</span>
+                            </a>
+                            <a class="doc-row" href="https://www.imagecampus.edu.ar/programas-profesionales/ia-produccion-multimedia" target="_blank" rel="noopener">
+                                <span class="doc-inst">Image Campus</span>
+                                <span class="doc-go">Ver programa ↗</span>
+                                <span class="doc-prog">IA para Producción Multimedia</span>
+                            </a>
+                            <a class="doc-row" href="https://www.imagecampus.edu.ar/programas-profesionales/shaders-para-videojuegos" target="_blank" rel="noopener">
+                                <span class="doc-inst">Image Campus</span>
+                                <span class="doc-go">Ver programa ↗</span>
+                                <span class="doc-prog">Intro a Shaders y VFX para Videojuegos</span>
+                            </a>
+                            <a class="doc-row" href="https://www.imagecampus.edu.ar/programas-profesionales/espectaculos-inmersivos" target="_blank" rel="noopener">
+                                <span class="doc-inst">Image Campus</span>
+                                <span class="doc-go">Ver programa ↗</span>
+                                <span class="doc-prog">Espectáculos Inmersivos</span>
+                            </a>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ GALERÍA ============ -->
+        <section class="galeria" id="galeria">
+            <div class="wrap">
+                <div class="galeria__card">
+                    <div class="galeria__top">
+                        <div>
+                            <span class="sec-label">Galería</span>
+                            <h2 class="sec-title">Todos los proyectos</h2>
+                        </div>
+                        <p class="sec-sub">
+                            Instalaciones interactivas, videojuegos, shaders, obras generativas, VJ sets y
+                            experimentos. El índice completo, con búsqueda y filtros por técnica.
+                        </p>
+                    </div>
+
+                    <ul class="galeria__index" id="galeria-index"></ul>
+
+                    <div class="galeria__foot">
+                        <span class="galeria__count" id="galeria-count">Cargando proyectos…</span>
+                        <a href="gallery.html" class="btn btn--solid">Abrir la galería</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
-    <script src="js/main.js"></script>
-    <script src="js/fullscreen.js"></script>
-    <script src="js/config.js"></script>
-    
+
+    <footer class="jp-foot">
+        <div class="jp-foot__in">
+            <span>© <span id="jp-year">2026</span> Julián Puppo — Programador gráfico &amp; artista multimedial.</span>
+            <div class="jp-foot__links">
+                <a href="https://fullscreencode.com/" target="_blank" rel="noopener">FullScreen Code</a>
+                <a href="https://artedigitaldata.com/" target="_blank" rel="noopener">Arte Digital Data</a>
+                <a href="gallery.html">Galería</a>
+                <a href="cv.html">CV</a>
+            </div>
+            <a class="jp-foot__shader" href="https://fullscreencode.com/jpshadereditor/nodeeditor.html?output=1&amp;comp=nodeeditor-xz2t&amp;pass=n9cndhye7b" target="_blank" rel="noopener">fondo: nodeeditor-xz2t — abrilo en el Node Editor</a>
+        </div>
+    </footer>
+
+    <!-- FONDO: JP Shader Editor (jpshadereditorinclude). Sirve el backend del VPS.
+         Composición: nodeeditor-xz2t ("fondojpupper") · pase: n9cndhye7b.
+         Con sesión FSCAuth, la tecla S abre el panel para cambiar shader, uniformes y guardar. -->
+    <script src="https://vps-4455523-x.dattaweb.com/jpshadereditor/include.js"
+            data-page="jpupper" data-comp="nodeeditor-xz2t" data-pass="n9cndhye7b"
+            data-keep-bg="1"></script>
+
+    <script src="js/config.js?v=2"></script>
+    <script src="js/landing.js?v=1"></script>
+
 </body>
 </html>

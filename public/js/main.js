@@ -5,6 +5,54 @@ let tiempoDefecto = 10000;
 let isFullscreen = false;
 let isSlideshow = false;
 
+// Resuelve el thumbnail a una URL absoluta: las imágenes viven en el backend
+// del VPS (/jpupper/img/projects/...), no en el FTP, así que la ruta relativa
+// que guarda la base da 404 cuando la página se sirve desde fullscreencode.com.
+function thumbUrl(t) {
+    if (!t) return '';
+    if (/^https?:\/\//i.test(t)) return t;
+    return (window.appConfig && window.appConfig.getImagePath) ? window.appConfig.getImagePath(t) : t;
+}
+
+// jeyder.com.ar fue el hosting viejo del portfolio y hoy no resuelve: los links
+// a ese dominio se ocultan en vez de mandar al visitante a un sitio muerto.
+function esLinkMuerto(u) {
+    return /jeyder\.com\.ar/i.test(String(u || ''));
+}
+
+
+// Muestra la imagen del proyecto en el preview. Si el archivo no existe
+// (hay proyectos cargados sin thumbnail), pinta una ficha tipográfica con el
+// título en vez de dejar el recuadro vacío.
+function showProjectImage(container, project) {
+    var url = thumbUrl(project.thumbnail);
+
+    function fallback() {
+        container.style.backgroundImage = 'none';
+        container.classList.add('preview-image--sin-imagen');
+        container.setAttribute('data-titulo', project.title || '');
+        container.setAttribute('data-tags', (project.tags || []).slice(0, 3).join('  ·  '));
+    }
+
+    container.innerHTML = '';
+    container.classList.remove('preview-image--sin-imagen');
+    container.removeAttribute('data-titulo');
+    container.removeAttribute('data-tags');
+    container.style.backgroundImage = 'none';
+
+    if (!url) { fallback(); return; }
+
+    var probe = new Image();
+    probe.onload = function () {
+        container.style.backgroundImage = 'url("' + url + '")';
+        container.style.backgroundSize = 'contain';
+        container.style.backgroundPosition = 'center';
+        container.style.backgroundRepeat = 'no-repeat';
+    };
+    probe.onerror = fallback;
+    probe.src = url;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
    
     try {
@@ -116,6 +164,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         filteredProjects.forEach(project => {
             const projectElement = document.createElement('div');
             projectElement.classList.add('project-item');
+            projectElement.dataset.id = project.id || '';
             projectElement.innerHTML = `<h3>${project.title}</h3>`;
             
             projectElement.addEventListener('click', async () => {
@@ -167,7 +216,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Crear backup image
                     const backupImage = document.createElement('div');
                     backupImage.className = 'backup-image';
-                    backupImage.style.cssText = `display: none; width: 100%; height: 100%; background-image: url(${project.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;`;
+                    backupImage.style.cssText = `display: none; width: 100%; height: 100%; background-image: url(${thumbUrl(project.thumbnail)}); background-size: contain; background-position: center; background-repeat: no-repeat;`;
                     
                     // Limpiar y actualizar previewImage
                     previewImage.innerHTML = '';
@@ -215,7 +264,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Crear backup image
                     const backupImage = document.createElement('div');
                     backupImage.className = 'backup-image';
-                    backupImage.style.cssText = `display: none; width: 100%; height: 100%; background-image: url(${project.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;`;
+                    backupImage.style.cssText = `display: none; width: 100%; height: 100%; background-image: url(${thumbUrl(project.thumbnail)}); background-size: contain; background-position: center; background-repeat: no-repeat;`;
                     
                     // Limpiar y actualizar previewImage
                     previewImage.innerHTML = '';
@@ -268,16 +317,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     });
                 } else {
                     // Si no hay videolink válido, mostrar la imagen normal
-                    previewImage.innerHTML = '';
-                    previewImage.style.backgroundImage = `url(${project.thumbnail})`;
-                    previewImage.style.backgroundSize = 'contain';
-                    previewImage.style.backgroundPosition = 'center';
-                    previewImage.style.backgroundRepeat = 'no-repeat';
+                    showProjectImage(previewImage, project);
                 }
                 
                 // Actualizar el resto del contenido
                 previewDescription.innerHTML = project.description;
                 previewLink.href = project.url;
+                previewLink.style.display = esLinkMuerto(project.url) ? 'none' : '';
                 
                 // Mostrar tags
                 const tagsContainer = document.querySelector('.preview-tags');
@@ -319,7 +365,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             ></iframe>
                         </div>
                     </div>
-                    <div class="backup-image" style="display: none; width: 100%; height: 100%; background-image: url(${firstProject.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+                    <div class="backup-image" style="display: none; width: 100%; height: 100%; background-image: url(${thumbUrl(firstProject.thumbnail)}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
                 `;
                 previewImage.style.backgroundImage = 'none';
             } else if (instagramMatch && videoUrl.trim() !== '') {
@@ -342,7 +388,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             </svg>
                         </div>
                     </div>
-                    <div class="backup-image" style="display: none; width: 100%; height: 100%; background-image: url(${firstProject.thumbnail}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+                    <div class="backup-image" style="display: none; width: 100%; height: 100%; background-image: url(${thumbUrl(firstProject.thumbnail)}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
                 `;
                 previewImage.style.backgroundImage = 'none';
                 
@@ -395,15 +441,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             } else {
                 // Si no hay videolink válido, mostrar la imagen normal
-                previewImage.innerHTML = '';
-                previewImage.style.backgroundImage = `url(${firstProject.thumbnail})`;
-                previewImage.style.backgroundSize = 'contain';
-                previewImage.style.backgroundPosition = 'center';
-                previewImage.style.backgroundRepeat = 'no-repeat';
+                showProjectImage(previewImage, firstProject);
             }
             
             previewDescription.innerHTML = firstProject.description;
             previewLink.href = firstProject.url;
+            previewLink.style.display = esLinkMuerto(firstProject.url) ? 'none' : '';
             
             // Mostrar tags del primer proyecto
             const tagsContainer = document.querySelector('.preview-tags');
@@ -557,6 +600,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Cargar filtros desde URL y renderizar proyectos
     loadFiltersFromURL();
     renderProjects(selectedFilters, currentSearch);
+
+    // ?open=<id> abre directo ese proyecto (lo usan los thumbs de la portada)
+    const openId = new URLSearchParams(window.location.search).get('open');
+    if (openId) {
+        const target = Array.prototype.slice.call(document.querySelectorAll('.project-item'))
+            .find(el => el.dataset.id === openId);
+        if (target) target.click();
+    }
 });
 
 // ... (rest of the code remains the same)

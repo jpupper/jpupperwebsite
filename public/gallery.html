@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería — Julián Puppo</title>
+    <meta name="description" content="Índice completo de proyectos de Julián Puppo: instalaciones interactivas, videojuegos, shaders, arte generativo y experimentos en tiempo real.">
+    <meta name="theme-color" content="#07080f">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/jpupper.css?v=1">
+    <link rel="stylesheet" href="css/styles.css?v=2">
+    <link rel="stylesheet" href="css/fullscreen.css?v=2">
+</head>
+<body>
+
+    <header class="jp-head">
+        <div class="jp-head__in">
+            <a href="index.html" class="jp-brand">Julián Puppo <span>/ JP</span></a>
+            <nav class="jp-nav">
+                <a href="index.html">Portada</a>
+                <a href="index.html#hitos">Hitos</a>
+                <a href="cv.html">CV</a>
+                <a href="gallery.html" class="is-cta" aria-current="page">Galería</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <div class="gal-shell">
+        <section class="gal-head">
+            <span class="sec-label">Galería</span>
+            <h1>Índice de proyectos</h1>
+            <p>
+                Instalaciones interactivas, videojuegos, shaders, obras generativas y experimentos.
+                Buscá por nombre o filtrá por técnica.
+            </p>
+        </section>
+
+        <section class="gallery-section">
+            <button class="close-fullscreen" aria-label="Cerrar pantalla completa">&times;</button>
+            <button class="autoplay-btn" id="galleryautoplay">Autoplay</button>
+            <button class="nav-arrow prev-project" aria-label="Proyecto anterior">&lt;</button>
+            <button class="nav-arrow next-project" aria-label="Proyecto siguiente">&gt;</button>
+
+            <div class="gallery-controls">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Buscar proyectos..." class="search-input">
+                </div>
+                <div class="control-buttons">
+                    <button id="fullscreen-btn" class="control-btn"><span class="btn-text">Pantalla Completa</span></button>
+                    <button id="slideshow-btn" class="control-btn"><span class="btn-text">Autoplay</span></button>
+                </div>
+            </div>
+
+            <div class="filters" id="filtersContainer"></div>
+
+            <div class="gallery-container">
+                <div class="project-list"></div>
+                <div class="project-preview">
+                    <div class="preview-content">
+                        <h3>Selecciona un proyecto</h3>
+                        <div class="preview-image"></div>
+                        <div class="preview-info">
+                            <p class="preview-description"></p>
+                            <a href="#" class="preview-link" target="_blank" rel="noopener">Ver proyecto</a>
+                            <div class="preview-tags"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        </div>
+    </main>
+
+    <footer class="jp-foot">
+        <div class="jp-foot__in">
+            <span>© <span id="jp-year">2026</span> Julián Puppo — Programador gráfico &amp; artista multimedial.</span>
+            <div class="jp-foot__links">
+                <a href="index.html">Portada</a>
+                <a href="cv.html">CV</a>
+                <a href="https://fullscreencode.com/" target="_blank" rel="noopener">FullScreen Code</a>
+                <a href="https://artedigitaldata.com/" target="_blank" rel="noopener">Arte Digital Data</a>
+            </div>
+            <a class="jp-foot__shader" href="https://fullscreencode.com/jpshadereditor/nodeeditor.html?output=1&amp;comp=nodeeditor-xz2t&amp;pass=n9cndhye7b" target="_blank" rel="noopener">fondo: nodeeditor-xz2t</a>
+        </div>
+    </footer>
+
+    <script src="https://vps-4455523-x.dattaweb.com/jpshadereditor/include.js"
+            data-page="jpupper" data-comp="nodeeditor-xz2t" data-pass="n9cndhye7b"
+            data-keep-bg="1"></script>
+
+    <script src="js/config.js?v=2"></script>
+    <script src="js/main.js?v=2"></script>
+    <script src="js/fullscreen.js?v=2"></script>
+
+</body>
+</html>

@@ -97,6 +97,15 @@ app.get('/cv', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'cv.html'));
 });
 
+// Galería de proyectos (sección propia): /jpupper/gallery
+app.get('/jpupper/gallery', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'gallery.html'));
+});
+
+app.get('/gallery', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'gallery.html'));
+});
+
 // Main route for /jpupper
 app.get('/jpupper', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
