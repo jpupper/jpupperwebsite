@@ -339,6 +339,8 @@ section {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 20px;
+    /* cada tarjeta mide lo que su contenido: sin huecos vacíos al emparejar alturas */
+    align-items: start;
 }
 
 .hito {
