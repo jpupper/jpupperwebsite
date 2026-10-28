@@ -52,11 +52,14 @@ async function uploadToFtp() {
         console.log('--- Iniciando conexion FTP inteligente para JPWebsite ---');
         console.log('Comparando tamanios de archivos... Solo subiendo lo modificado o nuevo.');
 
+        // Ferozo exige FTPS: TLS explicito en el canal de control (si no, 550
+        // "SSL/TLS required on the control channel") y datos protegidos.
         await client.access({
             host: ftpHost,
             user: ftpUser,
             password: ftpPassword,
-            secure: false
+            secure: true,
+            secureOptions: { rejectUnauthorized: false }
         });
 
         // Para jpupper, usualmente va a un subdirectorio /jpupper
