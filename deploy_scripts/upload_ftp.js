@@ -19,6 +19,10 @@ async function syncLocalToRemote(client, localFolder, remoteFolder) {
     const localItems = fs.readdirSync(localFolder);
 
     for (const item of localItems) {
+        // PROTOCOLO FULLSCREEN: jamas subir archivos de configuración Apache
+        // (.htaccess, .htpasswd, etc.). El .htaccess central vive en megaskill.
+        if (item.startsWith('.ht')) continue;
+
         const localPath = path.join(localFolder, item);
         const stat = fs.statSync(localPath);
 
