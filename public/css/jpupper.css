@@ -314,8 +314,9 @@ section {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 18px;
-    /* cada tarjeta termina donde termina su contenido: nada de huecos internos */
-    align-items: start;
+    /* las tres tarjetas con la MISMA altura y la misma estructura interna:
+       medios arriba (128px), texto, y el pie (links / programas) al final */
+    align-items: stretch;
 }
 
 .hito {
@@ -422,7 +423,9 @@ section {
 }
 
 .hito__links {
-    margin-top: 4px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -450,7 +453,9 @@ section {
 
 /* programas de docencia (lista compacta, sin cajas: la tarjeta respira) */
 .doc-list {
-    margin-top: 4px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
     display: flex;
     flex-direction: column;
     padding-top: 4px;
@@ -464,10 +469,6 @@ section {
     line-height: 1.4;
     color: var(--text);
     transition: color .2s ease, border-color .2s ease, padding-left .2s ease;
-}
-
-.doc-list li:first-child a {
-    border-top: 1px solid var(--line-soft);
 }
 
 .doc-list a:hover {
