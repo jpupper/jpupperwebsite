@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-cv="minimal">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -576,6 +576,7 @@
             .cv-contact-grid { gap: 6px 16px; font-size: 0.82rem; }
         }
     </style>
+    <link rel="stylesheet" href="css/cv-minimal.css?v=1">
 </head>
 <body>
 
@@ -589,12 +590,103 @@
             <span class="cv-title">Curriculum Vitae</span>
         </div>
         <div class="cv-toolbar-right">
+            <div class="cv-switch" role="tablist" aria-label="Versión del CV">
+                <button class="cv-switch__btn" type="button" role="tab" data-cv-view="minimal" aria-selected="true">Minimalista</button>
+                <button class="cv-switch__btn" type="button" role="tab" data-cv-view="completa" aria-selected="false">Completa</button>
+            </div>
             <button class="btn-pdf" onclick="downloadPDF()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                 Descargar como PDF
             </button>
         </div>
     </nav>
+
+    <!-- ========== VERSIÓN MINIMALISTA (formal, una carilla) ========== -->
+    <div class="cv-container" id="cv-minimal">
+
+        <header class="cvmin-head">
+            <h1>Julián Puppo</h1>
+            <p class="cvmin-role">Programador gráfico &amp; artista multimedial</p>
+            <p class="cvmin-contact">
+                <a href="mailto:julian.d.puppo@gmail.com">julian.d.puppo@gmail.com</a><span>·</span>011 6185-0008<span>·</span>Buenos Aires, Argentina<span>·</span><a href="https://fullscreencode.com/jpupper/">fullscreencode.com/jpupper</a>
+            </p>
+        </header>
+
+        <section class="cvmin-block">
+            <h2>Perfil</h2>
+            <p class="cvmin-lead">
+                Programador gráfico y artista multimedial. Desarrollo software para instalaciones interactivas,
+                videojuegos y experiencias en tiempo real, con foco en gráfica generativa, shaders y sistemas
+                interactivos. Fundador de FullScreen Code Solutions, creador de Arte Digital Data y docente
+                universitario de programación gráfica e inteligencia artificial aplicada al arte.
+            </p>
+        </section>
+
+        <section class="cvmin-block">
+            <h2>Experiencia</h2>
+
+            <div class="cvmin-item">
+                <div class="cvmin-item-head">
+                    <h3>FullScreen Code Solutions</h3>
+                    <span>Fundador y director técnico</span>
+                </div>
+                <p>
+                    Estudio de desarrollo de software para instalaciones interactivas, proyectos multimediales y
+                    desarrollo web. Dirección del equipo y del stack técnico: gráfica en tiempo real, hardware
+                    interactivo, backends y puesta en escena. Proyectos para Red Bull, Coca-Cola, Disney, Telefe,
+                    Budweiser, Samsung, Gobierno de la Ciudad, Ecoparque y Tecnópolis.
+                </p>
+            </div>
+
+            <div class="cvmin-item">
+                <div class="cvmin-item-head">
+                    <h3>Arte Digital Data</h3>
+                    <span>Creador y director</span>
+                </div>
+                <p>
+                    Plataforma social del arte digital argentino: publicación de obras, recursos, eventos,
+                    convocatorias y concurso mensual. Desarrollo integral del producto —frontend, backend, base
+                    de datos— y coordinación de la comunidad.
+                </p>
+            </div>
+
+            <div class="cvmin-item">
+                <div class="cvmin-item-head">
+                    <h3>Docencia universitaria</h3>
+                    <span>UNA · Image Campus</span>
+                </div>
+                <ul class="cvmin-list">
+                    <li>Diplomatura en Inteligencia Artificial aplicada al Arte Multimedial — UNA (módulo Código)</li>
+                    <li>IA para Producción Multimedia — Image Campus</li>
+                    <li>Intro a Shaders y VFX para Videojuegos — Image Campus</li>
+                    <li>Espectáculos Inmersivos — Image Campus</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="cvmin-block">
+            <h2>Formación</h2>
+            <ul class="cvmin-edu">
+                <li><span>Licenciatura en Artes Multimediales — Universidad Nacional de las Artes</span><em>2016 – actualidad</em></li>
+                <li><span>Licenciatura en Artes Combinadas — Universidad de Buenos Aires</span><em>2013 – 2015</em></li>
+                <li><span>Técnico en Computación — Otto Krause</span><em></em></li>
+            </ul>
+        </section>
+
+        <section class="cvmin-block">
+            <h2>Herramientas</h2>
+            <p class="cvmin-tools">
+                Unreal Engine · Unity · TouchDesigner · openFrameworks · C++ · Python · JavaScript · GLSL / WebGL ·
+                Node.js · MongoDB · WebSockets · OSC · LiDAR · ComfyUI
+            </p>
+        </section>
+
+        <footer class="cvmin-foot">
+            <span>Julián Puppo · Curriculum Vitae</span>
+            <a href="#completa" data-cv-link="completa">Ver la versión completa (toda la experiencia) →</a>
+        </footer>
+
+    </div>
 
     <div class="cv-container" id="cv-content">
 
@@ -1237,6 +1329,8 @@
             }
         });
     </script>
+
+    <script src="js/cv-views.js?v=1"></script>
 
 </body>
 </html>

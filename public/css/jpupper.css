@@ -155,18 +155,15 @@ section {
 /* cabecera de sección: SIEMPRE en contenedor, nunca texto suelto sobre el shader */
 .sec-head {
     display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 24px;
+    align-items: center;
     margin-bottom: 18px;
-    padding: 20px 24px;
+    padding: 18px 26px;
     border-radius: var(--radius);
     border: 1px solid var(--line);
     background: var(--glass);
     backdrop-filter: blur(24px) saturate(160%);
     -webkit-backdrop-filter: blur(24px) saturate(160%);
     box-shadow: 0 16px 44px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    flex-wrap: wrap;
 }
 
 .sec-label {
@@ -307,101 +304,6 @@ section {
     pointer-events: none;
 }
 
-/* ---------- galería (índice) --------------------------------------------- */
-
-.galeria {
-    padding: 34px 0 16px;
-}
-
-.galeria__card {
-    border-radius: var(--radius);
-    border: 1px solid var(--line);
-    background: var(--glass);
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
-    box-shadow: 0 20px 54px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.galeria__top {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 24px;
-    flex-wrap: wrap;
-}
-
-.galeria__index {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 4px 26px;
-}
-
-.galeria__row {
-    display: grid;
-    grid-template-columns: 32px minmax(0, 1fr);
-    align-items: baseline;
-    gap: 2px 10px;
-    padding: 9px 4px;
-    border-bottom: 1px solid var(--line-soft);
-    transition: border-color .25s ease, background .25s ease;
-}
-
-.galeria__row:hover {
-    border-color: rgba(201, 189, 128, 0.45);
-    background: rgba(201, 189, 128, 0.05);
-}
-
-.galeria__row-n {
-    grid-row: 1 / span 2;
-    font-size: 10.5px;
-    letter-spacing: 0.18em;
-    color: var(--olive);
-}
-
-.galeria__row-t {
-    grid-column: 2;
-    font-size: 14px;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.galeria__row:hover .galeria__row-t {
-    color: var(--gold-hi);
-}
-
-.galeria__row-tags {
-    grid-column: 2;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.galeria__foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-    border-top: 1px solid var(--line-soft);
-    padding-top: 18px;
-}
-
-.galeria__count {
-    font-size: 12.5px;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-}
-
 /* ---------- hitos: tres tarjetas de la MISMA jerarquía ------------------- */
 
 .hitos {
@@ -473,22 +375,16 @@ section {
     opacity: 1;
 }
 
+/* Docencia: los logos de Image Campus y DiploIA (los del footer de /diploia/)
+   van de fondo en el bloque de medios, igual que el logo de FSC y el flyer de ADD. */
 .hito__media--inst {
-    flex-direction: column;
-    gap: 7px;
-    padding: 10px;
-}
-
-.hito__media--inst span {
-    font-size: 9.5px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--vein);
-    padding: 4px 10px;
-    border: 1px solid var(--line-soft);
-    border-radius: 999px;
-    background: rgba(195, 199, 241, 0.05);
-    text-align: center;
+    background-image: url("../img/rebrand/imagecampus.svg"), url("../img/rebrand/diploia.svg");
+    background-repeat: no-repeat, no-repeat;
+    background-position: left 20px center, right 18px center;
+    background-size: 50% auto, 27% auto;
+    background-color: rgba(195, 199, 241, 0.03);
+    /* el teal del logo de DiploIA es oscuro: se aclara un poco para que se lea */
+    filter: brightness(1.3);
 }
 
 .hito__head {
@@ -676,9 +572,6 @@ section {
         justify-self: start;
     }
 
-    .galeria__index {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media (max-width: 620px) {
@@ -733,11 +626,7 @@ section {
     }
 
     .sec-head {
-        padding: 16px 18px;
-    }
-
-    .galeria__card {
-        padding: 20px;
+        padding: 14px 18px;
     }
 
     .hito {

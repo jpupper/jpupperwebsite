@@ -1,0 +1,298 @@
+/* ==========================================================================
+   CV — dos versiones (Minimalista / Completa)
+   Carga DESPUÉS del <style> de cv.html, así gana en el cascade.
+   Además retinta la página con la paleta del sitio (antes era magenta).
+   ========================================================================== */
+
+:root {
+    --bg: #07080f;
+    --surface: #0f1019;
+    --surface2: #161829;
+    --primary: #c9bd80;
+    --primary-dim: rgba(201, 189, 128, 0.15);
+    --secondary: #9a93d6;
+    --accent: #c3c7f1;
+    --text: #f0eef6;
+    --text-dim: #a8a6bd;
+    --text-muted: #6f6d84;
+    --border: rgba(195, 199, 241, 0.16);
+}
+
+/* ---------- retint de los acentos heredados (antes magenta) ---------------- */
+
+.btn-pdf {
+    background: var(--primary) !important;
+    color: #14130c !important;
+}
+
+.btn-pdf:hover {
+    background: #ece5b8 !important;
+    box-shadow: 0 6px 22px rgba(201, 189, 128, 0.32) !important;
+}
+
+.cv-header::before {
+    background: linear-gradient(90deg, var(--primary), var(--accent)) !important;
+}
+
+/* ---------- switch de versión ------------------------------------------- */
+
+.cv-switch {
+    display: inline-flex;
+    padding: 3px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(195, 199, 241, 0.05);
+}
+
+.cv-switch__btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+}
+
+.cv-switch__btn:hover {
+    color: var(--text);
+}
+
+.cv-switch__btn[aria-selected="true"] {
+    background: var(--primary);
+    color: #14130c;
+}
+
+/* una versión por vez */
+html[data-cv="minimal"] #cv-content {
+    display: none;
+}
+
+html[data-cv="completa"] #cv-minimal {
+    display: none;
+}
+
+/* ---------- versión minimalista: hoja de papel --------------------------- */
+
+#cv-minimal {
+    max-width: 860px;
+    margin: 96px auto 60px;
+    padding: 54px 58px 46px;
+    background: #f7f5f0;
+    color: #17170f;
+    border: 0;
+    border-radius: 6px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+#cv-minimal a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(23, 23, 15, 0.28);
+}
+
+#cv-minimal a:hover {
+    border-color: #17170f;
+}
+
+.cvmin-head h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.1rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin: 0 0 6px;
+    color: #17170f;
+}
+
+.cvmin-role {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #6f6a3f;
+    margin-bottom: 14px;
+}
+
+.cvmin-contact {
+    font-size: 12.5px;
+    color: #4a4a3d;
+    line-height: 1.9;
+}
+
+.cvmin-contact span {
+    color: #b9b4a3;
+    margin: 0 7px;
+}
+
+.cvmin-block {
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(23, 23, 15, 0.14);
+}
+
+.cvmin-block h2 {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: #8d8663;
+    margin-bottom: 12px;
+    padding: 0;
+    border: 0;
+}
+
+.cvmin-lead {
+    font-size: 14.2px;
+    line-height: 1.65;
+    color: #2a2a20;
+    max-width: 68ch;
+}
+
+.cvmin-item + .cvmin-item {
+    margin-top: 16px;
+}
+
+.cvmin-item-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 3px;
+}
+
+.cvmin-item-head h3 {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #17170f;
+    margin: 0;
+}
+
+.cvmin-item-head span {
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: #6f6a3f;
+    white-space: nowrap;
+}
+
+.cvmin-item p {
+    font-size: 13.4px;
+    line-height: 1.6;
+    color: #3a3a2e;
+    margin: 0;
+}
+
+.cvmin-list {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+}
+
+.cvmin-list li {
+    font-size: 13.2px;
+    line-height: 1.55;
+    color: #3a3a2e;
+    padding: 2px 0 2px 16px;
+    position: relative;
+}
+
+.cvmin-list li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: #a89f78;
+}
+
+.cvmin-edu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.cvmin-edu li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    font-size: 13.4px;
+    padding: 5px 0;
+    border-bottom: 1px dotted rgba(23, 23, 15, 0.16);
+    color: #2a2a20;
+}
+
+.cvmin-edu li:last-child {
+    border-bottom: 0;
+}
+
+.cvmin-edu em {
+    font-style: normal;
+    font-size: 11.5px;
+    color: #6f6a3f;
+    white-space: nowrap;
+}
+
+.cvmin-tools {
+    font-size: 13px;
+    line-height: 1.8;
+    color: #3a3a2e;
+}
+
+.cvmin-foot {
+    margin-top: 26px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(23, 23, 15, 0.14);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 11.5px;
+    color: #7c7a6a;
+}
+
+.cvmin-foot a {
+    font-weight: 600;
+    color: #4a4632;
+}
+
+/* ---------- print: cada versión se imprime sola -------------------------- */
+
+@media print {
+    .cv-switch {
+        display: none !important;
+    }
+
+    #cv-minimal {
+        max-width: none;
+        margin: 0;
+        padding: 0 6mm;
+        box-shadow: none;
+        border-radius: 0;
+        background: #fff;
+    }
+
+    .cvmin-block {
+        break-inside: avoid;
+    }
+}
+
+@media (max-width: 720px) {
+    #cv-minimal {
+        margin: 84px 12px 32px;
+        padding: 30px 22px;
+        font-size: 13.4px;
+    }
+
+    .cvmin-head h1 {
+        font-size: 1.7rem;
+    }
+}
