@@ -3,6 +3,8 @@
    Paleta extraída de la composición del JP Shader Editor usada de fondo:
    nodeeditor-xz2t ("fondojpupper") — mármol líquido: indigo profundo,
    oro oliva y venas periwinkle.
+   Regla: NINGÚN texto va directo sobre el shader, siempre dentro de un
+   contenedor con superficie (header, tarjetas, panel de sección, footer).
    ========================================================================== */
 
 :root {
@@ -21,13 +23,13 @@
 
     /* texto */
     --text:       #f0eef6;
-    --muted:      #a4a2b9;
+    --muted:      #a8a6bd;
 
     /* superficies */
-    --glass:      rgba(9, 11, 18, 0.52);
-    --glass-soft: rgba(9, 11, 18, 0.34);
-    --line:       rgba(195, 199, 241, 0.16);
-    --line-soft:  rgba(195, 199, 241, 0.09);
+    --glass:      rgba(9, 11, 18, 0.62);
+    --glass-soft: rgba(9, 11, 18, 0.44);
+    --line:       rgba(195, 199, 241, 0.17);
+    --line-soft:  rgba(195, 199, 241, 0.10);
 
     --radius: 16px;
     --max: 1180px;
@@ -66,12 +68,16 @@ img {
     max-width: 100%;
 }
 
+ul {
+    list-style: none;
+}
+
 ::selection {
     background: var(--gold);
     color: var(--ink);
 }
 
-/* ---------- header ------------------------------------------------------- */
+/* ---------- header (bajo) ------------------------------------------------ */
 
 .jp-head {
     position: sticky;
@@ -79,14 +85,14 @@ img {
     z-index: 50;
     backdrop-filter: blur(18px) saturate(150%);
     -webkit-backdrop-filter: blur(18px) saturate(150%);
-    background: rgba(7, 8, 15, 0.55);
+    background: rgba(7, 8, 15, 0.68);
     border-bottom: 1px solid var(--line-soft);
 }
 
 .jp-head__in {
     max-width: var(--max);
     margin: 0 auto;
-    padding: 16px 24px;
+    padding: 8px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -96,52 +102,42 @@ img {
 .jp-brand {
     display: inline-flex;
     align-items: baseline;
-    gap: 10px;
-    font-size: 13px;
-    letter-spacing: 0.28em;
+    gap: 9px;
+    font-size: 12px;
+    letter-spacing: 0.26em;
     text-transform: uppercase;
     color: var(--text);
+    white-space: nowrap;
 }
 
 .jp-brand span {
-    font-size: 10px;
-    letter-spacing: 0.18em;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
     color: var(--gold);
 }
 
 .jp-nav {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     flex-wrap: wrap;
 }
 
+/* todos los links del header con la MISMA jerarquía */
 .jp-nav a {
-    padding: 8px 14px;
+    padding: 6px 12px;
     border-radius: 999px;
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--muted);
     border: 1px solid transparent;
-    transition: color .25s ease, border-color .25s ease, background .25s ease;
+    transition: color .22s ease, border-color .22s ease, background .22s ease;
 }
 
 .jp-nav a:hover {
     color: var(--text);
     border-color: var(--line);
-    background: rgba(195, 199, 241, 0.05);
-}
-
-.jp-nav a.is-cta {
-    color: var(--ink);
-    background: var(--gold);
-    border-color: var(--gold);
-    font-weight: 600;
-}
-
-.jp-nav a.is-cta:hover {
-    background: var(--gold-hi);
-    border-color: var(--gold-hi);
-    color: var(--ink);
+    background: rgba(195, 199, 241, 0.06);
 }
 
 /* ---------- layout ------------------------------------------------------- */
@@ -156,22 +152,21 @@ section {
     position: relative;
 }
 
-/* etiqueta de sección + título */
+/* cabecera de sección: SIEMPRE en contenedor, nunca texto suelto sobre el shader */
 .sec-head {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
     gap: 24px;
-    margin-bottom: 28px;
+    margin-bottom: 18px;
+    padding: 20px 24px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--glass);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     flex-wrap: wrap;
-}
-
-/* El shader de fondo es brillante en algunas zonas: el texto de sección lleva
-   sombra para leerse sin necesidad de taparlo con una caja. */
-.sec-head .sec-label,
-.sec-head .sec-title,
-.sec-head .sec-sub {
-    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .sec-label {
@@ -180,11 +175,11 @@ section {
     letter-spacing: 0.26em;
     text-transform: uppercase;
     color: var(--gold);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .sec-title {
-    font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+    font-size: clamp(1.5rem, 3.2vw, 2.15rem);
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.15;
@@ -192,27 +187,14 @@ section {
 
 .sec-sub {
     color: var(--muted);
-    max-width: 52ch;
-    font-size: 15px;
-}
-
-/* En la sección de hitos la bajada va sobre el shader pelado: se le pone un
-   chip de vidrio para que se lea (dentro de la caja de la galería no hace falta). */
-.hitos .sec-sub {
-    color: #c2c0d4;
-    background: rgba(7, 8, 15, 0.55);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--line-soft);
-    border-radius: 10px;
-    padding: 7px 14px;
-    text-shadow: none;
+    max-width: 46ch;
+    font-size: 14.5px;
 }
 
 /* ---------- hero --------------------------------------------------------- */
 
 .hero {
-    padding: 72px 0 40px;
+    padding: 30px 0 20px;
 }
 
 .hero__card {
@@ -220,7 +202,7 @@ section {
     grid-template-columns: 1.6fr 0.9fr;
     gap: 44px;
     align-items: center;
-    padding: 44px;
+    padding: 40px;
     border-radius: var(--radius);
     border: 1px solid var(--line);
     background: var(--glass);
@@ -234,49 +216,45 @@ section {
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--gold);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
 .hero h1 {
-    font-size: clamp(2.4rem, 6vw, 4rem);
-    line-height: 1.02;
+    font-size: clamp(2.3rem, 5.6vw, 3.7rem);
+    line-height: 1.03;
     letter-spacing: -0.035em;
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 .hero__tagline {
-    font-size: clamp(1rem, 1.6vw, 1.18rem);
+    font-size: clamp(1rem, 1.6vw, 1.15rem);
     color: var(--vein);
     max-width: 46ch;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
 }
 
 .hero__bio {
     color: var(--muted);
-    font-size: 15px;
+    font-size: 14.8px;
     max-width: 62ch;
-    margin-bottom: 16px;
-}
-
-.hero__bio + .hero__bio {
-    margin-top: -4px;
+    margin-bottom: 14px;
 }
 
 .hero__actions {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
-    margin-top: 26px;
+    margin-top: 24px;
 }
 
 .btn {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 13px 24px;
+    padding: 12px 22px;
     border-radius: 999px;
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 600;
     letter-spacing: -0.01em;
     border: 1px solid transparent;
@@ -308,16 +286,16 @@ section {
     position: relative;
     justify-self: center;
     width: 100%;
-    max-width: 300px;
+    max-width: 290px;
 }
 
+/* la foto ya viene recortada en círculo (sin el anillo magenta original) */
 .hero__photo img {
     width: 100%;
     aspect-ratio: 1;
     object-fit: cover;
     border-radius: 50%;
     border: 1px solid var(--line);
-    filter: grayscale(0.15) contrast(1.03);
 }
 
 .hero__photo::after {
@@ -329,230 +307,23 @@ section {
     pointer-events: none;
 }
 
-/* ---------- hitos -------------------------------------------------------- */
-
-.hitos {
-    padding: 56px 0 24px;
-}
-
-.hitos__grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 20px;
-    /* cada tarjeta mide lo que su contenido: sin huecos vacíos al emparejar alturas */
-    align-items: start;
-}
-
-.hito {
-    position: relative;
-    padding: 30px;
-    border-radius: var(--radius);
-    border: 1px solid var(--line);
-    background: var(--glass);
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    overflow: hidden;
-    transition: border-color .3s ease, transform .3s ease;
-}
-
-.hito:hover {
-    border-color: rgba(195, 199, 241, 0.3);
-    transform: translateY(-3px);
-}
-
-.hito--fsc {
-    grid-column: span 7;
-}
-
-.hito--add {
-    grid-column: span 5;
-    padding-left: 0;
-    padding-right: 0;
-    padding-bottom: 30px;
-}
-
-.hito--doc {
-    grid-column: span 12;
-}
-
-.hito__num {
-    font-size: 11px;
-    letter-spacing: 0.24em;
-    color: var(--gold);
-}
-
-.hito__head {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.hito__role {
-    font-size: 11px;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-.hito__title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-}
-
-.hito__desc {
-    color: var(--muted);
-    font-size: 14.5px;
-    max-width: 58ch;
-    flex: 1;
-}
-
-.hito__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--gold);
-    width: fit-content;
-    padding-bottom: 2px;
-    border-bottom: 1px solid rgba(201, 189, 128, 0.35);
-    transition: color .2s ease, border-color .2s ease, gap .2s ease;
-}
-
-.hito__link:hover {
-    color: var(--gold-hi);
-    border-color: var(--gold-hi);
-    gap: 12px;
-}
-
-/* logo FSC */
-.fsc-logo {
-    width: min(100%, 380px);
-    height: auto;
-    opacity: 0.95;
-}
-
-.hito--add .hito__body {
-    padding: 0 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    flex: 1;
-}
-
-.hito__flyer {
-    margin: 0;
-    position: relative;
-    border-top: 1px solid var(--line-soft);
-    border-bottom: 1px solid var(--line-soft);
-    background: var(--indigo);
-    overflow: hidden;
-}
-
-.hito__flyer img {
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-    object-position: top center;
-    opacity: 0.94;
-    transition: transform .6s ease, opacity .4s ease;
-}
-
-.hito--add:hover .hito__flyer img {
-    transform: scale(1.03);
-    opacity: 1;
-}
-
-.hito__flyer figcaption {
-    position: absolute;
-    bottom: 10px;
-    right: 12px;
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.62);
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
-}
-
-/* docencia */
-.doc-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    margin-top: 4px;
-}
-
-.doc-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-        "inst go"
-        "prog prog";
-    gap: 4px 16px;
-    padding: 16px 18px;
-    border-radius: 12px;
-    border: 1px solid var(--line-soft);
-    background: rgba(195, 199, 241, 0.035);
-    transition: border-color .25s ease, background .25s ease, transform .2s ease;
-}
-
-.doc-row:hover {
-    border-color: rgba(201, 189, 128, 0.42);
-    background: rgba(201, 189, 128, 0.07);
-    transform: translateY(-2px);
-}
-
-.doc-inst {
-    grid-area: inst;
-    font-size: 10.5px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold);
-}
-
-.doc-go {
-    grid-area: go;
-    font-size: 12px;
-    color: var(--muted);
-    white-space: nowrap;
-}
-
-.doc-row:hover .doc-go {
-    color: var(--vein);
-}
-
-.doc-prog {
-    grid-area: prog;
-    font-size: 14.5px;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1.4;
-}
-
-/* ---------- galería (teaser) --------------------------------------------- */
+/* ---------- galería (índice) --------------------------------------------- */
 
 .galeria {
-    padding: 64px 0 40px;
+    padding: 34px 0 16px;
 }
 
 .galeria__card {
     border-radius: var(--radius);
     border: 1px solid var(--line);
-    background: var(--glass-soft);
-    backdrop-filter: blur(22px) saturate(155%);
-    -webkit-backdrop-filter: blur(22px) saturate(155%);
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
-    padding: 34px;
+    background: var(--glass);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    box-shadow: 0 20px 54px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    padding: 30px;
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 20px;
 }
 
 .galeria__top {
@@ -564,10 +335,9 @@ section {
 }
 
 .galeria__index {
-    list-style: none;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px 26px;
+    gap: 4px 26px;
 }
 
 .galeria__row {
@@ -575,7 +345,7 @@ section {
     grid-template-columns: 32px minmax(0, 1fr);
     align-items: baseline;
     gap: 2px 10px;
-    padding: 10px 4px;
+    padding: 9px 4px;
     border-bottom: 1px solid var(--line-soft);
     transition: border-color .25s ease, background .25s ease;
 }
@@ -594,7 +364,7 @@ section {
 
 .galeria__row-t {
     grid-column: 2;
-    font-size: 14.5px;
+    font-size: 14px;
     color: var(--text);
     white-space: nowrap;
     overflow: hidden;
@@ -632,15 +402,203 @@ section {
     letter-spacing: 0.04em;
 }
 
+/* ---------- hitos: tres tarjetas de la MISMA jerarquía ------------------- */
+
+.hitos {
+    padding: 34px 0 10px;
+}
+
+.hitos__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    /* cada tarjeta termina donde termina su contenido: nada de huecos internos */
+    align-items: start;
+}
+
+.hito {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--glass);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: border-color .3s ease, transform .3s ease;
+}
+
+.hito:hover {
+    border-color: rgba(195, 199, 241, 0.32);
+    transform: translateY(-3px);
+}
+
+/* bloque de medios: misma altura en las tres tarjetas */
+.hito__media {
+    height: 128px;
+    border-radius: 11px;
+    border: 1px solid var(--line-soft);
+    background: rgba(195, 199, 241, 0.035);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hito__media .fsc-logo {
+    max-height: 66%;
+    max-width: 88%;
+    width: auto;
+    object-fit: contain;
+    opacity: 0.95;
+}
+
+.hito__media--flyer {
+    padding: 0;
+}
+
+.hito__media--flyer img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    opacity: 0.95;
+    transition: transform .6s ease, opacity .4s ease;
+}
+
+.hito:hover .hito__media--flyer img {
+    transform: scale(1.04);
+    opacity: 1;
+}
+
+.hito__media--inst {
+    flex-direction: column;
+    gap: 7px;
+    padding: 10px;
+}
+
+.hito__media--inst span {
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--vein);
+    padding: 4px 10px;
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    background: rgba(195, 199, 241, 0.05);
+    text-align: center;
+}
+
+.hito__head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.hito__num {
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+}
+
+.hito__role {
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.hito__title {
+    font-size: 1.22rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+}
+
+.hito__desc {
+    color: var(--muted);
+    font-size: 13.8px;
+    line-height: 1.6;
+}
+
+.hito__links {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 6px;
+}
+
+.hito__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    width: fit-content;
+    padding-bottom: 2px;
+    border-bottom: 1px solid rgba(201, 189, 128, 0.32);
+    transition: color .2s ease, border-color .2s ease, gap .2s ease;
+}
+
+.hito__link:hover {
+    color: var(--gold-hi);
+    border-color: var(--gold-hi);
+    gap: 12px;
+}
+
+/* programas de docencia (lista compacta, sin cajas: la tarjeta respira) */
+.doc-list {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 4px;
+}
+
+.doc-list a {
+    display: block;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 12.6px;
+    line-height: 1.4;
+    color: var(--text);
+    transition: color .2s ease, border-color .2s ease, padding-left .2s ease;
+}
+
+.doc-list li:first-child a {
+    border-top: 1px solid var(--line-soft);
+}
+
+.doc-list a:hover {
+    color: var(--gold-hi);
+    border-color: rgba(201, 189, 128, 0.45);
+    padding-left: 6px;
+}
+
+.doc-list b {
+    display: inline;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-right: 7px;
+}
+
 /* ---------- footer ------------------------------------------------------- */
 
 .jp-foot {
-    margin-top: 64px;
-    padding: 34px 0 46px;
+    margin-top: 34px;
+    padding: 26px 0 34px;
     border-top: 1px solid var(--line-soft);
-    background: rgba(7, 8, 15, 0.42);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: rgba(7, 8, 15, 0.72);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
 }
 
 .jp-foot__in {
@@ -650,7 +608,7 @@ section {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 18px;
     flex-wrap: wrap;
     font-size: 12.5px;
     color: var(--muted);
@@ -673,15 +631,7 @@ section {
     border-color: rgba(195, 199, 241, 0.4);
 }
 
-.jp-foot__shader {
-    font-family: ui-monospace, Menlo, Consolas, monospace;
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    color: rgba(195, 199, 241, 0.55);
-}
-
 /* ---------- entrada ------------------------------------------------------ */
-/* Animación CSS pura: si el JS falla o no corre, el contenido se ve igual. */
 
 @keyframes jp-rise {
     from {
@@ -709,26 +659,21 @@ section {
 
 /* ---------- responsive --------------------------------------------------- */
 
-@media (max-width: 980px) {
+@media (max-width: 1000px) {
+    .hitos__grid {
+        grid-template-columns: 1fr;
+    }
+
     .hero__card {
         grid-template-columns: 1fr;
-        gap: 30px;
-        padding: 32px;
+        gap: 28px;
+        padding: 30px;
     }
 
     .hero__photo {
         order: -1;
-        max-width: 200px;
+        max-width: 190px;
         justify-self: start;
-    }
-
-    .hito--fsc,
-    .hito--add {
-        grid-column: span 12;
-    }
-
-    .doc-list {
-        grid-template-columns: 1fr;
     }
 
     .galeria__index {
@@ -738,19 +683,18 @@ section {
 
 @media (max-width: 620px) {
     .jp-head__in {
-        padding: 12px 16px;
+        padding: 7px 16px;
         gap: 10px;
         flex-wrap: nowrap;
     }
 
     .jp-brand {
-        font-size: 11px;
-        letter-spacing: 0.18em;
-        white-space: nowrap;
+        font-size: 10.5px;
+        letter-spacing: 0.16em;
     }
 
     .jp-brand span {
-        display: none;
+        font-size: 10px;
     }
 
     .jp-nav {
@@ -765,8 +709,8 @@ section {
     }
 
     .jp-nav a {
-        padding: 7px 9px;
-        font-size: 11.5px;
+        padding: 6px 8px;
+        font-size: 11px;
         white-space: nowrap;
     }
 
@@ -780,33 +724,24 @@ section {
     }
 
     .hero {
-        padding: 40px 0 24px;
+        padding: 18px 0 12px;
     }
 
     .hero__card {
-        padding: 24px;
-        gap: 24px;
-    }
-
-    .hitos {
-        padding: 36px 0 16px;
-    }
-
-    .hito {
         padding: 22px;
+        gap: 22px;
     }
 
-    .hito--add {
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    .hito--add .hito__body {
-        padding: 0 22px;
+    .sec-head {
+        padding: 16px 18px;
     }
 
     .galeria__card {
-        padding: 22px;
+        padding: 20px;
+    }
+
+    .hito {
+        padding: 18px;
     }
 
     .jp-foot__in {
