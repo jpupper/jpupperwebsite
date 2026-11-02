@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arte generativo — Julián Puppo</title>
+    <meta name="description" content="Índice de las obras generativas de Julián Puppo (JPupper) y KetiTaki en Tezos: fxhash y HEN, con el sistema corriendo y la semilla original.">
+    <meta name="theme-color" content="#07080f">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/jpupper.css?v=4">
+</head>
+<body>
+
+    <header class="jp-head">
+        <div class="jp-head__in">
+            <a href="index.html" class="jp-brand">Julián Puppo <span>JPUPPER</span></a>
+            <nav class="jp-nav">
+                <a href="index.html">Portada</a>
+                <a href="gallery.html">Galería</a>
+                <a href="cv.html">CV</a>
+                <a href="generativo.html" class="is-cta" aria-current="page">Generativo</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="wrap ag-page">
+        <div class="sec-head sec-head--ag">
+            <div class="ag-head">
+                <h2 class="sec-title">Arte generativo</h2>
+                <div class="ag-tabs" id="ag-tabs" role="tablist" aria-label="Colecciones"></div>
+            </div>
+            <div class="ag-meta">
+                <p class="ag-count" id="ag-count">Cargando obras…</p>
+                <a class="ag-objkt" href="https://objkt.com/users/tz1cZpxNs8WtpJxfMu7CK39KopAaMdEUYHwR/created" target="_blank" rel="noopener">
+                    Ver todo en objkt <span aria-hidden="true">↗</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="ag-grid" id="ag-grid"></div>
+    </main>
+
+    <footer class="jp-foot">
+        <div class="jp-foot__in">
+            <span>© <span id="jp-year">2026</span> Julián Puppo — Programador gráfico &amp; artista multimedial.</span>
+            <div class="jp-foot__links">
+                <a href="index.html">Portada</a>
+                <a href="gallery.html">Galería</a>
+                <a href="cv.html">CV</a>
+                <a href="https://objkt.com/users/tz1cZpxNs8WtpJxfMu7CK39KopAaMdEUYHwR/created" target="_blank" rel="noopener">objkt</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Visor de obra generativa -->
+    <div class="ag-modal" id="ag-modal" hidden>
+        <div class="ag-modal__box" role="dialog" aria-modal="true" aria-labelledby="ag-m-title">
+            <header class="ag-modal__head">
+                <div>
+                    <h3 id="ag-m-title">—</h3>
+                    <p id="ag-m-meta">—</p>
+                </div>
+                <button class="ag-modal__x" id="ag-m-close" type="button" aria-label="Cerrar">&times;</button>
+            </header>
+            <div class="ag-modal__frame" id="ag-m-frame"></div>
+            <footer class="ag-modal__foot">
+                <code id="ag-m-seed">—</code>
+                <div class="ag-modal__btns">
+                    <button class="btn btn--ghost btn--sm" id="ag-m-new" type="button">Nueva semilla</button>
+                    <button class="btn btn--ghost btn--sm" id="ag-m-orig" type="button">Semilla original</button>
+                    <a class="btn btn--solid btn--sm" id="ag-m-objkt" href="#" target="_blank" rel="noopener">Abrir en objkt ↗</a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- FONDO: JP Shader Editor (jpshadereditorinclude), misma composición que la portada. -->
+    <script src="https://vps-4455523-x.dattaweb.com/jpshadereditor/include.js"
+            data-page="jpupper" data-comp="nodeeditor-xz2t" data-pass="n9cndhye7b"
+            data-keep-bg="1"></script>
+
+    <script src="js/arte-generativo.js?v=2"></script>
+
+</body>
+</html>

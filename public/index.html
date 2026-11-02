@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/jpupper.css?v=3">
+    <link rel="stylesheet" href="css/jpupper.css?v=4">
 </head>
 <body>
 
@@ -19,6 +19,7 @@
             <a href="index.html" class="jp-brand">Julián Puppo <span>JPUPPER</span></a>
             <nav class="jp-nav">
                 <a href="#hitos">Hitos</a>
+                <a href="generativo.html">Generativo</a>
                 <a href="gallery.html">Galería</a>
                 <a href="cv.html">CV</a>
                 <a href="gallery.html" class="is-cta">Ver proyectos</a>
@@ -58,10 +59,25 @@
                             </a>
                             <a class="social" href="https://www.instagram.com/julianpuppo/" target="_blank" rel="noopener">
                                 <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>
-                                @julianpuppo
+                                Instagram
+                            </a>
+                            <a class="social" href="https://www.linkedin.com/in/juli%C3%A1n-puppo-3811b7a3/" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9.2 9h3.8v1.6h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.07 1.4-2.07 2.85V21h-4z"/></svg>
+                                LinkedIn
+                            </a>
+                            <a class="social" href="https://github.com/jpupper" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .5C5.73.5.99 5.24.99 11.5c0 4.85 3.15 8.96 7.52 10.42.55.1.75-.24.75-.53v-1.9c-3.06.66-3.71-1.3-3.71-1.3-.5-1.28-1.22-1.62-1.22-1.62-1-.68.08-.67.08-.67 1.1.08 1.68 1.13 1.68 1.13.98 1.68 2.57 1.2 3.2.92.1-.72.38-1.2.7-1.48-2.44-.28-5.01-1.22-5.01-5.44 0-1.2.43-2.18 1.13-2.95-.11-.28-.49-1.4.11-2.92 0 0 .92-.29 3.02 1.13a10.4 10.4 0 0 1 5.5 0c2.1-1.42 3.02-1.13 3.02-1.13.6 1.52.22 2.64.11 2.92.7.77 1.13 1.75 1.13 2.95 0 4.23-2.58 5.16-5.03 5.43.4.34.75 1.01.75 2.04v3.03c0 .3.2.64.76.53A11.01 11.01 0 0 0 23 11.5C23 5.24 18.27.5 12 .5z"/></svg>
+                                GitHub
+                            </a>
+                            <a class="social" href="https://www.youtube.com/@jpupper" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/></svg>
+                                YouTube
+                            </a>
+                            <a class="social" href="https://x.com/julian_puppo" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M17.5 3h3.2l-7 8 8.2 10h-6.4l-5-6.1-5.7 6.1H1.6l7.5-8.6L1.2 3h6.6l4.5 5.6L17.5 3zm-1.1 16.2h1.8L7.7 4.7H5.8l10.6 14.5z"/></svg>
+                                X
                             </a>
                         </div>
-                    </div>
                     <div class="hero__photo">
                         <img src="img/julian-hero.png" alt="Retrato de Julián Puppo" loading="eager">
                     </div>
@@ -167,20 +183,6 @@
             </div>
         </section>
 
-        <!-- ============ ARTE GENERATIVO ============ -->
-        <section class="arte-gen" id="arte-generativo">
-            <div class="wrap">
-                <div class="sec-head sec-head--ag">
-                    <div class="ag-head">
-                        <h2 class="sec-title">Arte generativo</h2>
-                        <div class="ag-tabs" id="ag-tabs" role="tablist" aria-label="Colecciones"></div>
-                    </div>
-                    <p class="ag-count" id="ag-count">Cargando obras…</p>
-                </div>
-                <div class="ag-grid" id="ag-grid"></div>
-            </div>
-        </section>
-
         <!-- ============ CV ============ -->
         <section class="cv-band" id="cv">
             <div class="wrap">
@@ -215,28 +217,6 @@
         </div>
     </footer>
 
-    <!-- Visor de obra generativa -->
-    <div class="ag-modal" id="ag-modal" hidden>
-        <div class="ag-modal__box" role="dialog" aria-modal="true" aria-labelledby="ag-m-title">
-            <header class="ag-modal__head">
-                <div>
-                    <h3 id="ag-m-title">—</h3>
-                    <p id="ag-m-meta">—</p>
-                </div>
-                <button class="ag-modal__x" id="ag-m-close" type="button" aria-label="Cerrar">&times;</button>
-            </header>
-            <div class="ag-modal__frame" id="ag-m-frame"></div>
-            <footer class="ag-modal__foot">
-                <code id="ag-m-seed">—</code>
-                <div class="ag-modal__btns">
-                    <button class="btn btn--ghost btn--sm" id="ag-m-new" type="button">Nueva semilla</button>
-                    <button class="btn btn--ghost btn--sm" id="ag-m-orig" type="button">Semilla original</button>
-                    <a class="btn btn--solid btn--sm" id="ag-m-objkt" href="#" target="_blank" rel="noopener">Abrir en objkt ↗</a>
-                </div>
-            </footer>
-        </div>
-    </div>
-
     <!-- FONDO: JP Shader Editor (jpshaderinclude). Sirve el backend del VPS.
          Composición: nodeeditor-xz2t (fondojpupper) · pase: n9cndhye7b.
          Con sesión FSCAuth, la tecla S abre el panel para cambiar shader, uniformes y guardar. -->
@@ -246,7 +226,6 @@
 
     <script src="js/config.js?v=2"></script>
     <script src="js/landing.js?v=2"></script>
-    <script src="js/arte-generativo.js?v=1"></script>
 
 </body>
 </html>

@@ -106,6 +106,15 @@ app.get('/gallery', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'gallery.html'));
 });
 
+// Arte generativo (índice de obras en Tezos): /jpupper/generativo
+app.get('/jpupper/generativo', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'generativo.html'));
+});
+
+app.get('/generativo', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'generativo.html'));
+});
+
 // Main route for /jpupper
 app.get('/jpupper', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));

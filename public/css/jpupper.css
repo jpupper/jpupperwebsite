@@ -591,18 +591,21 @@ section {
 
 /* ---------- botones sociales del hero ------------------------------------ */
 
+/* canales: grilla fija de 3 por fila para que nunca quede uno solo en una línea */
 .hero__social {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 16px;
+    max-width: 500px;
 }
 
 .social {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 15px 8px 13px;
+    justify-content: center;
+    gap: 7px;
+    padding: 8px 12px;
     border-radius: 999px;
     border: 1px solid var(--line-soft);
     background: rgba(195, 199, 241, 0.035);
@@ -614,9 +617,13 @@ section {
 }
 
 .social svg {
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
     flex-shrink: 0;
+}
+
+.social {
+    font-size: 12px;
 }
 
 .social:hover {
@@ -691,12 +698,38 @@ section {
     color: rgba(20, 19, 12, 0.62);
 }
 
+.ag-page {
+    padding: 26px 0 10px;
+}
+
+.ag-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--line-soft);
+    padding-top: 12px;
+}
+
 .ag-count {
     font-size: 12px;
     letter-spacing: 0.05em;
     color: var(--muted);
-    border-top: 1px solid var(--line-soft);
-    padding-top: 12px;
+}
+
+.ag-objkt {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--gold);
+    padding-bottom: 2px;
+    border-bottom: 1px solid rgba(201, 189, 128, 0.35);
+    transition: color .2s ease, border-color .2s ease;
+}
+
+.ag-objkt:hover {
+    color: var(--gold-hi);
+    border-color: var(--gold-hi);
 }
 
 .ag-grid {
@@ -1047,6 +1080,11 @@ section {
 
     .wrap {
         padding: 0 16px;
+    }
+
+    .hero__social {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: none;
     }
 
     .hero {

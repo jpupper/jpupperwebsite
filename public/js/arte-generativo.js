@@ -11,6 +11,9 @@
     var B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     var $ = function (s) { return document.querySelector(s); };
 
+    var anio = document.getElementById('jp-year');
+    if (anio) anio.textContent = String(new Date().getFullYear());
+
     var root = document.getElementById('ag-grid');
     if (!root) return;
 
