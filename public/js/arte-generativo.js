@@ -153,6 +153,7 @@
         el.mObjkt.href = objktURL(o);
         el.modal.hidden = false;
         document.body.classList.add('ag-lock');
+        pedirPantallaCompleta();
 
         if (esGenerativo(o)) {
             mostrarGenerador(o, (o.s && o.s[0]) || semillaNueva());
@@ -168,12 +169,26 @@
         }
     }
 
+    function pedirPantallaCompleta() {
+        if (document.fullscreenElement || !el.modal.requestFullscreen) return;
+        var p = el.modal.requestFullscreen({ navigationUI: 'hide' });
+        if (p && p.catch) p.catch(function () { /* el navegador puede negarlo: queda el overlay a pantalla completa */ });
+    }
+
     function cerrar() {
+        if (document.fullscreenElement) {
+            document.exitFullscreen().catch(function () {});
+        }
         el.modal.hidden = true;
         el.mFrame.innerHTML = '';
         document.body.classList.remove('ag-lock');
         estado.obra = null;
     }
+
+    /* si el usuario sale de pantalla completa (Esc/F11), se cierra el visor */
+    document.addEventListener('fullscreenchange', function () {
+        if (!document.fullscreenElement && !el.modal.hidden) cerrar();
+    });
 
     /* ---------- eventos ---------- */
 
@@ -215,7 +230,9 @@
         .then(function (r) { return r.json(); })
         .then(function (d) {
             estado.cats = d.categorias || [];
-            estado.activa = (estado.cats[0] || {}).id;
+            // arranca en JPupper · fxhash; si no existe, la primera colección
+            var porDefecto = estado.cats.filter(function (c) { return c.id === 'jpupper-fxhash'; })[0];
+            estado.activa = (porDefecto || estado.cats[0] || {}).id;
             pintarTabs();
             pintarGrilla();
         })

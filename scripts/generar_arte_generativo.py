@@ -23,6 +23,19 @@ DUMP = sys.argv[1] if len(sys.argv) > 1 else \
 SALIDA = os.path.join(AQUI, "..", "public", "data", "arte-generativo.json")
 
 
+# Pedidos del usuario sobre qué entra en cada colección:
+#  - HEN: fuera estas piezas (no son obras de la colección)
+HEN_EXCLUIR = {"please contact me", "kinect shader madness"}
+#  - fxhash: SOLO los contratos de fxhash. Las colectivas de otros contratos
+#    (Versum, Newtro's, VUELAPELUCAS 3000, Interactive generative works) NO son fxhash
+#    y quedan afuera, aunque sean generativas.
+CONTRATOS_FXHASH = {
+    "KT1KEa8z6vWXDJrVqtMrAeDVzsvxat3kHaCE",   # fxhash v1 (Genesis)
+    "KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi",   # fxhash v2
+    "KT1EfsNuqwLAWDd3o4pvfUx1CAh5GMdTrRvr",   # fx(params)
+}
+
+
 def slim(p, artista):
     sem = p.get("semillas") or []
     out = {
@@ -54,8 +67,10 @@ def main():
     art = {a["nombre"]: a for a in d["artistas"]}
     jp, kt = art["JPupper"], art["KetiTaki"]
 
-    hen = [slim(p, "JPupper") for p in jp["proyectos"] if p.get("plataforma") == "HEN"]
-    fx = [slim(p, "JPupper") for p in jp["proyectos"] if p.get("plataforma") != "HEN"]
+    hen = [slim(p, "JPupper") for p in jp["proyectos"]
+           if p.get("plataforma") == "HEN" and p.get("nombre", "").strip().lower() not in HEN_EXCLUIR]
+    fx = [slim(p, "JPupper") for p in jp["proyectos"]
+          if (p.get("contrato") or "") in CONTRATOS_FXHASH]
     ket = [slim(p, "KetiTaki") for p in kt["proyectos"]]
     for lista in (hen, fx, ket):
         lista.sort(key=orden, reverse=True)

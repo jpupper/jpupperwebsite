@@ -281,7 +281,7 @@ section {
 
 .hero__photo {
     position: relative;
-    justify-self: center;
+    justify-self: end;
     width: 100%;
     max-width: 290px;
 }
@@ -591,46 +591,39 @@ section {
 
 /* ---------- botones sociales del hero ------------------------------------ */
 
-/* canales: grilla fija de 3 por fila para que nunca quede uno solo en una línea */
+/* canales: una fila de círculos, SOLO el logo de cada red */
 .hero__social {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 8px;
-    margin-top: 16px;
-    max-width: 500px;
+    margin-top: 18px;
 }
 
 .social {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    padding: 8px 12px;
-    border-radius: 999px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     border: 1px solid var(--line-soft);
-    background: rgba(195, 199, 241, 0.035);
+    background: rgba(195, 199, 241, 0.04);
     color: var(--vein);
-    font-size: 12.5px;
-    font-weight: 500;
-    letter-spacing: 0.01em;
     transition: border-color .22s ease, background .22s ease, color .22s ease, transform .2s ease;
 }
 
 .social svg {
-    width: 15px;
-    height: 15px;
+    width: 17px;
+    height: 17px;
     flex-shrink: 0;
 }
 
-.social {
-    font-size: 12px;
-}
-
 .social:hover {
-    border-color: rgba(201, 189, 128, 0.5);
-    background: rgba(201, 189, 128, 0.08);
+    border-color: rgba(201, 189, 128, 0.55);
+    background: rgba(201, 189, 128, 0.1);
     color: var(--gold-hi);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 }
 
 /* ---------- arte generativo (índice de obras en Tezos) -------------------- */
@@ -864,17 +857,21 @@ section {
     overflow: hidden;
 }
 
+/* el visor va a pantalla completa: overlay 100% + requestFullscreen al abrir */
 .ag-modal {
     position: fixed;
     inset: 0;
     z-index: 200;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
-    padding: 24px;
-    background: rgba(4, 5, 9, 0.82);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    padding: 0;
+    background: rgba(4, 5, 9, 0.96);
+}
+
+.ag-modal:fullscreen {
+    padding: 0;
+    background: #04050a;
 }
 
 .ag-modal[hidden] {
@@ -884,12 +881,12 @@ section {
 .ag-modal__box {
     display: flex;
     flex-direction: column;
-    width: min(1100px, 100%);
-    max-height: 100%;
-    border-radius: var(--radius);
-    border: 1px solid var(--line);
-    background: rgba(9, 11, 18, 0.96);
-    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.7);
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    border: 0;
+    background: #05060a;
     overflow: hidden;
 }
 
@@ -898,7 +895,8 @@ section {
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
-    padding: 16px 18px;
+    padding: 12px 18px;
+    background: rgba(6, 7, 12, 0.92);
     border-bottom: 1px solid var(--line-soft);
 }
 
@@ -967,6 +965,7 @@ section {
     gap: 14px;
     flex-wrap: wrap;
     padding: 12px 18px;
+    background: rgba(6, 7, 12, 0.92);
     border-top: 1px solid var(--line-soft);
 }
 
@@ -1006,12 +1005,8 @@ section {
         gap: 10px;
     }
 
-    .ag-modal {
-        padding: 10px;
-    }
-
     .ag-modal__frame {
-        min-height: 46vh;
+        min-height: 40vh;
     }
 
     .ag-modal__foot code {
@@ -1033,9 +1028,8 @@ section {
     }
 
     .hero__photo {
-        order: -1;
-        max-width: 190px;
-        justify-self: start;
+        max-width: 200px;
+        justify-self: end;
     }
 
 }
@@ -1080,11 +1074,6 @@ section {
 
     .wrap {
         padding: 0 16px;
-    }
-
-    .hero__social {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        max-width: none;
     }
 
     .hero {
